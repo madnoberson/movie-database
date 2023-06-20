@@ -5,9 +5,15 @@ from uuid import uuid4
 from src.domain.models.user.model import User
 from src.domain.models.user.value_objects import UserId, Username
 from src.application.common.result import Result
-from .command import RegisterCommand
+from .command import RegisterCommand, RegisterCommandResult
 from .interfaces import RegisterCommandDBGateway, PasswordEncoder
 from .errors import UsernameAlreadyExistsError
+
+
+CommandHandlerResult = (
+    Result[RegisterCommandResult, None] |
+    Result[None, UsernameAlreadyExistsError]
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -16,7 +22,7 @@ class RegisterCommandHandler:
     db_gateway: RegisterCommandDBGateway
     password_encoder: PasswordEncoder
 
-    def __call__(self, command: RegisterCommand) -> None:
+    def __call__(self, command: RegisterCommand) -> CommandHandlerResult:
         username = Username(command.username)
         user = self.db_gateway.get_user_by_username(
             username=username
@@ -38,5 +44,8 @@ class RegisterCommandHandler:
 
         self.db_gateway.save_user(user)
         self.db_gateway.commit()
-        
-        return Result(value=user.id.value, error=None)
+
+        command_result = RegisterCommandResult(user_id.value)
+        result = Result(value=command_result, error=None)
+
+        return result
