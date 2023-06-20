@@ -1,16 +1,18 @@
 from abc import ABC, abstractmethod
 
-from src.application.common.interfaces import (
-    Atomic,
-    UserSaver,
-    UserReader
+from src.application.common.database_intefaces.user import (
+    SupportsSaveUser,
+    SupportsGetUserByUsername
+)
+from src.application.common.database_intefaces.atomic import (
+    SupportsAtomic
 )
 
 
 class RegisterCommandDBGateway(
-    Atomic,
-    UserSaver,
-    UserReader,
+    SupportsAtomic,
+    SupportsSaveUser,
+    SupportsGetUserByUsername,
     ABC
 ):
     ...
@@ -23,5 +25,5 @@ class PasswordEncoder(ABC):
         raise NotImplementedError
     
     @abstractmethod
-    def verify(self, encoded_password: str) -> bool:
+    def verify(self, password: str, encoded_password: str) -> bool:
         raise NotImplementedError

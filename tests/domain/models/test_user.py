@@ -46,7 +46,7 @@ class TestUser:
         assert user.password == password
         assert user.created_at == created_at
     
-    def test_change_username_shoul_change_username(self):
+    def test_change_username_should_change_username(self):
         user_id = UserId(uuid4())
         username = Username("johndoe")
         password = "encodedpassword"
