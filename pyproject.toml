@@ -8,11 +8,17 @@ packages = [{include = "movie_database"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+psycopg2-binary = "^2.9.6"
+python-jose = "^3.3.0"
 
 
 [tool.poetry.group.api.dependencies]
 fastapi = "^0.97.0"
 uvicorn = "^0.22.0"
+
+
+[tool.poetry.group.tests.dependencies]
+pytest = "^7.3.2"
 
 [build-system]
 requires = ["poetry-core"]
