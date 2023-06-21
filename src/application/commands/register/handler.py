@@ -5,8 +5,9 @@ from uuid import uuid4
 from src.domain.models.user.model import User
 from src.domain.models.user.value_objects import UserId, Username
 from src.application.common.result import Result
+from src.application.common.passoword_encoder import PasswordEncoder
 from .command import RegisterCommand, RegisterCommandResult
-from .interfaces import RegisterCommandDBGateway, PasswordEncoder
+from .interfaces import RegisterCommandDBGateway
 from .errors import UsernameAlreadyExistsError
 
 

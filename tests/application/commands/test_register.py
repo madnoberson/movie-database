@@ -16,25 +16,14 @@ from src.application.commands.register.handler import (
     RegisterCommandHandler
 )
 from src.application.commands.register.interfaces import (
-    PasswordEncoder,
     RegisterCommandDBGateway
 )
 from src.application.commands.register.errors import (
     UsernameAlreadyExistsError
 )
-
-
-class FakePasswordEncoder(PasswordEncoder):
-
-    def encode(self, password: str) -> str:
-        return f"encoded{password}"
-
-    def verify(
-        self,
-        password: str,
-        encoded_password: str
-    ) -> bool:
-        return self.encode(password) == encoded_password
+from tests.application.mocks.password_encoder import (
+    FakePasswordEncoder
+)
 
 
 @dataclass(frozen=True, slots=True)

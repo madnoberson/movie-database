@@ -1,8 +1,6 @@
 from hashlib import sha256
 
-from src.application.commands.register.interfaces import (
-    PasswordEncoder
-)
+from src.application.common.passoword_encoder import PasswordEncoder
 
 
 class HashlibPasswordEncoder(PasswordEncoder):

@@ -12,7 +12,15 @@ from src.application.commands.register.command import (
 from src.application.commands.register.errors import (
     UsernameAlreadyExistsError
 )
-from .requests import RegisterSchema
+from src.application.queries.login.query import (
+    LoginQuery,
+    LoginQueryResult
+)
+from src.application.queries.login.errors import (
+    UsernameDoesNotExistError,
+    PasswordIsIncorrectError
+)
+from .requests import RegisterSchema, LoginSchema
 from .responses import AuthResponseSchema
 from .errors import UsernameAlreadyExistsErrorSchema
 
@@ -64,9 +72,48 @@ def register(
                 )
 
 
-@auth_router.post(path="/login/")
+login_route_responses = {
+    404: {"model": UsernameDoesNotExistError}
+}
+
+
+@auth_router.post(
+    path="/login/",
+    response_model=AuthResponseSchema,
+    responses=login_route_responses
+)
 def login(
     ioc: Annotated[InteractorFactory, Depends()],
     auth: Annotated[ApiAuthenticator, Depends()],
+    data: LoginSchema
 ):
-    ...
+    with ioc.login() as login:
+
+        query = LoginQuery(
+            username=data.username,
+            password=data.password
+        )
+        result = login(query)
+
+        match result:
+
+            case Result(LoginQueryResult(), None):
+                access_token = auth.create_access_token(
+                    user_id=result.value.user_id
+                )
+                refresh_token = auth.create_refresh_token(
+                    user_id=result.value.user_id
+                )
+                return AuthResponseSchema(
+                    access_token=access_token,
+                    refresh_token=refresh_token
+                )
+
+            case Result(None, UsernameDoesNotExistError()):
+                return JSONResponse(
+                    status_code=404,
+                    content={"username": result.error.username}
+                )
+            
+            case Result(None, PasswordIsIncorrectError()):
+                return None

@@ -5,3 +5,10 @@ class RegisterSchema(BaseModel):
 
     username: str
     password: str
+
+
+class LoginSchema(BaseModel):
+
+    username: str
+    password: str
+    
