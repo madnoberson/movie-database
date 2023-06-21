@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Protocol
 
 from src.application.common.database_intefaces.user import (
     SupportsSaveUser,
@@ -13,7 +14,7 @@ class RegisterCommandDBGateway(
     SupportsAtomic,
     SupportsSaveUser,
     SupportsGetUserByUsername,
-    ABC
+    Protocol
 ):
     ...
 

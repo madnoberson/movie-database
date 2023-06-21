@@ -102,6 +102,6 @@ class TestRegisterCommand:
         result: Result = handler(command)
 
         assert result.value == None
-        assert result.error == UsernameAlreadyExistsError(user.username)
+        assert result.error == UsernameAlreadyExistsError(user.username.value)
 
         

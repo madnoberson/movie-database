@@ -28,7 +28,7 @@ class RegisterCommandHandler:
             username=username
         )
         if user is not None:
-            error = UsernameAlreadyExistsError(username)
+            error = UsernameAlreadyExistsError(username.value)
             return Result(value=None, error=error)
         
         user_id = UserId(uuid4())
