@@ -8,7 +8,7 @@ from .config import PsycopgConfig
 PsycopgConnection = connection
 
 
-def build_psycopg2_connection() -> PsycopgConnection:
+def get_psycopg2_connection() -> PsycopgConnection:
     config = PsycopgConfig()
     register_uuid()
     return psycopg2.connect(config.dsn)

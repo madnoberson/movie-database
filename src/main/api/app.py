@@ -4,7 +4,7 @@ from src.presentation.interactor_factory import InteractorFactory
 from src.presentation.api.authenticator import ApiAuthenticator
 from src.presentation.api.auth.routes import auth_router
 from src.main.ioc import IoC
-from src.infrastructure.psycopg.psycopg import build_psycopg2_connection
+from src.infrastructure.psycopg.psycopg import get_psycopg2_connection
 from src.infrastructure.psycopg.gateway import PsycopgDatabaseGateway
 from src.infrastructure.password_encoder import HashlibPasswordEncoder
 from src.infrastructure.auth.api import ApiAuthenticatorImpl
@@ -12,7 +12,7 @@ from .config import Config, AuthConfig
 
 
 def setup_providers(app: FastAPI, auth_config: AuthConfig) -> None:
-    psycopg_conn = build_psycopg2_connection()
+    psycopg_conn = get_psycopg2_connection()
     psycopg_db_gateway = PsycopgDatabaseGateway(psycopg_conn)
     password_encoder = HashlibPasswordEncoder()
 

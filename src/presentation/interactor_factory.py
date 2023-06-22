@@ -10,10 +10,14 @@ from src.application.queries.login.handler import LoginQueryHandler
 class InteractorFactory(ABC):
     
     @abstractmethod
-    def register(self) -> ContextManager[RegisterCommandHandler]:
+    def register_command_handler(
+        self
+    ) -> ContextManager[RegisterCommandHandler]:
         raise NotImplementedError
 
     @abstractmethod
-    def login(self) -> ContextManager[LoginQueryHandler]:
+    def login_query_handler(
+        self
+    ) -> ContextManager[LoginQueryHandler]:
         raise NotImplementedError
 

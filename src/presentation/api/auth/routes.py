@@ -43,13 +43,13 @@ def register(
     auth: Annotated[ApiAuthenticator, Depends()],
     data: RegisterSchema
 ):
-    with ioc.register() as register:
+    with ioc.register_command_handler() as handle:
 
         command = RegisterCommand(
             username=data.username,
             password=data.password
         )
-        result = register(command)
+        result = handle(command)
 
         match result:
 
@@ -87,13 +87,13 @@ def login(
     auth: Annotated[ApiAuthenticator, Depends()],
     data: LoginSchema
 ):
-    with ioc.login() as login:
+    with ioc.login_query_handler() as handle:
 
         query = LoginQuery(
             username=data.username,
             password=data.password
         )
-        result = login(query)
+        result = handle(query)
 
         match result:
 

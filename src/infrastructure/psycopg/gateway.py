@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from psycopg2._psycopg import connection
 
-from src.application.common.database_intefaces.gateway import (
+from src.application.common.database_interfaces.gateway import (
     DatabaseGateway
 )
 from src.domain.models.user.model import User
