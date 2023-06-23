@@ -24,3 +24,10 @@ class SupportsSaveUser(Protocol):
     @abstractmethod
     def save_user(self, user: User) -> None:
         raise NotImplementedError
+
+
+class SupportsCheckUsernameExistence(Protocol):
+
+    @abstractmethod
+    def check_username_existence(self, username: Username) -> bool:
+        raise NotImplementedError

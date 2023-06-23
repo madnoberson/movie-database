@@ -22,8 +22,13 @@ async def register_command(
     command: CommandObject,
     ioc: Interactor
 ) -> None:
-    args = command.args or [] 
+    args = command.args or ["_", "_"]
     username, password = args.split()
+
+    if username == "_":
+        ...
+    if password == "_":
+        ...
 
     command = RegisterCommand(
         username=username,
