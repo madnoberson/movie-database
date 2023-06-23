@@ -4,13 +4,13 @@ from typing import Any, Awaitable, Callable
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 
-from src.presentation.interactor_factory import InteractorFactory
+from src.presentation.interactor import Interactor
 
 
 @dataclass(frozen=True, slots=True)
 class IoCMiddleware(BaseMiddleware):
 
-    ioc: InteractorFactory
+    ioc: Interactor
 
     async def __call__(
         self,

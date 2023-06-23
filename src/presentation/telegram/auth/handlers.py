@@ -3,9 +3,7 @@ from aiogram.filters import Command, CommandObject
 from aiogram.types import Message
 
 from src.application.common.result import Result
-from src.presentation.interactor_factory import (
-    InteractorFactory
-)
+from src.presentation.interactor import Interactor
 from src.application.commands.register.command import (
     RegisterCommand,
     RegisterCommandResult
@@ -22,28 +20,24 @@ auth_router = Router()
 async def register_command(
     message: Message,
     command: CommandObject,
-    ioc: InteractorFactory
+    ioc: Interactor
 ) -> None:
     args = command.args or [] 
     username, password = args.split()
 
-    print(username, password)
+    command = RegisterCommand(
+        username=username,
+        password=password
+    )
+    result = ioc.handle_register_command(
+        command=command
+    )
 
-    await message.answer("!!")
+    match result:
 
-    with ioc.register_command_handler() as handle:
-
-        command = RegisterCommand(
-            username=username,
-            password=password
-        )
-        result = handle(command)
-
-        match result:
-
-            case Result(RegisterCommandResult(), None):
-                await message.answer(f"{username} {password}")
-            
-            case Result(None, UsernameAlreadyExistsError()):
-                text = f"Username {result.error.username} already exists"
-                await message.answer(text)
+        case Result(RegisterCommandResult(), None):
+            await message.answer(f"{username} {password}")
+        
+        case Result(None, UsernameAlreadyExistsError()):
+            text = f"Username {result.error.username} already exists"
+            await message.answer(text)

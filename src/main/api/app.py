@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from src.presentation.interactor_factory import InteractorFactory
+from src.presentation.interactor import Interactor
 from src.presentation.api.authenticator import ApiAuthenticator
 from src.presentation.api.auth.routes import auth_router
 from src.main.ioc import IoC
@@ -20,7 +20,6 @@ def setup_providers(app: FastAPI, auth_config: AuthConfig) -> None:
         db_gateway=psycopg_db_gateway,
         password_encoder=password_encoder
     )
-
     authenticator = ApiAuthenticatorImpl(
         secret=auth_config.secret,
         access_token_expires=auth_config.access_token_expires,
@@ -28,7 +27,7 @@ def setup_providers(app: FastAPI, auth_config: AuthConfig) -> None:
         algorithm=auth_config.algorithm
     )
 
-    app.dependency_overrides[InteractorFactory] = lambda: ioc
+    app.dependency_overrides[Interactor] = lambda: ioc
     app.dependency_overrides[ApiAuthenticator] = lambda: authenticator
 
 
