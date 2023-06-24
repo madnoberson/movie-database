@@ -13,6 +13,13 @@ from src.application.queries.login.query import (
 from src.application.queries.login.handler import (
     QueryHanlderResult as LoginQueryHandlerResult
 )
+from src.application.queries.username_existence.query import (
+    CheckUsernameExistenceQuery
+)
+from src.application.queries.username_existence.handler import (
+    QueryHandlerResult as CheckUsernameExistenceQueryHandlerResult
+)
+
 
 
 @dataclass(frozen=True, slots=True)
@@ -30,5 +37,12 @@ class Interactor(ABC):
         self,
         query: LoginQuery
     ) -> LoginQueryHandlerResult:
+        raise NotImplementedError
+    
+    @abstractmethod
+    def handle_check_username_existence_query(
+        self,
+        query: CheckUsernameExistenceQuery
+    ) -> CheckUsernameExistenceQueryHandlerResult:
         raise NotImplementedError
 

@@ -8,18 +8,25 @@ from src.application.common.passoword_encoder import (
     PasswordEncoder
 )
 from src.application.commands.register.handler import (
-    RegisterCommandHandler
+    RegisterCommandHandler,
+    CommandHandlerResult as RegisterCommandHandlerResult
 )
 from src.application.commands.register.command import (
-    RegisterCommand,
-    RegisterCommandResult
+    RegisterCommand
 )
 from src.application.queries.login.handler import (
-    LoginQueryHandler
+    LoginQueryHandler,
+    QueryHanlderResult as LoginQueryHandlerResult
 )
 from src.application.queries.login.query import (
-    LoginQuery,
-    LoginQueryResult
+    LoginQuery
+)
+from src.application.queries.username_existence.query import (
+    CheckUsernameExistenceQuery
+)
+from src.application.queries.username_existence.handler import (
+    CheckUsernameExistenceQueryHandler,
+    QueryHandlerResult as CheckUsernameExistenceQueryHandlerResult
 )
 
 
@@ -32,7 +39,7 @@ class IoC(Interactor):
     def handle_register_command(
         self,
         command: RegisterCommand
-    ) -> RegisterCommandResult:
+    ) -> RegisterCommandHandlerResult:
         handler = RegisterCommandHandler(
             db_gateway=self.db_gateway,
             password_encoder=self.password_encoder
@@ -42,10 +49,19 @@ class IoC(Interactor):
     def handle_login_query(
         self,
         query: LoginQuery
-    ) -> LoginQueryResult:
+    ) -> LoginQueryHandlerResult:
         handler = LoginQueryHandler(
             db_gateway=self.db_gateway,
             password_encoder=self.password_encoder
         )
         return handler(query)
+
+    def handle_check_username_existence_query(
+        self,
+        query: CheckUsernameExistenceQuery
+    ) -> CheckUsernameExistenceQueryHandlerResult:
+        hanlder = CheckUsernameExistenceQueryHandler(
+            db_gateway=self.db_gateway
+        )
+        return hanlder(query)
     
