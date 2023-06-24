@@ -1,12 +1,12 @@
 from typing import Protocol
 
 from src.application.common.database_interfaces.user import (
-    SupportsGetUserByUsername
+    SupportsCheckUsernameExistence
 )
 
 
-class LoginQueryDBGateway(
-    SupportsGetUserByUsername,
+class UsernameExistenceDBGateway(
+    SupportsCheckUsernameExistence,
     Protocol
 ):
     ...

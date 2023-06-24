@@ -4,7 +4,8 @@ from .atomic import SupportsAtomic
 from .user import (
     SupportsSaveUser,
     SupportsGetUserById,
-    SupportsGetUserByUsername
+    SupportsGetUserByUsername,
+    SupportsCheckUsernameExistence
 )
 
 
@@ -13,6 +14,7 @@ class DatabaseGateway(
     SupportsSaveUser,
     SupportsGetUserById,
     SupportsGetUserByUsername,
+    SupportsCheckUsernameExistence,
     Protocol
 ):
     ...

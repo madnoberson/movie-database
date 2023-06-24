@@ -138,4 +138,43 @@ class TestPsycopgDatabaseGateway:
 
         assert fetched_user == None
     
+    @pytest.mark.usefixtures("refresh_database")
+    def test_check_username_existence_should_return_true_when_username_exists(
+        self,
+        psycopg_conn: PsycopgConnection
+    ):
+        gateway = PsycopgDatabaseGateway(psycopg_conn)
+
+        user = User(
+            id=UserId(uuid4()),
+            username=Username("johndoe"),
+            password="encodedpassword",
+            created_at=datetime.utcnow()
+        )
+        save_user_to_db(
+            psycopg_conn=psycopg_conn,
+            user=user
+        )
+
+        username_exists = gateway.check_username_existence(
+            username=user.username
+        )
+
+        assert username_exists
+    
+    @pytest.mark.usefixtures("refresh_database")
+    def test_check_username_existence_should_return_false_when_username_does_not_exist(
+        self,
+        psycopg_conn: PsycopgConnection
+    ):
+        gateway = PsycopgDatabaseGateway(psycopg_conn)
+
+        username_exists = gateway.check_username_existence(
+            username=Username("johndoe")
+        )
+
+        assert not username_exists
+
+
+
     

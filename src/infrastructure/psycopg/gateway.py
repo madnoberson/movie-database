@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from psycopg2._psycopg import connection
 
-from src.application.common.database_intefaces.gateway import (
+from src.application.common.database_interfaces.gateway import (
     DatabaseGateway
 )
 from src.domain.models.user.model import User
@@ -104,6 +104,23 @@ class PsycopgDatabaseGateway(DatabaseGateway):
             password=user_data[2],
             created_at=user_data[3]
         )
+    
+    def check_username_existence(
+        self,
+        username: Username
+    ) -> bool:
+        with self.psycopg_conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT 1
+                FROM users
+                WHERE users.username = %s
+                """,
+                (username.value,)
+            )
+            username_exists = cur.fetchone()
+        
+        return username_exists
     
     def commit(self) -> None:
         self.psycopg_conn.commit()

@@ -1,29 +1,67 @@
-from contextlib import contextmanager
 from dataclasses import dataclass
 
-from src.presentation.interactor_factory import InteractorFactory
-from src.application.common.database_intefaces.gateway import DatabaseGateway
-from src.application.common.passoword_encoder import PasswordEncoder
-from src.application.commands.register.handler import RegisterCommandHandler
-from src.application.queries.login.handler import LoginQueryHandler
+from src.presentation.interactor import Interactor
+from src.application.common.database_interfaces.gateway import (
+    DatabaseGateway
+)
+from src.application.common.passoword_encoder import (
+    PasswordEncoder
+)
+from src.application.commands.register.handler import (
+    RegisterCommandHandler,
+    CommandHandlerResult as RegisterCommandHandlerResult
+)
+from src.application.commands.register.command import (
+    RegisterCommand
+)
+from src.application.queries.login.handler import (
+    LoginQueryHandler,
+    QueryHanlderResult as LoginQueryHandlerResult
+)
+from src.application.queries.login.query import (
+    LoginQuery
+)
+from src.application.queries.username_existence.query import (
+    CheckUsernameExistenceQuery
+)
+from src.application.queries.username_existence.handler import (
+    CheckUsernameExistenceQueryHandler,
+    QueryHandlerResult as CheckUsernameExistenceQueryHandlerResult
+)
 
 
 @dataclass(frozen=True, slots=True)
-class IoC(InteractorFactory):
+class IoC(Interactor):
 
     db_gateway: DatabaseGateway
     password_encoder: PasswordEncoder
 
-    @contextmanager
-    def register(self) -> RegisterCommandHandler:
-        yield RegisterCommandHandler(
+    def handle_register_command(
+        self,
+        command: RegisterCommand
+    ) -> RegisterCommandHandlerResult:
+        handler = RegisterCommandHandler(
             db_gateway=self.db_gateway,
             password_encoder=self.password_encoder
         )
+        return handler(command)
     
-    @contextmanager
-    def login(self) -> LoginQueryHandler:
-        yield LoginQueryHandler(
+    def handle_login_query(
+        self,
+        query: LoginQuery
+    ) -> LoginQueryHandlerResult:
+        handler = LoginQueryHandler(
             db_gateway=self.db_gateway,
             password_encoder=self.password_encoder
         )
+        return handler(query)
+
+    def handle_check_username_existence_query(
+        self,
+        query: CheckUsernameExistenceQuery
+    ) -> CheckUsernameExistenceQueryHandlerResult:
+        hanlder = CheckUsernameExistenceQueryHandler(
+            db_gateway=self.db_gateway
+        )
+        return hanlder(query)
+    
