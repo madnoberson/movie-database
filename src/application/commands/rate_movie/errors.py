@@ -3,7 +3,7 @@ from uuid import UUID
 
 
 @dataclass(frozen=True, slots=True)
-class UserMovieRatingAlreadyExists(Exception):
+class UserMovieRatingAlreadyExistsError(Exception):
 
     movie_id: UUID
     

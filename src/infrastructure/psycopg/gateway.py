@@ -292,7 +292,7 @@ class PsycopgDatabaseGateway(DatabaseGateway):
 
         return UserMovieRating(
             user_id=UserId(user_movie_rating_data[0]),
-            movie_id=UserMovieRating(user_movie_rating_data[1]),
+            movie_id=MovieId(user_movie_rating_data[1]),
             rating=user_movie_rating_data[2],
             created_at=user_movie_rating_data[3],
             updated_at=user_movie_rating_data[4]

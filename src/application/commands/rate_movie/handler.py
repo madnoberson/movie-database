@@ -3,10 +3,10 @@ from datetime import datetime
 
 from src.application.common.result import Result
 from src.application.common.errors.user import (
-    UserDoesNotExist
+    UserDoesNotExistError
 )
 from src.application.common.errors.movie import (
-    MovieDoesNotExist
+    MovieDoesNotExistError
 )
 from src.domain.models.user_movie_rating.model import (
     UserMovieRating
@@ -18,14 +18,14 @@ from .command import (
     RateMovieCommandResult
 )
 from .interfaces import RateMovieDBGateway
-from .errors import UserMovieRatingAlreadyExists
+from .errors import UserMovieRatingAlreadyExistsError
 
 
 CommandHandlerResult = (
     Result[RateMovieCommandResult, None],
-    Result[None, UserDoesNotExist],
-    Result[None, MovieDoesNotExist],
-    Result[None, UserMovieRatingAlreadyExists],
+    Result[None, UserDoesNotExistError],
+    Result[None, MovieDoesNotExistError],
+    Result[None, UserMovieRatingAlreadyExistsError],
 )
     
 
@@ -43,7 +43,7 @@ class RateMovieCommandHandler:
             user_id=user_id
         )
         if not user_exists:
-            error = UserDoesNotExist(user_id.value)
+            error = UserDoesNotExistError(user_id.value)
             return Result(value=None, error=error)
         
         movie_id = MovieId(command.movie_id)
@@ -51,7 +51,7 @@ class RateMovieCommandHandler:
             movie_id=movie_id
         )
         if movie is None:
-            error = MovieDoesNotExist(movie_id.value)
+            error = MovieDoesNotExistError(movie_id.value)
             return Result(value=None, error=error)
 
         umr_exists = self.db_gateway.check_user_movie_rating_existence(
@@ -59,7 +59,7 @@ class RateMovieCommandHandler:
             movie_id=movie_id
         )
         if umr_exists:
-            error = UserMovieRatingAlreadyExists(movie_id.value)
+            error = UserMovieRatingAlreadyExistsError(movie_id.value)
             return Result(value=None, error=error)
         
         user_movie_rating = UserMovieRating.create(
@@ -77,6 +77,7 @@ class RateMovieCommandHandler:
 
         command_result = RateMovieCommandResult(
             new_movie_rating=movie.rating,
+            new_movie_rating_count=movie.rating_count,
             user_rating=command.rating,
             user_rating_created_at=user_movie_rating.created_at
         )

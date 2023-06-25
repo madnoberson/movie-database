@@ -3,6 +3,6 @@ from uuid import UUID
 
 
 @dataclass(frozen=True, slots=True)
-class UserDoesNotExist(Exception):
+class UserDoesNotExistError(Exception):
     
     user_id: UUID

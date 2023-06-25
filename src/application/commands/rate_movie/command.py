@@ -15,5 +15,6 @@ class RateMovieCommand:
 class RateMovieCommandResult:
 
     new_movie_rating: float
+    new_movie_rating_count: int
     user_rating: float
     user_rating_created_at: datetime

@@ -3,6 +3,6 @@ from uuid import UUID
 
 
 @dataclass(frozen=True, slots=True)
-class MovieDoesNotExist(Exception):
+class MovieDoesNotExistError(Exception):
 
     movie_id: UUID
