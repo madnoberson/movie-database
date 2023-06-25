@@ -5,6 +5,10 @@ from psycopg2._psycopg import connection
 from src.application.common.database_interfaces.gateway import (
     DatabaseGateway
 )
+from src.domain.models.movie.model import Movie
+from src.domain.models.movie.value_objects import (
+    MovieId, MovieTitle
+)
 from src.domain.models.user.model import User
 from src.domain.models.user.value_objects import (
     UserId, Username
@@ -121,6 +125,66 @@ class PsycopgDatabaseGateway(DatabaseGateway):
             username_exists = cur.fetchone()
         
         return username_exists
+    
+    def save_movie(self, movie: Movie) -> None:
+        with self.psycopg_conn.cursor() as cur:
+            cur.execute(
+                """
+                INSERT INTO movies
+                (
+                    id,
+                    title,
+                    release_date,
+                    rating, 
+                    rating_count
+                )
+                VALUES
+                (
+                    %s, %s, %s, %s, %s
+                )
+                """,
+                (
+                    movie.id.value,
+                    movie.title.value,
+                    movie.release_date,
+                    movie.rating,
+                    movie.rating_count
+                )
+            )
+
+    def get_movie_by_id(
+        self,
+        movie_id: MovieId
+    ) -> Movie | None:
+        with self.psycopg_conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT
+                    movies.id,
+                    movies.title,
+                    movies.release_date,
+                    movies.rating,
+                    movies.rating_count
+                FROM
+                    movies
+                WHERE
+                    movies.id = %s
+                LIMIT 1
+                """,
+                (movie_id.value,)
+            )
+            movie_data = cur.fetchone()
+        
+        if not movie_data:
+            return None
+        
+        return Movie(
+            id=MovieId(movie_data[0]),
+            title=MovieTitle(movie_data[1]),
+            release_date=movie_data[2],
+            rating=movie_data[3],
+            rating_count=movie_data[4]
+        )
     
     def commit(self) -> None:
         self.psycopg_conn.commit()

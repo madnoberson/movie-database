@@ -5,7 +5,11 @@ from .user import (
     SupportsSaveUser,
     SupportsGetUserById,
     SupportsGetUserByUsername,
-    SupportsCheckUsernameExistence
+    SupportsCheckUsernameExistence,
+)
+from .movie import (
+    SupportsSaveMovie,
+    SupportsGetMovieById
 )
 
 
@@ -15,6 +19,8 @@ class DatabaseGateway(
     SupportsGetUserById,
     SupportsGetUserByUsername,
     SupportsCheckUsernameExistence,
+    SupportsSaveMovie,
+    SupportsGetMovieById,
     Protocol
 ):
     ...

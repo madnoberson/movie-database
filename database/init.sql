@@ -7,4 +7,12 @@ CREATE TABLE users (
     created_at TIMESTAMP NOT NULL
 );
 
+CREATE TABLE movies (
+    id UUID NOT NULL,
+    title VARCHAR(128) NOT NULL,
+    release_date DATE NOT NULL,
+    rating REAL NOT NULL,
+    rating_count INTEGER NOT NULL
+);
+
 COMMIT;

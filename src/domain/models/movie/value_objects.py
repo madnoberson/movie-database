@@ -12,11 +12,3 @@ class MovieId:
 class MovieTitle:
 
     value: str
-
-
-@dataclass(frozen=True, slots=True)
-class MovieRating:
-
-    rating: int
-    rating_count: int
-    
