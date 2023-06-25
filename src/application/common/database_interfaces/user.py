@@ -31,3 +31,11 @@ class SupportsCheckUsernameExistence(Protocol):
     @abstractmethod
     def check_username_existence(self, username: Username) -> bool:
         raise NotImplementedError
+
+
+class SupportsCheckUserIdExistence(Protocol):
+
+    @abstractmethod
+    def check_user_id_existence(self, user_id: UserId) -> bool:
+        raise NotImplementedError
+    
