@@ -17,4 +17,11 @@ class SupportsSaveMovie(Protocol):
     @abstractmethod
     def save_movie(self, movie: Movie) -> None:
         raise NotImplementedError
+
+
+class SupportsUpdateMovie(Protocol):
+
+    @abstractmethod
+    def update_movie(self, movie: Movie) -> None:
+        raise NotImplementedError
     

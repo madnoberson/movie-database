@@ -37,7 +37,9 @@ def refresh_database(psycopg_conn: PsycopgConnection) -> None:
         cur.execute(
             """
             TRUNCATE
-                users
+                users,
+                movies,
+                user_movie_ratings
             RESTART IDENTITY
             CASCADE
             """

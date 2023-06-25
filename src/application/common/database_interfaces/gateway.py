@@ -6,10 +6,17 @@ from .user import (
     SupportsGetUserById,
     SupportsGetUserByUsername,
     SupportsCheckUsernameExistence,
+    SupportsCheckUserIdExistence
 )
 from .movie import (
     SupportsSaveMovie,
-    SupportsGetMovieById
+    SupportsGetMovieById,
+    SupportsUpdateMovie
+)
+from .user_movie_rating import (
+    SupportsSaveUserMovieRating,
+    SupportsGetUserMovieRatingByUserIdAndMovieId,
+    SupportsCheckUserMovieRatingExistence
 )
 
 
@@ -19,8 +26,13 @@ class DatabaseGateway(
     SupportsGetUserById,
     SupportsGetUserByUsername,
     SupportsCheckUsernameExistence,
+    SupportsCheckUserIdExistence,
     SupportsSaveMovie,
     SupportsGetMovieById,
+    SupportsUpdateMovie,
+    SupportsSaveUserMovieRating,
+    SupportsGetUserMovieRatingByUserIdAndMovieId,
+    SupportsCheckUserMovieRatingExistence,
     Protocol
 ):
     ...
