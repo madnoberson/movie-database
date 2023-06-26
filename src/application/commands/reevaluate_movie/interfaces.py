@@ -11,18 +11,18 @@ from src.application.common.database_interfaces.movie import (
     SupportsUpdateMovie
 )
 from src.application.common.database_interfaces.user_movie_rating import (
-    SupportsSaveUserMovieRating,
-    SupportsCheckUserMovieRatingExistence
+    SupportsGetUserMovieRatingByUserIdAndMovieId,
+    SupportsUpdateUserMovieRating
 )
 
 
-class RateMovieCommandDBGateway(
+class ReevaluateMovieCommandDBGateway(
     SupportsAtomic,
     SupportsCheckUserIdExistence,
     SupportsGetMovieById,
     SupportsUpdateMovie,
-    SupportsSaveUserMovieRating,
-    SupportsCheckUserMovieRatingExistence,
+    SupportsGetUserMovieRatingByUserIdAndMovieId,
+    SupportsUpdateUserMovieRating,
     Protocol
 ):
     ...

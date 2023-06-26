@@ -49,3 +49,29 @@ class TestUserMovieRating:
         assert user_movie_rating.rating == rating
         assert user_movie_rating.created_at == created_at
         assert user_movie_rating.updated_at == updated_at
+    
+    def test_update_rating_should_update_rating(self):
+        user_id = UserId(uuid4())
+        movie_id = MovieId(uuid4())
+        rating = 9
+        created_at = datetime.utcnow()
+        updated_at = None
+
+        user_movie_rating = UserMovieRating(
+            user_id=user_id,
+            movie_id=movie_id,
+            rating=rating,
+            created_at=created_at,
+            updated_at=updated_at
+        )
+
+        new_rating = 10
+        updated_at = datetime.utcnow()
+
+        user_movie_rating.update(
+            rating=new_rating,
+            updated_at=updated_at
+        )
+
+        assert user_movie_rating.rating == new_rating
+        assert user_movie_rating.updated_at == updated_at

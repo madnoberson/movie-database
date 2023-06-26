@@ -32,7 +32,7 @@ class Movie:
             rating_count=0
         )
     
-    def add_rating(self, rating: int) -> None:
+    def add_rating(self, rating: int | float) -> None:
         if not self.rating:
             self.rating = rating
             self.rating_count = 1
@@ -43,8 +43,8 @@ class Movie:
         )
         self.rating_count += 1
         self.rating = new_rating / self.rating_count
-    
-    def remove_rating(self, rating: int) -> None:
+
+    def remove_rating(self, rating: int | float) -> None:
         if not self.rating:
             return
         
@@ -53,3 +53,4 @@ class Movie:
         )
         self.rating_count -= 1
         self.rating = new_rating / self.rating_count
+    
