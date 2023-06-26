@@ -22,10 +22,10 @@ from .errors import UserMovieRatingAlreadyExistsError
 
 
 CommandHandlerResult = (
-    Result[RateMovieCommandResult, None],
-    Result[None, UserDoesNotExistError],
-    Result[None, MovieDoesNotExistError],
-    Result[None, UserMovieRatingAlreadyExistsError],
+    Result[RateMovieCommandResult, None] |
+    Result[None, UserDoesNotExistError] |
+    Result[None, MovieDoesNotExistError] |
+    Result[None, UserMovieRatingAlreadyExistsError]
 )
     
 

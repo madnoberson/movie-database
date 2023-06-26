@@ -2,6 +2,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from uuid import uuid4
 
+import pytest
+
 from src.application.common.result import Result
 from src.domain.models.user.model import User
 from src.domain.models.user.value_objects import (
@@ -38,6 +40,37 @@ class FakeLoginQueryDBGateway(LoginQueryDBGateway):
     ) -> User | None:
         return self.users.get(username)
 
+
+class TestLoginQuery:
+
+    def test_valid_args(self):
+        try:
+            LoginQuery(
+                username="johndoe",
+                password="password"
+            )
+        except ValueError:
+            pytest.fail()
+    
+    def test_invalid_args(self):
+        with pytest.raises(ValueError):
+            LoginQuery(
+                username="",
+                password="password"
+            )
+            LoginQuery(
+                username=1,
+                password="password"
+            )
+            LoginQuery(
+                username="johndoe",
+                password="short"
+            )
+            LoginQuery(
+                username="johnoe",
+                password=1
+            )
+            
 
 class TestLoginQueryHandler:
 

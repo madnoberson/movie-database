@@ -1,6 +1,8 @@
 from datetime import date
 from uuid import UUID
 
+import pytest
+
 from src.application.commands.add_movie.command import (
     AddMovieCommand,
     AddMovieCommandResult
@@ -29,6 +31,29 @@ class AddMovieCommandDBGatewayMock(
 
 
 class TestAddMovieCommand:
+
+    def test_valid_args(self):
+        try:
+            AddMovieCommand(
+                title="1917",
+                release_date=date(2019, 1, 30)
+            )
+        except ValueError:
+            pytest.fail()
+    
+    def test_invalid_args(self):
+        with pytest.raises(ValueError):
+            AddMovieCommand(
+                title="",
+                release_date="01.01.2001"
+            )
+            AddMovieCommand(
+                title=1917,
+                release_date=date(2019, 1, 30)
+            )
+
+
+class TestAddMovieCommandHandler:
     
     def test_handler_should_return_movie_id(self):
         handler = AddMovieCommandHandler(

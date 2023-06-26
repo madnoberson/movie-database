@@ -2,6 +2,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from uuid import uuid4
 
+import pytest
+
 from src.domain.models.user.model import User
 from src.domain.models.user.value_objects import (
     UserId, Username
@@ -33,6 +35,26 @@ class FakeUsernameExistenceDBGateway(
         username: Username
     ) -> bool:
         return not self.users.get(username) is None
+
+
+class TestCheckUsernameExistenceQuery:
+
+    def test_valid_args(self):
+        try:
+            CheckUsernameExistenceQuery(
+                username="johndoe"
+            )
+        except ValueError:
+            pytest.fail()
+    
+    def test_invalid_args(self):
+        with pytest.raises(ValueError):
+            CheckUsernameExistenceQuery(
+                username=""
+            )
+            CheckUsernameExistenceQuery(
+                username=1
+            )
 
 
 class TestCheckUsernameExistenceQueryHandler:

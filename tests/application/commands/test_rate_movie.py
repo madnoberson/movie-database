@@ -2,6 +2,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, date
 from uuid import uuid4
 
+import pytest
+
 from src.application.common.result import Result
 from src.domain.models.user.model import User
 from src.domain.models.user.value_objects import (
@@ -80,6 +82,47 @@ class FakeRateMovieDBGateway(RateMovieDBGateway):
 
 
 class TestRateMovieCommand:
+
+    def test_valid_args(self):
+        try:
+            RateMovieCommand(
+                user_id=uuid4(),
+                movie_id=uuid4(),
+                rating=10
+            )
+            RateMovieCommand(
+                user_id=uuid4(),
+                movie_id=uuid4(),
+                rating=5.5
+            )
+        except ValueError:
+            pytest.fail()
+    
+    def test_invalid_args(self):
+        with pytest.raises(ValueError):
+            RateMovieCommand(
+                user_id=1,
+                movie_id=uuid4(),
+                rating=10
+            )
+            RateMovieCommand(
+                user_id=uuid4(),
+                movie_id=1,
+                rating=10
+            )
+            RateMovieCommand(
+                user_id=uuid4(),
+                movie_id=uuid4(),
+                rating=0
+            )
+            RateMovieCommand(
+                user_id=uuid4(),
+                movie_id=uuid4(),
+                rating=5.6
+            )
+
+
+class TestRateMovieCommandHandler:
 
     def test_handler_should_return_normal_result(self):
         user = User(

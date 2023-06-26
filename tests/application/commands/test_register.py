@@ -2,6 +2,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from uuid import uuid4, UUID
 
+import pytest
+
 from src.application.common.result import Result
 from src.domain.models.user.model import User
 from src.domain.models.user.value_objects import (
@@ -52,6 +54,37 @@ class FakeRegisterCommandDBGateway(
     
 
 class TestRegisterCommand:
+
+    def test_valid_args(self):
+        try:
+            RegisterCommand(
+                username="johndoe",
+                password="password"
+            )
+        except ValueError:
+            pytest.fail()
+    
+    def test_invalid_args(self):
+        with pytest.raises(ValueError):
+            RegisterCommand(
+                username="",
+                password="password"
+            )
+            RegisterCommand(
+                username=1,
+                password="password"
+            )
+            RegisterCommand(
+                username="johndoe",
+                password="short"
+            )
+            RegisterCommand(
+                username="johndoe",
+                password=1
+            )
+
+
+class TestRegisterCommandHandler:
     
     def test_handler_should_return_user_id(self):
         handler = RegisterCommandHandler(
