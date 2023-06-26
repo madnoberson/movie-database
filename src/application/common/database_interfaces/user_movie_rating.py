@@ -14,6 +14,16 @@ class SupportsSaveUserMovieRating(Protocol):
         user_movie_rating: UserMovieRating
     ) -> None:
         raise NotImplementedError
+    
+
+class SupportsUpdateUserMovieRating(Protocol):
+
+    @abstractmethod
+    def update_user_movie_rating(
+        self,
+        user_movie_rating: UserMovieRating
+    ) -> None:
+        raise NotImplementedError
 
 
 class SupportsGetUserMovieRatingByUserIdAndMovieId(Protocol):

@@ -30,7 +30,7 @@ from src.application.commands.rate_movie.handler import (
     RateMovieCommandHandler
 )
 from src.application.commands.rate_movie.interfaces import (
-    RateMovieDBGateway
+    RateMovieCommandDBGateway
 )
 from src.application.commands.rate_movie.errors import (
     UserMovieRatingAlreadyExistsError
@@ -38,7 +38,7 @@ from src.application.commands.rate_movie.errors import (
 
 
 @dataclass(frozen=True, slots=True)
-class FakeRateMovieDBGateway(RateMovieDBGateway):
+class FakeRateMovieCommandDBGateway(RateMovieCommandDBGateway):
 
     users: dict[UserId, User] = field(
         default_factory=dict
@@ -142,7 +142,7 @@ class TestRateMovieCommandHandler:
         )
         movies = {movie.id: movie}
         
-        db_gateway = FakeRateMovieDBGateway(
+        db_gateway = FakeRateMovieCommandDBGateway(
             users=users,
             movies=movies
         )
@@ -163,7 +163,7 @@ class TestRateMovieCommandHandler:
     
     def test_handler_should_return_error_when_user_does_not_exist(self):
         handler = RateMovieCommandHandler(
-            db_gateway=FakeRateMovieDBGateway()
+            db_gateway=FakeRateMovieCommandDBGateway()
         )
         
         user_id = UserId(uuid4())
@@ -187,7 +187,7 @@ class TestRateMovieCommandHandler:
         users = {user.id: user}
 
         handler = RateMovieCommandHandler(
-            db_gateway=FakeRateMovieDBGateway(users)
+            db_gateway=FakeRateMovieCommandDBGateway(users)
         )
 
         movie_id = MovieId(uuid4())
@@ -228,7 +228,7 @@ class TestRateMovieCommandHandler:
         )
         user_movie_ratings = {(umr.user_id, umr.movie_id): umr}
 
-        db_gateway = FakeRateMovieDBGateway(
+        db_gateway = FakeRateMovieCommandDBGateway(
             users=users,
             movies=movies,
             user_movie_ratings=user_movie_ratings

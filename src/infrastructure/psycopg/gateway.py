@@ -257,6 +257,31 @@ class PsycopgDatabaseGateway(DatabaseGateway):
                     user_movie_rating.updated_at
                 )
             )
+    
+    def update_user_movie_rating(
+        self,
+        user_movie_rating: UserMovieRating
+    ) -> None:
+        with self.psycopg_conn.cursor() as cur:
+            cur.execute(
+                """
+                UPDATE
+                    user_movie_ratings
+                SET
+                    rating = %s,
+                    updated_at = %s
+                WHERE
+                    user_movie_ratings.user_id = %s
+                AND
+                    user_movie_ratings.movie_id = %s
+                """,
+                (
+                    user_movie_rating.rating,
+                    user_movie_rating.updated_at,
+                    user_movie_rating.user_id.value,
+                    user_movie_rating.movie_id.value
+                )
+            )
 
     def get_user_movie_rating_by_user_id_and_movie_id(
         self,

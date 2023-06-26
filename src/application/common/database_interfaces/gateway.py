@@ -16,7 +16,8 @@ from .movie import (
 from .user_movie_rating import (
     SupportsSaveUserMovieRating,
     SupportsGetUserMovieRatingByUserIdAndMovieId,
-    SupportsCheckUserMovieRatingExistence
+    SupportsCheckUserMovieRatingExistence,
+    SupportsUpdateUserMovieRating
 )
 
 
@@ -31,6 +32,7 @@ class DatabaseGateway(
     SupportsGetMovieById,
     SupportsUpdateMovie,
     SupportsSaveUserMovieRating,
+    SupportsUpdateUserMovieRating,
     SupportsGetUserMovieRatingByUserIdAndMovieId,
     SupportsCheckUserMovieRatingExistence,
     Protocol
