@@ -348,6 +348,24 @@ class PsycopgDatabaseGateway(DatabaseGateway):
             user_movie_rating_exists = cur.fetchone()
         
         return not user_movie_rating_exists is None
+
+    def remove_user_movie_rating_by_user_id_and_movie_id(
+        self,
+        user_id: UserId,
+        movie_id: MovieId
+    ) -> None:
+        with self.psycopg_conn.cursor() as cur:
+            cur.execute(
+                """
+                DELETE FROM
+                    user_movie_ratings
+                WHERE
+                    user_movie_ratings.user_id = %s
+                AND
+                    user_movie_ratings.movie_id = %s
+                """,
+                (user_id.value, movie_id.value)
+            )
     
     def commit(self) -> None:
         self.psycopg_conn.commit()

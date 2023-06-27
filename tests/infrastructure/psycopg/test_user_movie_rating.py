@@ -267,3 +267,58 @@ class TestUserMovieRatingProtocolsImplementations:
 
         assert fetched_user_movie_rating == user_movie_rating
     
+    @pytest.mark.usefixtures("refresh_database")
+    def test_remove_umr_by_user_id_and_movie_id_should_remove_umr(
+        self,
+        psycopg_conn: PsycopgConnection
+    ):
+        gateway = PsycopgDatabaseGateway(psycopg_conn)
+
+        user = User(
+            id=UserId(uuid4()),
+            username=Username("johndoe"),
+            password="encodedpassword",
+            created_at=datetime.utcnow()
+        )
+        save_user_to_db(
+            psycopg_conn=psycopg_conn,
+            user=user
+        )
+
+        movie = Movie(
+            id=MovieId(uuid4()),
+            title=MovieTitle("There will be blood"),
+            release_date=date.today(),
+            rating=0,
+            rating_count=0
+        )
+        save_movie_to_db(
+            psycopg_conn=psycopg_conn,
+            movie=movie
+        )
+
+        user_movie_rating = UserMovieRating(
+            user_id=user.id,
+            movie_id=movie.id,
+            rating=9,
+            created_at=datetime.utcnow(),
+            updated_at=None
+        )
+        save_user_movie_rating_to_db(
+            psycopg_conn=psycopg_conn,
+            user_movie_rating=user_movie_rating
+        )
+
+        gateway.remove_user_movie_rating_by_user_id_and_movie_id(
+            user_id=user.id,
+            movie_id=movie.id
+        )
+        gateway.commit()
+
+        fetched_umr = get_user_movie_rating_from_db(
+            psycopg_conn=psycopg_conn,
+            user_id=user.id,
+            movie_id=movie.id
+        )
+
+        assert fetched_umr == None

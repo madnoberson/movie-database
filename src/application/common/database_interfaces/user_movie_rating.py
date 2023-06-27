@@ -46,3 +46,15 @@ class SupportsCheckUserMovieRatingExistence(Protocol):
         movie_id: MovieId
     ) -> bool:
         raise NotImplementedError
+
+
+class SupportsRemoveUserMovieRatingByUserIdAndMovieId(Protocol):
+
+    @abstractmethod
+    def remove_user_movie_rating_by_user_id_and_movie_id(
+        self,
+        user_id: UserId,
+        movie_id: MovieId
+    ) -> None:
+        raise NotImplementedError
+    
