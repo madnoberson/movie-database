@@ -10,9 +10,9 @@ def create_server(
 ) -> Server:
     config = Config(
         app=app,
-        host=uvicorn_config.host,
-        port=uvicorn_config.port,
-        loop=uvicorn_config.loop
+        host=uvicorn_config.uvicorn_host,
+        port=uvicorn_config.uvicorn_port,
+        loop=uvicorn_config.uvicorn_loop
     )
     server = Server(config)
 

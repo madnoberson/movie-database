@@ -8,11 +8,15 @@ from src.infrastructure.psycopg.psycopg import get_psycopg2_connection
 from src.infrastructure.psycopg.gateway import PsycopgDatabaseGateway
 from src.infrastructure.password_encoder import HashlibPasswordEncoder
 from src.infrastructure.auth.api import ApiAuthenticatorImpl
-from .config import Config, AuthConfig
+from .config import Config, AuthConfig, PostgresConfig
 
 
-def setup_providers(app: FastAPI, auth_config: AuthConfig) -> None:
-    psycopg_conn = get_psycopg2_connection()
+def setup_providers(
+    app: FastAPI,
+    auth_config: AuthConfig,
+    postgres_config: PostgresConfig
+) -> None:
+    psycopg_conn = get_psycopg2_connection(postgres_config.dsn)
     psycopg_db_gateway = PsycopgDatabaseGateway(psycopg_conn)
     password_encoder = HashlibPasswordEncoder()
 
@@ -21,10 +25,10 @@ def setup_providers(app: FastAPI, auth_config: AuthConfig) -> None:
         password_encoder=password_encoder
     )
     authenticator = ApiAuthenticatorImpl(
-        secret=auth_config.secret,
-        access_token_expires=auth_config.access_token_expires,
-        refresh_token_expires=auth_config.refresh_token_expires,
-        algorithm=auth_config.algorithm
+        secret=auth_config.auth_secret,
+        access_token_expires=auth_config.auth_access_token_expires,
+        refresh_token_expires=auth_config.auth_refresh_token_expires,
+        algorithm=auth_config.auth_algorithm
     )
 
     app.dependency_overrides[Interactor] = lambda: ioc
@@ -38,12 +42,16 @@ def setup_routers(app: FastAPI) -> None:
 
 def create_app(config: Config) -> FastAPI:
     app = FastAPI(
-        title=config.fastapi.title,
-        description=config.fastapi.description,
-        version=config.fastapi.version
+        title=config.fastapi.fastapi_title,
+        description=config.fastapi.fastapi_description,
+        version=config.fastapi.fastapi_version
     )
 
-    setup_providers(app, config.auth)
+    setup_providers(
+        app=app,
+        auth_config=config.auth,
+        postgres_config=config.postgres
+    )
     setup_routers(app)
 
     return app
