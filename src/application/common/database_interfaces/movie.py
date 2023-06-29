@@ -24,4 +24,18 @@ class SupportsUpdateMovie(Protocol):
     @abstractmethod
     def update_movie(self, movie: Movie) -> None:
         raise NotImplementedError
+
+
+class SupportsCheckMovieIdExistence(Protocol):
+
+    @abstractmethod
+    def check_movie_existence_by_id(self, movie_id: MovieId) -> bool:
+        raise NotImplementedError
+
+
+class SupportsRemoveMovie(Protocol):
+
+    @abstractmethod
+    def remove_movie_by_id(self, movie_id: MovieId) -> None:
+        raise NotImplementedError
     

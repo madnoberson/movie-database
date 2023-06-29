@@ -229,6 +229,31 @@ class PsycopgDatabaseGateway(DatabaseGateway):
                 )
             )
 
+    def remove_movie_by_id(self, movie_id: MovieId) -> None:
+        with self.psycopg_conn.cursor() as cur:
+            cur.execute(
+                """
+                DELETE FROM movies
+                WHERE movies.id = %s
+                """,
+                (movie_id.value,)
+            )
+
+    def check_movie_existence_by_id(self, movie_id: MovieId) -> bool:
+        with self.psycopg_conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT 1
+                FROM movies
+                WHERE movies.id = %s
+                LIMIT 1
+                """,
+                (movie_id.value,)
+            )
+            movie_id_exists = cur.fetchone()
+        
+        return not movie_id_exists is None
+
     def save_user_movie_rating(
         self,
         user_movie_rating: UserMovieRating

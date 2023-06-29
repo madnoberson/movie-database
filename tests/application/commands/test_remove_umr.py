@@ -80,7 +80,7 @@ class FakeRemoveUserMovieRatingCommandDBGateway(
         user_id: UserId,
         movie_id: MovieId
     ) -> None:
-        self.user_movie_ratings.pop((user_id, movie_id))
+        self.user_movie_ratings.pop((user_id, movie_id), None)
 
     def commit(self) -> None:
         ...
