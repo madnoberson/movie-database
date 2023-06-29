@@ -3,7 +3,7 @@ import typer
 from src.infrastructure.psycopg.psycopg import get_psycopg2_connection
 from src.infrastructure.psycopg.gateway import PsycopgDatabaseGateway
 from src.infrastructure.password_encoder import HashlibPasswordEncoder
-from src.main.ioc import IoC
+from src.main.cli
 from .config import PostgresConfig
 
 

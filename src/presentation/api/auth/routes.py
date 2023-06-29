@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from src.presentation.interactor import Interactor
+from src.presentation.api.interactor import ApiInteractor
 from src.presentation.api.authenticator import ApiAuthenticator
 from src.application.common.result import Result
 from src.application.commands.register.command import (
@@ -39,7 +39,7 @@ regitser_route_responses = {
     responses=regitser_route_responses
 )
 def register(
-    ioc: Annotated[Interactor, Depends()],
+    api_interactor: Annotated[ApiInteractor, Depends()],
     auth: Annotated[ApiAuthenticator, Depends()],
     data: RegisterSchema
 ):
@@ -47,7 +47,7 @@ def register(
         username=data.username,
         password=data.password
     )
-    result = ioc.handle_register_command(
+    result = api_interactor.handle_register_command(
         command=command
     )
 
@@ -83,7 +83,7 @@ login_route_responses = {
     responses=login_route_responses
 )
 def login(
-    ioc: Annotated[Interactor, Depends()],
+    api_interactor: Annotated[ApiInteractor, Depends()],
     auth: Annotated[ApiAuthenticator, Depends()],
     data: LoginSchema
 ):
@@ -91,7 +91,7 @@ def login(
         username=data.username,
         password=data.password
     )
-    result = ioc.handle_login_query(
+    result = api_interactor.handle_login_query(
         query=query
     )
 

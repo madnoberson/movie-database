@@ -1,14 +1,14 @@
 from fastapi import FastAPI
 
-from src.presentation.interactor import Interactor
+from src.presentation.api.interactor import ApiInteractor
 from src.presentation.api.authenticator import ApiAuthenticator
 from src.presentation.api.auth.routes import auth_router
-from src.main.ioc import IoC
 from src.infrastructure.psycopg.psycopg import get_psycopg2_connection
 from src.infrastructure.psycopg.gateway import PsycopgDatabaseGateway
 from src.infrastructure.password_encoder import HashlibPasswordEncoder
 from src.infrastructure.auth.api import ApiAuthenticatorImpl
 from .config import Config, AuthConfig, PostgresConfig
+from .interactor import ApiInteractorImpl
 
 
 def setup_providers(
@@ -20,7 +20,7 @@ def setup_providers(
     psycopg_db_gateway = PsycopgDatabaseGateway(psycopg_conn)
     password_encoder = HashlibPasswordEncoder()
 
-    ioc = IoC(
+    api_interactor = ApiInteractorImpl(
         db_gateway=psycopg_db_gateway,
         password_encoder=password_encoder
     )
@@ -31,7 +31,7 @@ def setup_providers(
         algorithm=auth_config.auth_algorithm
     )
 
-    app.dependency_overrides[Interactor] = lambda: ioc
+    app.dependency_overrides[ApiInteractor] = lambda: api_interactor
     app.dependency_overrides[ApiAuthenticator] = lambda: authenticator
 
 

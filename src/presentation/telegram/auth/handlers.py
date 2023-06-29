@@ -4,7 +4,7 @@ from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
 from src.application.common.result import Result
-from src.presentation.interactor import Interactor
+from src.presentation.telegram.interactor import TelegramInteractor
 from src.application.commands.register.command import (
     RegisterCommand,
     RegisterCommandResult
@@ -40,14 +40,14 @@ async def register_command(
 async def register_command_set_username(
     message: Message,
     state: FSMContext,
-    ioc: Interactor
+    tg_interactor: TelegramInteractor
 ) -> None:
     # TODO: Validate username
 
     query = CheckUsernameExistenceQuery(
         username=message.text
     )
-    result = ioc.handle_check_username_existence_query(
+    result = tg_interactor.handle_check_username_existence_query(
         query=query
     )
     
@@ -65,7 +65,7 @@ async def register_command_set_username(
 async def register_command_set_password(
     message: Message,
     state: FSMContext,
-    ioc: Interactor
+    tg_interactor: TelegramInteractor
 ) -> None:
     # TODO: Validate password
 
@@ -75,7 +75,7 @@ async def register_command_set_password(
         username=user_data["username"],
         password=message.text
     )
-    result = ioc.handle_register_command(command)
+    result = tg_interactor.handle_register_command(command)
 
     match result:
 

@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 
 from src.application.commands.register.command import (
     RegisterCommand
@@ -21,9 +20,7 @@ from src.application.queries.username_existence.handler import (
 )
 
 
-
-@dataclass(frozen=True, slots=True)
-class Interactor(ABC):
+class ApiInteractor(ABC):
     
     @abstractmethod
     def handle_register_command(

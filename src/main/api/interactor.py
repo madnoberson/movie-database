@@ -1,25 +1,25 @@
 from dataclasses import dataclass
 
-from src.presentation.interactor import Interactor
+from src.presentation.api.interactor import ApiInteractor
 from src.application.common.database_interfaces.gateway import (
     DatabaseGateway
 )
 from src.application.common.passoword_encoder import (
     PasswordEncoder
 )
+from src.application.commands.register.command import (
+    RegisterCommand
+)
 from src.application.commands.register.handler import (
     RegisterCommandHandler,
     CommandHandlerResult as RegisterCommandHandlerResult
 )
-from src.application.commands.register.command import (
-    RegisterCommand
+from src.application.queries.login.query import (
+    LoginQuery
 )
 from src.application.queries.login.handler import (
     LoginQueryHandler,
     QueryHanlderResult as LoginQueryHandlerResult
-)
-from src.application.queries.login.query import (
-    LoginQuery
 )
 from src.application.queries.username_existence.query import (
     CheckUsernameExistenceQuery
@@ -31,7 +31,7 @@ from src.application.queries.username_existence.handler import (
 
 
 @dataclass(frozen=True, slots=True)
-class IoC(Interactor):
+class ApiInteractorImpl(ApiInteractor):
 
     db_gateway: DatabaseGateway
     password_encoder: PasswordEncoder
@@ -45,7 +45,7 @@ class IoC(Interactor):
             password_encoder=self.password_encoder
         )
         return handler(command)
-    
+
     def handle_login_query(
         self,
         query: LoginQuery
