@@ -11,7 +11,9 @@ from .user import (
 from .movie import (
     SupportsSaveMovie,
     SupportsGetMovieById,
-    SupportsUpdateMovie
+    SupportsUpdateMovie,
+    SupportsCheckMovieIdExistence,
+    SupportsRemoveMovie
 )
 from .user_movie_rating import (
     SupportsSaveUserMovieRating,
@@ -24,19 +26,25 @@ from .user_movie_rating import (
 
 class DatabaseGateway(
     SupportsAtomic,
+
     SupportsSaveUser,
     SupportsGetUserById,
     SupportsGetUserByUsername,
     SupportsCheckUsernameExistence,
     SupportsCheckUserIdExistence,
+
     SupportsSaveMovie,
     SupportsGetMovieById,
     SupportsUpdateMovie,
+    SupportsRemoveMovie,
+    SupportsCheckMovieIdExistence,
+
     SupportsSaveUserMovieRating,
     SupportsUpdateUserMovieRating,
     SupportsGetUserMovieRatingByUserIdAndMovieId,
     SupportsCheckUserMovieRatingExistence,
     SupportsRemoveUserMovieRatingByUserIdAndMovieId,
+
     Protocol
 ):
     ...
