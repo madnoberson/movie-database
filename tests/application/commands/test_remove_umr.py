@@ -26,7 +26,8 @@ from src.domain.models.user_movie_rating.model import (
     UserMovieRating
 )
 from src.application.commands.remove_user_movie_rating.command import (
-    RemoveUserMovieRatingCommand
+    RemoveUserMovieRatingCommand,
+    RemoveUserMovieRatingCommandResult
 )
 from src.application.commands.remove_user_movie_rating.handler import (
     RemoveUserMovieRatingCommandHandler
@@ -130,8 +131,8 @@ class TestRemoveUserMovieCommandHandler:
             id=MovieId(uuid4()),
             title=MovieTitle("There will be blood"),
             release_date=date.today(),
-            rating=0,
-            rating_count=0
+            rating=10,
+            rating_count=1
         )
         movies = {movie.id: movie}
         
@@ -157,8 +158,9 @@ class TestRemoveUserMovieCommandHandler:
         )
         result = handler(command)
 
-        assert result == Result(None, None)
-    
+        assert result.error == None
+        assert result.value == RemoveUserMovieRatingCommandResult(0, 0)
+
     def test_handler_should_return_error_when_user_does_not_exist(self):
         movie = Movie(
             id=MovieId(uuid4()),

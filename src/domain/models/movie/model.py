@@ -51,6 +51,10 @@ class Movie:
         new_rating = (
             (self.rating * self.rating_count) - rating
         )
+
         self.rating_count -= 1
-        self.rating = new_rating / self.rating_count
+        if self.rating_count:
+            self.rating = new_rating / self.rating_count
+        else:
+            self.rating = 0
     

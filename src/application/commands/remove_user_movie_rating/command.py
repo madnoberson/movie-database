@@ -15,3 +15,10 @@ class RemoveUserMovieRatingCommand:
         )
         if not is_valid:
             raise ValueError()
+
+
+@dataclass(frozen=True, slots=True)
+class RemoveUserMovieRatingCommandResult:
+
+    new_movie_rating: float
+    new_movie_rating_count: int

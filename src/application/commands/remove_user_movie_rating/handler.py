@@ -12,12 +12,15 @@ from src.application.common.errors.user_movie_rating import (
 )
 from src.domain.models.user.value_objects import UserId
 from src.domain.models.movie.value_objects import MovieId
-from .command import RemoveUserMovieRatingCommand
+from .command import (
+    RemoveUserMovieRatingCommand,
+    RemoveUserMovieRatingCommandResult
+)
 from .interfaces import RemoveUserMovieRatingCommandDBGateway
 
 
 CommandHandlerResult = (
-    Result[None, None] |
+    Result[RemoveUserMovieRatingCommandResult, None] |
     Result[None, UserDoesNotExistError] |
     Result[None, MovieDoesNotExistError] |
     Result[None, UserMovieRatingDoesNotExistError]
@@ -65,4 +68,10 @@ class RemoveUserMovieRatingCommandHandler:
         )
         self.db_gateway.commit()
 
-        return Result(value=None, error=None)
+        command_result = RemoveUserMovieRatingCommandResult(
+            new_movie_rating=movie.rating,
+            new_movie_rating_count=movie.rating_count
+        )
+        result = Result(value=command_result, error=None)
+
+        return result

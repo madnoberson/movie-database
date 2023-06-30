@@ -40,7 +40,6 @@ from .responses import (
 )
 
 
-
 user_movie_rating_router = APIRouter(
     prefix="/user/ratings",
     tags=["user_movie_rating"]
@@ -136,7 +135,6 @@ def reevaluate_movie(
             )
         
 
-
 @user_movie_rating_router.delete(
     path="/{movid_id}/",
     responses={404: {"model": MovieDoesNotExistErrorSchema}}
@@ -148,3 +146,4 @@ def remove_movie_rating(
 ):
     if not user_id:
         raise HTTPException(401)
+    
