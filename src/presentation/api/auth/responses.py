@@ -1,10 +1,16 @@
-from typing import Optional
-
 from pydantic import BaseModel
 
 
-class AuthResponseSchema(BaseModel):
+class UsernameAlreadyExistsErrorSchema(BaseModel):
 
-    access_token: Optional[str]
-    refresh_token: Optional[str]
-    token_type: str = "Bearer"
+    username: str
+
+
+class UsernameDoesNotExistErrorSchema(BaseModel):
+
+    username: str
+
+
+class IncorrectPasswordErrorSchema(BaseModel):
+
+    message: str

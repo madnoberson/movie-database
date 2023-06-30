@@ -1,12 +1,14 @@
 from dataclasses import dataclass
 from uuid import UUID
-from typing import Literal, Union, Mapping, Iterable
+from typing import Literal
 from datetime import datetime, timedelta
 
 from jose import jwt, JWTError
 
-from src.presentation.api.authenticator import ApiAuthenticator
-from src.domain.models.user.value_objects import UserId
+from src.presentation.api.authenticator import (
+    ApiAuthenticator,
+    AuthenticationError
+)
 
 
 Algorithm = Literal[
@@ -17,17 +19,6 @@ Algorithm = Literal[
     "RS384",
     "RS512",
 ]
-Serializable = Union[
-    str,
-    int,
-    float,
-    Mapping,
-    Iterable
-]
-
-
-class AuthenticationError(Exception):
-    ...
 
 
 @dataclass(frozen=True, slots=True)
@@ -35,49 +26,31 @@ class ApiAuthenticatorImpl(ApiAuthenticator):
 
     secret: str
     access_token_expires: timedelta
-    refresh_token_expires: timedelta
     algorithm: Algorithm
 
     def create_access_token(
         self,
         user_id: UUID
     ) -> str:
-        token = self._create_token(
-            sub=user_id.hex,
-            expires=self.access_token_expires
+        expires = (
+            datetime.utcnow() +
+            self.access_token_expires
         )
-        return token
-    
-    def create_refresh_token(
-        self,
-        user_id: UUID
-    ) -> str:
-        token = self._create_token(
-            sub=user_id.hex,
-            expires=self.refresh_token_expires
-        )
-        return token
-
-    def update_refresh_token(
-        self,
-        refresh_token: str
-    ) -> str:
-        payload = jwt.decode(
-            token=refresh_token,
+        payload = {
+            "sub": user_id.hex,
+            "exp": expires
+        }
+        token = jwt.encode(
+            claims=payload,
             key=self.secret,
-            algorithms=self.algorithm,
-            options={"verify_exp": False}
-        )
-        token = self._create_token(
-            sub=payload.get("sub"),
-            expires=self.refresh_token_expires
+            algorithm=self.algorithm
         )
         return token
     
     def validate_access_token(
         self,
         access_token: str
-    ):
+    ) -> UUID | None:
         try:
             payload = jwt.decode(
                 token=access_token,
@@ -87,25 +60,13 @@ class ApiAuthenticatorImpl(ApiAuthenticator):
         except JWTError:
             raise AuthenticationError
         
-        return payload.get("sub")
-    
-    def _create_token(
-        self,
-        sub: Serializable,
-        expires: datetime
-    ) -> str:
-        expires_ = (
-            datetime.utcnow() +
-            expires
-        )
-        payload = {
-            "sub": sub,
-            "exp": expires_
-        }
-        token = jwt.encode(
-            claims=payload,
-            key=self.secret,
-            algorithm=self.algorithm
-        )
+        raw_user_id = payload.get("sub")
+        if raw_user_id is None:
+            return None
+        
+        try:
+            user_id = UUID(raw_user_id)
+        except:
+            raise AuthenticationError
 
-        return token
+        return user_id

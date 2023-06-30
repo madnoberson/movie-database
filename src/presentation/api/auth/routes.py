@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from fastapi.responses import JSONResponse
 
 from src.presentation.api.interactor import ApiInteractor
@@ -21,99 +21,93 @@ from src.application.queries.login.errors import (
     PasswordIsIncorrectError
 )
 from .requests import RegisterSchema, LoginSchema
-from .responses import AuthResponseSchema
-from .errors import UsernameAlreadyExistsErrorSchema
+from .responses import (
+    UsernameAlreadyExistsErrorSchema,
+    UsernameDoesNotExistErrorSchema,
+    IncorrectPasswordErrorSchema
+)
 
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
-regitser_route_responses = {
-    409: {"model": UsernameAlreadyExistsErrorSchema}
-}
-
 
 @auth_router.post(
     path="/register/",
-    response_model=AuthResponseSchema,
     status_code=201,
-    responses=regitser_route_responses
+    responses={409: {"model": UsernameAlreadyExistsErrorSchema}}
 )
 def register(
-    api_interactor: Annotated[ApiInteractor, Depends()],
-    auth: Annotated[ApiAuthenticator, Depends()],
+    interactor: Annotated[ApiInteractor, Depends()],
+    authenticator: Annotated[ApiAuthenticator, Depends()],
+    response: Response,
     data: RegisterSchema
 ):
     command = RegisterCommand(
         username=data.username,
         password=data.password
     )
-    result = api_interactor.handle_register_command(
-        command=command
-    )
+    result = interactor.handle_register_command(command)
 
     match result:
 
-        case Result(RegisterCommandResult(), None):
-            access_token = auth.create_access_token(
-                user_id=result.value.user_id
+        case Result(RegisterCommandResult() as value, None):
+            access_token = authenticator.create_access_token(
+                user_id=value.user_id
             )
-            refresh_token = auth.create_refresh_token(
-                user_id=result.value.user_id
+            response.set_cookie(
+                key="access_token",
+                value=access_token,
+                httponly=True
             )
-            return AuthResponseSchema(
-                access_token=access_token,
-                refresh_token=refresh_token
-            )
-        
-        case Result(None, UsernameAlreadyExistsError()):
+            return True
+                
+        case Result(None, UsernameAlreadyExistsError() as error):
             return JSONResponse(
                 status_code=409,
-                content={"username": result.error.username}
+                content={"username": error.username}
             )
-
-
-login_route_responses = {
-    404: {"model": UsernameDoesNotExistError}
-}
-
+            
 
 @auth_router.post(
     path="/login/",
-    response_model=AuthResponseSchema,
-    responses=login_route_responses
+    responses={
+        404: {"model": UsernameDoesNotExistErrorSchema},
+        401: {"model": IncorrectPasswordErrorSchema}
+    }
 )
 def login(
-    api_interactor: Annotated[ApiInteractor, Depends()],
-    auth: Annotated[ApiAuthenticator, Depends()],
+    interactor: Annotated[ApiInteractor, Depends()],
+    authenticator: Annotated[ApiAuthenticator, Depends()],
+    response: Response,
     data: LoginSchema
 ):
     query = LoginQuery(
         username=data.username,
         password=data.password
     )
-    result = api_interactor.handle_login_query(
-        query=query
-    )
+    result = interactor.handle_login_query(query)
 
     match result:
 
-        case Result(LoginQueryResult(), None):
-            access_token = auth.create_access_token(
-                user_id=result.value.user_id
+        case Result(LoginQueryResult() as value, None):
+            access_token = authenticator.create_access_token(
+                user_id=value.user_id
             )
-            refresh_token = auth.create_refresh_token(
-                user_id=result.value.user_id
+            response.set_cookie(
+                key="access_token",
+                value=access_token,
+                httponly=True
             )
-            return AuthResponseSchema(
-                access_token=access_token,
-                refresh_token=refresh_token
-            )
+            return True
 
-        case Result(None, UsernameDoesNotExistError()):
+        case Result(None, UsernameDoesNotExistError() as error):
             return JSONResponse(
                 status_code=404,
-                content={"username": result.error.username}
+                content={"username": error.username}
             )
         
         case Result(None, PasswordIsIncorrectError()):
-            return None
+            return JSONResponse(
+                status_code=401,
+                content={"message": "Password is incorrect"}
+            )

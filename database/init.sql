@@ -16,8 +16,8 @@ CREATE TABLE movies (
 );
 
 CREATE TABLE user_movie_ratings (
-    user_id UUID REFERENCES users(id) NOT NULL,
-    movie_id UUID REFERENCES movies(id) NOT NULL,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    movie_id UUID REFERENCES movies(id) ON DELETE CASCADE NOT NULL,
     rating REAL NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP

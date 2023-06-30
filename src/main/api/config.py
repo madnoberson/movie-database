@@ -21,7 +21,6 @@ class AuthConfig(BaseSettings):
 
     auth_secret: str = "secret"
     auth_access_token_expires: timedelta = timedelta(minutes=15)
-    auth_refresh_token_expires: timedelta = timedelta(days=14)
     auth_algorithm: str = "HS256"
 
 

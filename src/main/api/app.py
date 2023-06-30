@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from src.presentation.api.interactor import ApiInteractor
 from src.presentation.api.authenticator import ApiAuthenticator
 from src.presentation.api.auth.routes import auth_router
+from src.presentation.api.user_movie_rating.routes import user_movie_rating_router
 from src.infrastructure.psycopg.psycopg import get_psycopg2_connection
 from src.infrastructure.psycopg.gateway import PsycopgDatabaseGateway
 from src.infrastructure.password_encoder import HashlibPasswordEncoder
@@ -27,7 +28,6 @@ def setup_providers(
     authenticator = ApiAuthenticatorImpl(
         secret=auth_config.auth_secret,
         access_token_expires=auth_config.auth_access_token_expires,
-        refresh_token_expires=auth_config.auth_refresh_token_expires,
         algorithm=auth_config.auth_algorithm
     )
 
@@ -38,6 +38,7 @@ def setup_providers(
 
 def setup_routers(app: FastAPI) -> None:
     app.include_router(auth_router)
+    app.include_router(user_movie_rating_router)
 
 
 def create_app(config: Config) -> FastAPI:
