@@ -1,9 +1,9 @@
 from typing import Protocol
 
-from src.application.common.database_interfaces.atomic import (
+from src.application.common.database_protocols.atomic import (
     SupportsAtomic
 )
-from src.application.common.database_interfaces.movie import (
+from src.application.common.database_protocols.movie import (
     SupportsCheckMovieIdExistence,
     SupportsRemoveMovie
 )

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from psycopg2._psycopg import connection
 
-from src.application.common.database_interfaces.gateway import (
+from src.application.common.interfaces.database_gateway import (
     DatabaseGateway
 )
 from src.domain.models.movie.model import Movie

@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from src.application.common.database_interfaces.user import (
+from src.application.common.database_protocols.user import (
     SupportsGetUserByUsername
 )
 

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from src.application.common.result import Result
-from src.application.common.passoword_encoder import (
+from src.application.common.interfaces.passoword_encoder import (
     PasswordEncoder
 )
 from src.domain.models.user.value_objects import (

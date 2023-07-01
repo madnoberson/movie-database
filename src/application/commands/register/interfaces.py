@@ -1,10 +1,10 @@
 from typing import Protocol
 
-from src.application.common.database_interfaces.user import (
+from src.application.common.database_protocols.user import (
     SupportsSaveUser,
     SupportsGetUserByUsername
 )
-from src.application.common.database_interfaces.atomic import (
+from src.application.common.database_protocols.atomic import (
     SupportsAtomic
 )
 
