@@ -5,10 +5,11 @@ from src.application.common.result import Result
 from src.domain.models.movie.model import Movie
 from src.domain.models.movie.value_objects import (
     MovieId,
-    MovieTitle
+    MovieTitle,
+    MoviePosterKey
 )
 from .command import AddMovieCommand, AddMovieCommandResult
-from .interfaces import AddMovieCommandDBGateway
+from .interfaces import AddMovieCommandDBGateway, AddMovieCommandFBGateway
 
 
 CommandHandlerResult = (
@@ -20,15 +21,29 @@ CommandHandlerResult = (
 class AddMovieCommandHandler:
 
     db_gateway: AddMovieCommandDBGateway
+    fb_gateway: AddMovieCommandFBGateway
 
     def __call__(
         self,
         command: AddMovieCommand
     ) -> CommandHandlerResult:
+        movie_uuid = uuid4()
+        movie_poster_key = None
+
+        if command.poster is not None:
+            movie_poster_key = MoviePosterKey(
+                value=f"{movie_uuid}-poster"
+            )
+            self.fb_gateway.save_movie_poster(
+                poster=command.poster,
+                key=movie_poster_key
+            )
+
         movie = Movie.create(
-            id=MovieId(uuid4()),
+            id=MovieId(movie_uuid),
             title=MovieTitle(command.title),
-            release_date=command.release_date
+            release_date=command.release_date,
+            poster_key=movie_poster_key
         )
 
         self.db_gateway.save_movie(movie)

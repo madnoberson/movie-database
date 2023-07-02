@@ -1,12 +1,12 @@
 from typing import Protocol
 
-from src.application.common.filebase_protocols.image import (
-    SupportsSaveImage
+from src.application.common.filebase_protocols.movie import (
+    SupportsSaveMoviePoster
 )
 
 
 class FilebaseGateway(
-    SupportsSaveImage,
+    SupportsSaveMoviePoster,
     Protocol
 ):
     ...
