@@ -1,4 +1,4 @@
-from src.application.common.passoword_encoder import PasswordEncoder
+from src.application.common.interfaces.passoword_encoder import PasswordEncoder
 
 
 class FakePasswordEncoder(PasswordEncoder):

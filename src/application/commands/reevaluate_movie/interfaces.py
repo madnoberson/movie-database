@@ -1,16 +1,16 @@
 from typing import Protocol
 
-from src.application.common.database_interfaces.atomic import (
+from src.application.common.database_protocols.atomic import (
     SupportsAtomic
 )
-from src.application.common.database_interfaces.user import (
+from src.application.common.database_protocols.user import (
     SupportsCheckUserIdExistence
 )
-from src.application.common.database_interfaces.movie import (
+from src.application.common.database_protocols.movie import (
     SupportsGetMovieById,
     SupportsUpdateMovie
 )
-from src.application.common.database_interfaces.user_movie_rating import (
+from src.application.common.database_protocols.user_movie_rating import (
     SupportsGetUserMovieRatingByUserIdAndMovieId,
     SupportsUpdateUserMovieRating
 )

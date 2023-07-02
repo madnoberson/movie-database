@@ -12,3 +12,9 @@ class MovieId:
 class MovieTitle:
 
     value: str
+
+
+@dataclass(frozen=True, slots=True)
+class MoviePosterKey:
+
+    value: str

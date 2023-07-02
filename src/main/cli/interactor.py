@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from src.presentation.cli.interactor import CliInteractor
-from src.application.common.database_interfaces.gateway import (
+from src.application.common.interfaces.database_gateway import (
     DatabaseGateway
 )
 from src.application.commands.add_movie.command import (

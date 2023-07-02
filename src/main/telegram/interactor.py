@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
 from src.presentation.telegram.interactor import TelegramInteractor
-from src.application.common.database_interfaces.gateway import (
+from src.application.common.interfaces.database_gateway import (
     DatabaseGateway
 )
-from src.application.common.passoword_encoder import (
+from src.application.common.interfaces.passoword_encoder import (
     PasswordEncoder
 )
 from src.application.commands.register.command import (

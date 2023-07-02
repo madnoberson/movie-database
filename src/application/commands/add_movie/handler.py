@@ -5,10 +5,12 @@ from src.application.common.result import Result
 from src.domain.models.movie.model import Movie
 from src.domain.models.movie.value_objects import (
     MovieId,
-    MovieTitle
+    MovieTitle,
+    MoviePosterKey
 )
+from src.domain.models.movie_genres.model import MovieGenres
 from .command import AddMovieCommand, AddMovieCommandResult
-from .interfaces import AddMovieCommandDBGateway
+from .interfaces import AddMovieCommandDBGateway, AddMovieCommandFBGateway
 
 
 CommandHandlerResult = (
@@ -20,18 +22,40 @@ CommandHandlerResult = (
 class AddMovieCommandHandler:
 
     db_gateway: AddMovieCommandDBGateway
+    fb_gateway: AddMovieCommandFBGateway
 
     def __call__(
         self,
         command: AddMovieCommand
     ) -> CommandHandlerResult:
-        movie = Movie.create(
-            id=MovieId(uuid4()),
-            title=MovieTitle(command.title),
-            release_date=command.release_date
-        )
+        movie_uuid = uuid4()
+        movie_poster_key = None
 
+        if command.poster is not None:
+            movie_poster_key = MoviePosterKey(
+                value=f"{movie_uuid}-poster"
+            )
+            self.fb_gateway.save_movie_poster(
+                poster=command.poster,
+                key=movie_poster_key
+            )
+
+        movie = Movie.create(
+            id=MovieId(movie_uuid),
+            title=MovieTitle(command.title),
+            release_date=command.release_date,
+            status=command.status,
+            mpaa=command.mpaa,
+            poster_key=movie_poster_key
+        )
         self.db_gateway.save_movie(movie)
+
+        movie_genres = MovieGenres.create(
+            movie_id=movie.id,
+            genres=command.genres
+        )
+        self.db_gateway.save_movie_genres(movie_genres)
+
         self.db_gateway.commit()
 
         command_result = AddMovieCommandResult(movie.id.value)
