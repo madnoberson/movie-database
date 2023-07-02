@@ -8,6 +8,12 @@ from src.domain.models.movie.model import Movie
 from src.domain.models.movie.value_objects import (
     MovieId, MovieTitle
 )
+from src.domain.models.movie.constants import (
+    MovieStatusEnum, MPAAEnum
+)
+from src.domain.models.movie_genres.constants import (
+    MovieGenreEnum
+)
 from src.domain.models.user_movie_rating.model import (
     UserMovieRating
 )
@@ -80,6 +86,12 @@ def save_movie_to_db(
     movie: Movie
 ) -> None:
     with psycopg_conn.cursor() as cur:
+        if movie_status := movie.status:
+            movie_status = movie_status.value
+        
+        if mpaa := movie.mpaa:
+            mpaa = mpaa.value
+
         cur.execute(
             """
             INSERT INTO movies
@@ -88,11 +100,14 @@ def save_movie_to_db(
                 title,
                 release_date,
                 rating, 
-                rating_count
+                rating_count,
+                status,
+                mpaa,
+                poster_key
             )
             VALUES
             (
-                %s, %s, %s, %s, %s
+                %s, %s, %s, %s, %s, %s, %s, %s
             )
             """,
             (
@@ -100,7 +115,10 @@ def save_movie_to_db(
                 movie.title.value,
                 movie.release_date,
                 movie.rating,
-                movie.rating_count
+                movie.rating_count,
+                movie_status,
+                mpaa,
+                movie.poster_key
             )
         )
     psycopg_conn.commit()
@@ -118,7 +136,10 @@ def get_movie_by_id_from_db(
                 movies.title,
                 movies.release_date,
                 movies.rating,
-                movies.rating_count
+                movies.rating_count,
+                movies.status,
+                movies.mpaa,
+                movies.poster_key
             FROM
                 movies
             WHERE
@@ -132,12 +153,21 @@ def get_movie_by_id_from_db(
     if not movie_data:
         return None
     
+    if movie_status := movie_data[5]:
+        movie_status = MovieStatusEnum(movie_status)
+    
+    if mpaa := movie_data[6]:
+        mpaa = MPAAEnum(mpaa)
+
     return Movie(
         id=MovieId(movie_data[0]),
         title=MovieTitle(movie_data[1]),
         release_date=movie_data[2],
         rating=movie_data[3],
-        rating_count=movie_data[4]
+        rating_count=movie_data[4],
+        status=movie_status,
+        mpaa=mpaa,
+        poster_key=movie_data[7]
     )
 
 

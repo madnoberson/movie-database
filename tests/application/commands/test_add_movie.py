@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from datetime import date
-from uuid import UUID
 
 import pytest
 
@@ -17,6 +16,12 @@ from src.application.commands.add_movie.interfaces import (
 )
 from src.domain.models.movie.model import Movie
 from src.domain.models.movie.value_objects import MoviePosterKey
+from src.domain.models.movie.constants import (
+    MovieStatusEnum,
+    MPAAEnum
+)
+from src.domain.models.movie_genres.constants import MovieGenreEnum
+from src.domain.models.movie_genres.model import MovieGenres
 
 
 @dataclass(slots=True)
@@ -25,9 +30,16 @@ class AddMovieCommandDBGatewaySpy(
 ):
     
     movie_added: bool = False
+    movie_genres_added: bool = False
 
     def save_movie(self, movie: Movie) -> None:
         self.movie_added = True
+    
+    def save_movie_genres(
+        self,
+        movie_genres: MovieGenres
+    ) -> None:
+        self.movie_genres_added = True
     
     def commit(self) -> None:
         ...
@@ -57,11 +69,10 @@ class TestAddMovieCommand:
         try:
             AddMovieCommand(
                 title="1917",
-                release_date=date(2019, 1, 30)
-            )
-            AddMovieCommand(
-                title="1917",
                 release_date=date(2019, 1, 30),
+                status=MovieStatusEnum(0),
+                genres=[MovieGenreEnum(0), MovieGenreEnum(1)],
+                mpaa=MPAAEnum(0),
                 poster=bytes("postery_bytes", encoding="utf-8")
             )
         except ValueError:
@@ -98,12 +109,15 @@ class TestAddMovieCommandHandler:
         command = AddMovieCommand(
             title="There will be blood",
             release_date=date(2008, 2, 28),
-            poster=bytes("poster_bytes", encoding="utf-8")
+            poster=bytes("poster_bytes", encoding="utf-8"),
+            status=MovieStatusEnum(0),
+            genres=[MovieGenreEnum(1), MovieGenreEnum(6)],
+            mpaa=MPAAEnum(3)
         )
         result = handler(command)
 
         assert result.error == None
         assert isinstance(result.value, AddMovieCommandResult)
-        assert isinstance(result.value.movie_id, UUID)
         assert db_gateway.movie_added
+        assert db_gateway.movie_genres_added
         assert fb_gateway.poster_added

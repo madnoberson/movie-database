@@ -15,6 +15,9 @@ from src.application.common.database_protocols.movie import (
     SupportsCheckMovieIdExistence,
     SupportsRemoveMovie
 )
+from src.application.common.database_protocols.movie_genres import (
+    SupportsSaveMovieGenres
+)
 from src.application.common.database_protocols.user_movie_rating import (
     SupportsSaveUserMovieRating,
     SupportsGetUserMovieRatingByUserIdAndMovieId,
@@ -38,6 +41,8 @@ class DatabaseGateway(
     SupportsUpdateMovie,
     SupportsRemoveMovie,
     SupportsCheckMovieIdExistence,
+
+    SupportsSaveMovieGenres,
 
     SupportsSaveUserMovieRating,
     SupportsUpdateUserMovieRating,

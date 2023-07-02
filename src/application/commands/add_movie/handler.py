@@ -8,6 +8,7 @@ from src.domain.models.movie.value_objects import (
     MovieTitle,
     MoviePosterKey
 )
+from src.domain.models.movie_genres.model import MovieGenres
 from .command import AddMovieCommand, AddMovieCommandResult
 from .interfaces import AddMovieCommandDBGateway, AddMovieCommandFBGateway
 
@@ -43,10 +44,18 @@ class AddMovieCommandHandler:
             id=MovieId(movie_uuid),
             title=MovieTitle(command.title),
             release_date=command.release_date,
+            status=command.status,
+            mpaa=command.mpaa,
             poster_key=movie_poster_key
         )
-
         self.db_gateway.save_movie(movie)
+
+        movie_genres = MovieGenres.create(
+            movie_id=movie.id,
+            genres=command.genres
+        )
+        self.db_gateway.save_movie_genres(movie_genres)
+
         self.db_gateway.commit()
 
         command_result = AddMovieCommandResult(movie.id.value)

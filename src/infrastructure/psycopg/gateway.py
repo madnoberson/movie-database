@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from psycopg2._psycopg import connection
+from psycopg2.extras import execute_values
 
 from src.application.common.interfaces.database_gateway import (
     DatabaseGateway
@@ -9,6 +10,12 @@ from src.domain.models.movie.model import Movie
 from src.domain.models.movie.value_objects import (
     MovieId, MovieTitle
 )
+from src.domain.models.movie.constants import (
+    MovieStatusEnum,
+    MPAAEnum
+)
+from src.domain.models.movie_genres.model import MovieGenres
+from src.domain.models.movie_genres.constants import MovieGenreEnum
 from src.domain.models.user.model import User
 from src.domain.models.user.value_objects import (
     UserId, Username
@@ -148,6 +155,12 @@ class PsycopgDatabaseGateway(DatabaseGateway):
     
     def save_movie(self, movie: Movie) -> None:
         with self.psycopg_conn.cursor() as cur:
+            if movie_status := movie.status:
+                movie_status = movie.status.value
+            
+            if mpaa := movie.mpaa:
+                mpaa = movie.mpaa.value
+
             cur.execute(
                 """
                 INSERT INTO movies
@@ -156,11 +169,14 @@ class PsycopgDatabaseGateway(DatabaseGateway):
                     title,
                     release_date,
                     rating, 
-                    rating_count
+                    rating_count,
+                    status,
+                    mpaa,
+                    poster_key
                 )
                 VALUES
                 (
-                    %s, %s, %s, %s, %s
+                    %s, %s, %s, %s, %s, %s, %s, %s
                 )
                 """,
                 (
@@ -168,7 +184,10 @@ class PsycopgDatabaseGateway(DatabaseGateway):
                     movie.title.value,
                     movie.release_date,
                     movie.rating,
-                    movie.rating_count
+                    movie.rating_count,
+                    movie_status,
+                    mpaa,
+                    movie.poster_key
                 )
             )
 
@@ -184,7 +203,10 @@ class PsycopgDatabaseGateway(DatabaseGateway):
                     movies.title,
                     movies.release_date,
                     movies.rating,
-                    movies.rating_count
+                    movies.rating_count,
+                    movies.status,
+                    movies.mpaa,
+                    movies.poster_key
                 FROM
                     movies
                 WHERE
@@ -198,16 +220,31 @@ class PsycopgDatabaseGateway(DatabaseGateway):
         if not movie_data:
             return None
         
+        if movie_status := movie_data[5]:
+            movie_status = MovieStatusEnum(movie_status)
+        
+        if mpaa := movie_data[6]:
+            mpaa = MPAAEnum(mpaa)
+
         return Movie(
             id=MovieId(movie_data[0]),
             title=MovieTitle(movie_data[1]),
             release_date=movie_data[2],
             rating=movie_data[3],
-            rating_count=movie_data[4]
+            rating_count=movie_data[4],
+            status=movie_status,
+            mpaa=mpaa,
+            poster_key=movie_data[7]
         )
     
     def update_movie(self, movie: Movie) -> None:
         with self.psycopg_conn.cursor() as cur:
+            if movie_status := movie.status:
+                movie_status = MovieStatusEnum(movie_status)
+            
+            if mpaa := movie.mpaa:
+                mpaa = MPAAEnum(mpaa)
+
             cur.execute(
                 """
                 UPDATE
@@ -216,7 +253,9 @@ class PsycopgDatabaseGateway(DatabaseGateway):
                     title = %s,
                     release_date = %s,
                     rating = %s,
-                    rating_count = %s
+                    rating_count = %s,
+                    status = %s,
+                    mpaa = %s
                 WHERE
                     movies.id = %s
                 """,
@@ -225,6 +264,8 @@ class PsycopgDatabaseGateway(DatabaseGateway):
                     movie.release_date,
                     movie.rating,
                     movie.rating_count,
+                    movie_status,
+                    mpaa,
                     movie.id.value
                 )
             )
@@ -253,6 +294,21 @@ class PsycopgDatabaseGateway(DatabaseGateway):
             movie_id_exists = cur.fetchone()
         
         return not movie_id_exists is None
+
+    def save_movie_genres(self, movie_genres: MovieGenres) -> None:
+        with self.psycopg_conn.cursor() as cur:
+            execute_values(
+                cur,
+                """
+                INSERT INTO movies_genres
+                    (movie_id, genre_id)
+                VALUES %s
+                """,
+                [
+                    (movie_genres.movie_id.value, genre.value)
+                    for genre in movie_genres.genres
+                ]
+            )
 
     def save_user_movie_rating(
         self,
