@@ -1,5 +1,5 @@
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 from datetime import date
 
@@ -10,6 +10,7 @@ from .value_objects import (
 )
 from .constants import (
     MovieStatusEnum,
+    MovieGenreEnum,
     MPAAEnum
 )
 
@@ -24,6 +25,9 @@ class Movie:
     rating_count: int
 
     status: MovieStatusEnum | None = None
+    genres: list[MovieGenreEnum] = field(
+        default_factory=list
+    )
     mpaa: MPAAEnum | None = None
     poster_key: MoviePosterKey | None = None
 
@@ -34,6 +38,7 @@ class Movie:
         title: MovieTitle,
         release_date: date,
         status: Optional[MovieStatusEnum] = None,
+        genres: list[MovieGenreEnum] = [],
         mpaa: Optional[MPAAEnum] = None,
         poster_key: Optional[MoviePosterKey] = None
     ) -> Movie:
@@ -44,6 +49,7 @@ class Movie:
             rating=0,
             rating_count=0,
             status=status,
+            genres=genres,
             mpaa=mpaa,
             poster_key=poster_key
         )

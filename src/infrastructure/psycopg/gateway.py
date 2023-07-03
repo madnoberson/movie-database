@@ -12,10 +12,9 @@ from src.domain.models.movie.value_objects import (
 )
 from src.domain.models.movie.constants import (
     MovieStatusEnum,
+    MovieGenreEnum,
     MPAAEnum
 )
-from src.domain.models.movie_genres.model import MovieGenres
-from src.domain.models.movie_genres.constants import MovieGenreEnum
 from src.domain.models.user.model import User
 from src.domain.models.user.value_objects import (
     UserId, Username
@@ -190,6 +189,19 @@ class PsycopgDatabaseGateway(DatabaseGateway):
                     movie.poster_key
                 )
             )
+            if movie.genres:
+                execute_values(
+                    cur,
+                    """
+                    INSERT INTO movies_genres
+                        (movie_id, genre_id)
+                    VALUES %s
+                    """,                                                                                                                       
+                    [
+                        (movie.id.value, genre.value)
+                        for genre in movie.genres
+                    ]
+                )
 
     def get_movie_by_id(
         self,
@@ -216,6 +228,19 @@ class PsycopgDatabaseGateway(DatabaseGateway):
                 (movie_id.value,)
             )
             movie_data = cur.fetchone()
+
+            cur.execute(
+                """
+                SELECT
+                    movies_genres.genre_id
+                FROM
+                    movies_genres
+                WHERE
+                    movies_genres.movie_id = %s
+                """,
+                (movie_id.value,)
+            )
+            genres_data = cur.fetchmany() or []
         
         if not movie_data:
             return None
@@ -225,6 +250,11 @@ class PsycopgDatabaseGateway(DatabaseGateway):
         
         if mpaa := movie_data[6]:
             mpaa = MPAAEnum(mpaa)
+        
+        genres = [
+            MovieGenreEnum(genre_data[0])
+            for genre_data in genres_data
+        ]
 
         return Movie(
             id=MovieId(movie_data[0]),
@@ -233,6 +263,7 @@ class PsycopgDatabaseGateway(DatabaseGateway):
             rating=movie_data[3],
             rating_count=movie_data[4],
             status=movie_status,
+            genres=genres,
             mpaa=mpaa,
             poster_key=movie_data[7]
         )
@@ -269,6 +300,25 @@ class PsycopgDatabaseGateway(DatabaseGateway):
                     movie.id.value
                 )
             )
+            cur.execute(
+                """
+                DELETE FROM movies_genres
+                WHERE movies_genres.movie_id = %s
+                """,
+                (movie.id.value,)
+            )
+            execute_values(
+                cur,
+                """
+                INSERT INTO movies_genres
+                    (movie_id, genre_id)
+                VALUES %s
+                """,                                                                                                                       
+                [
+                    (movie.id.value, genre.value)
+                    for genre in movie.genres
+                ]
+            )
 
     def remove_movie_by_id(self, movie_id: MovieId) -> None:
         with self.psycopg_conn.cursor() as cur:
@@ -294,21 +344,6 @@ class PsycopgDatabaseGateway(DatabaseGateway):
             movie_id_exists = cur.fetchone()
         
         return not movie_id_exists is None
-
-    def save_movie_genres(self, movie_genres: MovieGenres) -> None:
-        with self.psycopg_conn.cursor() as cur:
-            execute_values(
-                cur,
-                """
-                INSERT INTO movies_genres
-                    (movie_id, genre_id)
-                VALUES %s
-                """,
-                [
-                    (movie_genres.movie_id.value, genre.value)
-                    for genre in movie_genres.genres
-                ]
-            )
 
     def save_user_movie_rating(
         self,

@@ -18,10 +18,9 @@ from src.domain.models.movie.model import Movie
 from src.domain.models.movie.value_objects import MoviePosterKey
 from src.domain.models.movie.constants import (
     MovieStatusEnum,
+    MovieGenreEnum,
     MPAAEnum
 )
-from src.domain.models.movie_genres.constants import MovieGenreEnum
-from src.domain.models.movie_genres.model import MovieGenres
 
 
 @dataclass(slots=True)
@@ -30,16 +29,9 @@ class AddMovieCommandDBGatewaySpy(
 ):
     
     movie_added: bool = False
-    movie_genres_added: bool = False
 
     def save_movie(self, movie: Movie) -> None:
         self.movie_added = True
-    
-    def save_movie_genres(
-        self,
-        movie_genres: MovieGenres
-    ) -> None:
-        self.movie_genres_added = True
     
     def commit(self) -> None:
         ...
@@ -119,5 +111,4 @@ class TestAddMovieCommandHandler:
         assert result.error == None
         assert isinstance(result.value, AddMovieCommandResult)
         assert db_gateway.movie_added
-        assert db_gateway.movie_genres_added
         assert fb_gateway.poster_added

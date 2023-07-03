@@ -1,4 +1,5 @@
 from psycopg2._psycopg import connection
+from psycopg2.extras import execute_values
 
 from src.domain.models.user.model import User
 from src.domain.models.user.value_objects import (
@@ -9,10 +10,9 @@ from src.domain.models.movie.value_objects import (
     MovieId, MovieTitle
 )
 from src.domain.models.movie.constants import (
-    MovieStatusEnum, MPAAEnum
-)
-from src.domain.models.movie_genres.constants import (
-    MovieGenreEnum
+    MovieStatusEnum,
+    MovieGenreEnum,
+    MPAAEnum
 )
 from src.domain.models.user_movie_rating.model import (
     UserMovieRating
@@ -121,6 +121,19 @@ def save_movie_to_db(
                 movie.poster_key
             )
         )
+        if movie.genres:
+            execute_values(
+                    cur,
+                    """
+                    INSERT INTO movies_genres
+                        (movie_id, genre_id)
+                    VALUES %s
+                    """,                                                                                                                       
+                    [
+                        (movie.id.value, genre.value)
+                        for genre in movie.genres
+                    ]
+                )
     psycopg_conn.commit()
 
 
@@ -149,7 +162,20 @@ def get_movie_by_id_from_db(
             (movie_id.value,)
         )
         movie_data = cur.fetchone()
-        
+
+        cur.execute(
+            """
+            SELECT
+                movies_genres.genre_id
+            FROM
+                movies_genres
+            WHERE
+                movies_genres.movie_id = %s
+            """,
+            (movie_id.value,)
+        )
+        genres_data = cur.fetchmany() or []
+    
     if not movie_data:
         return None
     
@@ -158,6 +184,11 @@ def get_movie_by_id_from_db(
     
     if mpaa := movie_data[6]:
         mpaa = MPAAEnum(mpaa)
+    
+    genres = [
+        MovieGenreEnum(genre_data[0])
+        for genre_data in genres_data
+    ]
 
     return Movie(
         id=MovieId(movie_data[0]),
@@ -166,6 +197,7 @@ def get_movie_by_id_from_db(
         rating=movie_data[3],
         rating_count=movie_data[4],
         status=movie_status,
+        genres=genres,
         mpaa=mpaa,
         poster_key=movie_data[7]
     )
@@ -200,6 +232,7 @@ def save_user_movie_rating_to_db(
             )
         )
     psycopg_conn.commit()
+
 
 def get_user_movie_rating_from_db(
     psycopg_conn: PsycopgConnection,

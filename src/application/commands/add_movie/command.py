@@ -5,10 +5,8 @@ from uuid import UUID
 
 from src.domain.models.movie.constants import (
     MovieStatusEnum,
+    MovieGenreEnum,
     MPAAEnum
-)
-from src.domain.models.movie_genres.constants import (
-    MovieGenreEnum
 )
 
 
