@@ -1,8 +1,8 @@
 from aiogram import Bot
 
-from .config import Config
+from .config import TelegramConfig
 
 
-def create_bot(config: Config) -> Bot:
-    bot = Bot(config.bot_token)
+def create_bot(config: TelegramConfig) -> Bot:
+    bot = Bot(config.telegram_bot_token)
     return bot
