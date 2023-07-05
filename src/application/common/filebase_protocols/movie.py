@@ -13,3 +13,13 @@ class SupportsSaveMoviePoster(Protocol):
         key: MoviePosterKey
     ) -> None:
         raise NotImplementedError
+
+
+class SupportsRemoveMoviePoster(Protocol):
+
+    @abstractmethod
+    def remove_movie_poster(
+        self,
+        key: MoviePosterKey
+    ) -> None:
+        raise NotImplementedError

@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Annotated
 
 from boto3 import Session
@@ -12,6 +13,7 @@ from src.application.common.interfaces.filebase_gateway import (
 Boto3S3Session = Session
 
 
+@dataclass(frozen=True, slots=True)
 class YandexOSFilebaseGateway(FilebaseGateway):
 
     image_bucket: str
@@ -27,3 +29,13 @@ class YandexOSFilebaseGateway(FilebaseGateway):
             Bucket=self.image_bucket,
             Key=key
         )
+    
+    def remove_movie_poster(
+        self,
+        key: MoviePosterKey
+    ) -> None:
+        self.boto3_client.delete_object(
+            Bucket=self.image_bucket,
+            Key=key
+        )
+        

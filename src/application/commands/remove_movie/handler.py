@@ -4,7 +4,10 @@ from src.application.common.result import Result
 from src.application.common.errors.movie import MovieDoesNotExistError
 from src.domain.models.movie.value_objects import MovieId
 from .command import RemoveMovieCommand
-from .interfaces import RemoveMovieCommandDBGateway
+from .interfaces import (
+    RemoveMovieCommandDBGateway,
+    RemoveMovieCommandFBGateway
+)
 
 
 CommandHandlerResult = (
@@ -17,6 +20,7 @@ CommandHandlerResult = (
 class RemoveMovieCommandHandler:
 
     db_gateway: RemoveMovieCommandDBGateway
+    fb_gateway: RemoveMovieCommandFBGateway
 
     def __call__(self, command: RemoveMovieCommand) -> CommandHandlerResult:
         movie_id = MovieId(command.movie_id)
@@ -30,5 +34,8 @@ class RemoveMovieCommandHandler:
         
         self.db_gateway.remove_movie_by_id(movie_id.value)
         self.db_gateway.commit()
+
+        # TODO: Remove movie poster
+        # self.fb_gateway.remove_movie_poster()
 
         return Result(value=None, error=None)

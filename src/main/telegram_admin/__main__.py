@@ -2,7 +2,7 @@ import asyncio
 import logging
 
 from .bot import create_bot
-from .dispatcher import create_dipatcher
+from .dispatcher import create_dispatcher
 from .config import Config
 
 
@@ -14,10 +14,16 @@ async def main() -> None:
 
     config = Config()
 
-    bot = create_bot(config.telegram)
-    dp = create_dipatcher(config.postgres)
+    bot = create_bot(
+        tg_config=config.telegram
+    )
+    dp = create_dispatcher(
+        postgres_config=config.postgres,
+        yandex_os_config=config.yandex_os
+    )
 
     await dp.start_polling(bot)
 
 
 asyncio.run(main())
+

@@ -4,13 +4,13 @@ from typing import Any, Awaitable, Callable
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 
-from src.presentation.telegram.interactor import TelegramInteractor
+from src.presentation.telegram_admin.interactor import TelegramAdminInteractor
 
 
 @dataclass(frozen=True, slots=True)
 class TelegramInteractorMiddleware(BaseMiddleware):
 
-    telegram_interactor: TelegramInteractor
+    interactor: TelegramAdminInteractor
 
     async def __call__(
         self,
@@ -18,5 +18,5 @@ class TelegramInteractorMiddleware(BaseMiddleware):
         event: TelegramObject,
         data: dict[str, Any]
     ) -> Any:
-        data["tg_interactor"] = self.telegram_interactor
+        data["interactor"] = self.interactor
         await handler(event, data)
