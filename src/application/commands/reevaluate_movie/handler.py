@@ -12,6 +12,14 @@ from .interfaces import ReevaluateMovieCommandDBGateway
 
 @dataclass(frozen=True, slots=True)
 class ReevaluateMovieCommandHandler:
+    """
+    Raises:
+        * `UserDoesNotExistError`
+        * `MovieDoesNotExistError`
+        * `UserMovieRatingDoesNotExistError` \n
+    Returns:
+        * `ReevaluateMovieCommandResult`
+    """
 
     db_gateway: ReevaluateMovieCommandDBGateway
 

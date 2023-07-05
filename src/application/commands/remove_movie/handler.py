@@ -8,6 +8,12 @@ from .interfaces import RemoveMovieCommandDBGateway, RemoveMovieCommandFBGateway
 
 @dataclass(frozen=True, slots=True)
 class RemoveMovieCommandHandler:
+    """
+    Raises:
+        * `MovieDoesNotExistError` \n   
+    Returns:
+        * `None` 
+    """
 
     db_gateway: RemoveMovieCommandDBGateway
     fb_gateway: RemoveMovieCommandFBGateway

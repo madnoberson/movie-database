@@ -7,6 +7,10 @@ from .interfaces import UsernameExistenceDBGateway
 
 @dataclass(frozen=True, slots=True)
 class CheckUsernameExistenceQueryHandler:
+    """
+    Returns:
+        * `CheckUsernameExistenceQueryResult`
+    """
 
     db_gateway: UsernameExistenceDBGateway
 

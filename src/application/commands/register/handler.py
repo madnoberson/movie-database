@@ -12,6 +12,12 @@ from .errors import UsernameAlreadyExistsError
 
 @dataclass(frozen=True, slots=True)
 class RegisterCommandHandler:
+    """
+    Raises:
+        * `UsernameAlreadyExistsError` \n
+    Returns:
+        * `RegisterCommandResult`
+    """
 
     db_gateway: RegisterCommandDBGateway
     password_encoder: PasswordEncoder

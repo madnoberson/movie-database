@@ -11,6 +11,14 @@ from .interfaces import RemoveUserMovieRatingCommandDBGateway
 
 @dataclass(frozen=True, slots=True)
 class RemoveUserMovieRatingCommandHandler:
+    """
+    Raises:
+        * `UserDoesNotExistError`
+        * `MovieDoesNotExistError`
+        * `UserMovieRatingDoesNotExistError` \n
+    Returns:
+        * `RemoveUserMovieRatingCommandResult`
+    """
 
     db_gateway: RemoveUserMovieRatingCommandDBGateway
 

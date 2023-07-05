@@ -9,6 +9,13 @@ from .errors import UsernameDoesNotExistError, PasswordIsIncorrectError
 
 @dataclass(frozen=True, slots=True)
 class LoginQueryHandler:
+    """
+    Raises:
+        * `UsernameDoesNotExistError`
+        * `PasswordIsIncorrectError` \n
+    Returns:
+        * `LoginQueryResult`
+    """
 
     db_gateway: LoginQueryDBGateway
     password_encoder: PasswordEncoder

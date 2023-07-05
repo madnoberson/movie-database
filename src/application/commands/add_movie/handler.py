@@ -13,6 +13,10 @@ from .interfaces import AddMovieCommandDBGateway, AddMovieCommandFBGateway
 
 @dataclass(frozen=True, slots=True)
 class AddMovieCommandHandler:
+    """
+    Returns:
+        * `AddMovieCommandResult`
+    """
 
     db_gateway: AddMovieCommandDBGateway
     fb_gateway: AddMovieCommandFBGateway
@@ -20,7 +24,7 @@ class AddMovieCommandHandler:
     def __call__(
         self,
         command: AddMovieCommand
-    ) -> AddMovieCommandResult  :
+    ) -> AddMovieCommandResult:
         movie_uuid = uuid4()
 
         if movie_poster_key := command.poster:

@@ -13,6 +13,14 @@ from .errors import UserMovieRatingAlreadyExistsError
 
 @dataclass(frozen=True, slots=True)
 class RateMovieCommandHandler:
+    """
+    Raises:
+        * `UserDoesNotExistError`
+        * `MovieDoesNotExistError`
+        * `UserMovieRatingAlreadyExistsError` \n
+    Returns:
+        * `RateMovieCommandResult`
+    """
 
     db_gateway: RateMovieCommandDBGateway
 
