@@ -4,27 +4,16 @@ from uuid import uuid4
 
 import pytest
 
-from src.application.common.result import Result
-from src.application.common.errors.user import (
-    UserDoesNotExistError
-)
-from src.application.common.errors.movie import (
-    MovieDoesNotExistError
-)
+from src.application.common.errors.user import UserDoesNotExistError
+from src.application.common.errors.movie import MovieDoesNotExistError
 from src.application.common.errors.user_movie_rating import (
     UserMovieRatingDoesNotExistError
 )
 from src.domain.models.user.model import User
-from src.domain.models.user.value_objects import (
-    UserId, Username
-)
+from src.domain.models.user.value_objects import UserId, Username
 from src.domain.models.movie.model import Movie
-from src.domain.models.movie.value_objects import (
-    MovieId, MovieTitle
-)
-from src.domain.models.user_movie_rating.model import (
-    UserMovieRating
-)
+from src.domain.models.movie.value_objects import MovieId, MovieTitle
+from src.domain.models.user_movie_rating.model import UserMovieRating
 from src.application.commands.reevaluate_movie.command import (
     ReevaluateMovieCommand,
     ReevaluateMovieCommandResult
@@ -153,15 +142,15 @@ class TestReevaluateMovieCommandHandler:
             id=MovieId(uuid4()),
             title=MovieTitle("There will be blood"),
             release_date=date.today(),
-            rating=0,
-            rating_count=0
+            rating=5,
+            rating_count=1
         )
         movies = {movie.id: movie}
         
         umr = UserMovieRating(
             user_id=user.id,
             movie_id=movie.id,
-            rating=10,
+            rating=5,
             created_at=datetime.utcnow(),
             updated_at=None
         )
@@ -179,11 +168,21 @@ class TestReevaluateMovieCommandHandler:
             movie_id=movie.id.value,
             new_rating=10
         )
-        result = handler(command)
 
-        assert result.error == None
+        try:
+            result = handler(command)
+        except (
+            UserDoesNotExistError,
+            MovieDoesNotExistError,
+            UserMovieRatingDoesNotExistError
+        ) as e:
+            pytest.fail(reason=str(e))
+        
+        assert isinstance(result, ReevaluateMovieCommandResult)
+        assert result.new_movie_rating == 10
+        assert result.new_user_rating == 10
     
-    def test_handler_should_return_error_when_user_does_not_exist(self):
+    def test_handler_should_raise_error_when_user_does_not_exist(self):
         movie = Movie(
             id=MovieId(uuid4()),
             title=MovieTitle("There will be blood"),
@@ -213,12 +212,13 @@ class TestReevaluateMovieCommandHandler:
             movie_id=movie.id.value,
             new_rating=10
         )
-        result = handler(command)
 
-        assert result.value == None
-        assert result.error == UserDoesNotExistError(command.user_id)
+        with pytest.raises(UserDoesNotExistError) as e:
+            handler(command)
+
+        assert e.value == UserDoesNotExistError(command.user_id)
     
-    def test_handler_should_return_error_when_movie_does_not_exist(self):
+    def test_handler_should_raise_error_when_movie_does_not_exist(self):
         user = User(
             id=UserId(uuid4()),
             username=Username("johndoe"),
@@ -247,12 +247,13 @@ class TestReevaluateMovieCommandHandler:
             movie_id=uuid4(),
             new_rating=10
         )
-        result = handler(command)
 
-        assert result.value == None
-        assert result.error == MovieDoesNotExistError(command.movie_id)
+        with pytest.raises(MovieDoesNotExistError) as e:
+            handler(command)
+
+        assert e.value == MovieDoesNotExistError(command.movie_id)
     
-    def test_handler_should_return_error_when_umr_does_not_exist(self):
+    def test_handler_should_raise_error_when_umr_does_not_exist(self):
         user = User(
             id=UserId(uuid4()),
             username=Username("johndoe"),
@@ -281,7 +282,8 @@ class TestReevaluateMovieCommandHandler:
             movie_id=movie.id.value,
             new_rating=10
         )
-        result = handler(command)
+        
+        with pytest.raises(UserMovieRatingDoesNotExistError) as e:
+            handler(command)
 
-        assert result.value == None
-        assert result.error == UserMovieRatingDoesNotExistError(command.movie_id)
+        assert e.value == UserMovieRatingDoesNotExistError(command.movie_id)

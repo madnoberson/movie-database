@@ -4,23 +4,15 @@ from uuid import uuid4
 
 import pytest
 
-from src.application.common.result import Result
-from src.application.common.errors.movie import (
-    MovieDoesNotExistError
-)
+from src.application.common.errors.movie import MovieDoesNotExistError
 from src.domain.models.movie.model import Movie
-from src.domain.models.movie.value_objects import (
-    MovieId, MovieTitle
-)
-from src.application.commands.remove_movie.command import (
-    RemoveMovieCommand
-)
+from src.domain.models.movie.value_objects import MovieId, MoviePosterKey, MovieTitle
+from src.application.commands.remove_movie.command import RemoveMovieCommand
 from src.application.commands.remove_movie.interfaces import (
-    RemoveMovieCommandDBGateway
+    RemoveMovieCommandDBGateway,
+    RemoveMovieCommandFBGateway
 )
-from src.application.commands.remove_movie.handler import (
-    RemoveMovieCommandHandler
-)
+from src.application.commands.remove_movie.handler import RemoveMovieCommandHandler
 
 
 @dataclass(frozen=True, slots=True)
@@ -48,6 +40,15 @@ class FakeRemoveMovieCommandDBGateway(
         ...
     
     def rollback(self) -> None:
+        ...
+
+
+@dataclass(frozen=True, slots=True)
+class FakeRemoveMovieCommandFBGateway(
+    RemoveMovieCommandFBGateway
+):
+    
+    def remove_movie_poster(self, key: MoviePosterKey) -> None:
         ...
 
 
@@ -81,18 +82,32 @@ class TestRemoveMovieCommandHandler:
         movies = {movie.id: movie}
 
         db_gateway = FakeRemoveMovieCommandDBGateway(movies)
-        handler = RemoveMovieCommandHandler(db_gateway)
+        fb_gateway = FakeRemoveMovieCommandFBGateway()
+        handler = RemoveMovieCommandHandler(
+            db_gateway=db_gateway,
+            fb_gateway=fb_gateway
+        )
         
         command = RemoveMovieCommand(movie_id=movie.id.value)
-        result = handler(command)
 
-        assert result == Result(None, None)
+        try:
+            result = handler(command)
+        except MovieDoesNotExistError:
+            pytest.fail()
+
+        assert result == None
     
-    def test_handler_should_return_error_when_movie_does_not_exist(self):
+    def test_handler_should_raise_error_when_movie_does_not_exist(self):
         db_gateway = FakeRemoveMovieCommandDBGateway()
-        handler = RemoveMovieCommandHandler(db_gateway)
+        fb_gateway = FakeRemoveMovieCommandFBGateway()
+        handler = RemoveMovieCommandHandler(
+            db_gateway=db_gateway,
+            fb_gateway=fb_gateway
+        )
         
         command = RemoveMovieCommand(movie_id=uuid4())
-        result = handler(command)
 
-        assert result == Result(None, MovieDoesNotExistError(command.movie_id))
+        with pytest.raises(MovieDoesNotExistError) as e:
+            handler(command)
+
+        assert e.value == MovieDoesNotExistError(command.movie_id)

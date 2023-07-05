@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from uuid import uuid4
 
-from src.application.common.result import Result
 from src.domain.models.movie.model import Movie
 from src.domain.models.movie.value_objects import (
     MovieId,
@@ -10,11 +9,6 @@ from src.domain.models.movie.value_objects import (
 )
 from .command import AddMovieCommand, AddMovieCommandResult
 from .interfaces import AddMovieCommandDBGateway, AddMovieCommandFBGateway
-
-
-CommandHandlerResult = (
-    Result[AddMovieCommandResult, None]
-)
 
 
 @dataclass(frozen=True, slots=True)
@@ -26,7 +20,7 @@ class AddMovieCommandHandler:
     def __call__(
         self,
         command: AddMovieCommand
-    ) -> CommandHandlerResult:
+    ) -> AddMovieCommandResult  :
         movie_uuid = uuid4()
 
         if movie_poster_key := command.poster:
@@ -51,7 +45,5 @@ class AddMovieCommandHandler:
         self.db_gateway.save_movie(movie)
         self.db_gateway.commit()
 
-        command_result = AddMovieCommandResult(movie.id.value)
-        result = Result(value=command_result, error=None)
-
-        return result
+        return AddMovieCommandResult(movie.id.value)
+        

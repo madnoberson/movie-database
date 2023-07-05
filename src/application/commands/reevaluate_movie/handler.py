@@ -51,7 +51,6 @@ class ReevaluateMovieCommandHandler:
 
         return ReevaluateMovieCommandResult(
             new_user_rating=command.new_rating,
-            new_movie_rating=movie.rating,
-            new_movie_rating_count=movie.rating_count
+            new_movie_rating=movie.rating
         )
         

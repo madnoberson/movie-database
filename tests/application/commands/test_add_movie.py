@@ -108,7 +108,6 @@ class TestAddMovieCommandHandler:
         )
         result = handler(command)
 
-        assert result.error == None
-        assert isinstance(result.value, AddMovieCommandResult)
+        assert isinstance(result, AddMovieCommandResult)
         assert db_gateway.movie_added
         assert fb_gateway.poster_added

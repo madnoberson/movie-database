@@ -26,5 +26,4 @@ class ReevaluateMovieCommandResult:
 
     new_user_rating: float | int
     new_movie_rating: float | int 
-    new_movie_rating_count: int
     
