@@ -5,10 +5,7 @@ from uuid import uuid4
 import pytest
 
 from src.domain.models.user.model import User
-from src.domain.models.user.value_objects import (
-    UserId, Username
-)
-from src.application.common.result import Result
+from src.domain.models.user.value_objects import UserId, Username
 from src.application.queries.username_existence.query import (
     CheckUsernameExistenceQuery,
     CheckUsernameExistenceQueryResult
@@ -77,8 +74,7 @@ class TestCheckUsernameExistenceQueryHandler:
         )
         result = handler(query)
 
-        assert result.error == None
-        assert result.value == CheckUsernameExistenceQueryResult(True)
+        assert result == CheckUsernameExistenceQueryResult(True)
     
     def test_handler_should_return_true_when_username_does_not_exist(self):
         handler = CheckUsernameExistenceQueryHandler(
@@ -88,6 +84,5 @@ class TestCheckUsernameExistenceQueryHandler:
         query = CheckUsernameExistenceQuery("johndoe")
         result = handler(query)
 
-        assert result.error == None
-        assert result.value == CheckUsernameExistenceQueryResult(False)
+        assert result == CheckUsernameExistenceQueryResult(False)
     

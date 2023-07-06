@@ -4,28 +4,13 @@ from uuid import uuid4, UUID
 
 import pytest
 
-from src.application.common.result import Result
 from src.domain.models.user.model import User
-from src.domain.models.user.value_objects import (
-    UserId,
-    Username
-)
-from src.application.commands.register.command import (
-    RegisterCommand,
-    RegisterCommandResult
-)
-from src.application.commands.register.handler import (
-    RegisterCommandHandler
-)
-from src.application.commands.register.interfaces import (
-    RegisterCommandDBGateway
-)
-from src.application.commands.register.errors import (
-    UsernameAlreadyExistsError
-)
-from tests.application.mocks.password_encoder import (
-    FakePasswordEncoder
-)
+from src.domain.models.user.value_objects import UserId, Username
+from src.application.commands.register.command import RegisterCommand, RegisterCommandResult
+from src.application.commands.register.handler import RegisterCommandHandler
+from src.application.commands.register.interfaces import RegisterCommandDBGateway
+from src.application.commands.register.errors import UsernameAlreadyExistsError
+from tests.application.mocks.password_encoder import FakePasswordEncoder
 
 
 @dataclass(frozen=True, slots=True)
@@ -86,7 +71,7 @@ class TestRegisterCommand:
 
 class TestRegisterCommandHandler:
     
-    def test_handler_should_return_user_id(self):
+    def test_handler_should_return_normal_result(self):
         handler = RegisterCommandHandler(
             db_gateway=FakeRegisterCommandDBGateway(),
             password_encoder=FakePasswordEncoder()
@@ -97,13 +82,16 @@ class TestRegisterCommandHandler:
             username=username,
             password="secretpassword"
         )
-        result: Result = handler(command)
 
-        assert result.error == None
-        assert isinstance(result.value, RegisterCommandResult)
-        assert isinstance(result.value.user_id, UUID)
+        try:
+            result = handler(command)
+        except UsernameAlreadyExistsError:
+            pytest.fail()
 
-    def test_handler_should_return_error_when_username_already_exists(self):
+        assert isinstance(result, RegisterCommandResult)
+        assert isinstance(result.user_id, UUID)
+
+    def test_handler_should_raise_error_when_username_already_exists(self):
         user = User(
             id=UserId(uuid4()),
             username=Username("johndoe"),
@@ -121,9 +109,10 @@ class TestRegisterCommandHandler:
             username=user.username.value,
             password="secretpassword"
         )
-        result: Result = handler(command)
 
-        assert result.value == None
-        assert result.error == UsernameAlreadyExistsError(user.username.value)
+        with pytest.raises(UsernameAlreadyExistsError) as e:
+            handler(command)
+
+        assert e.value == UsernameAlreadyExistsError(user.username.value)
 
         

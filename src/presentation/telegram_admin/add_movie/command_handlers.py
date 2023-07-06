@@ -81,7 +81,13 @@ async def add_movie_command_handler_set_mpaa(
 ) -> None:
     mpaa = validate_mpaa(message.text)
     await state.update_data(mpaa=mpaa)
-    
-    data = await state.get_data()
-    await message.answer(str(data))
 
+    await message.answer("Are you sure?")
+    await state.set_state(AddMovieStatesGroup.confirm)
+
+    
+async def add_movie_command_handler_confirm(
+    message: Message,
+    state: FSMContext
+) -> None:
+    ...

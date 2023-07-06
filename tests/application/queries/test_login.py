@@ -4,29 +4,16 @@ from uuid import uuid4
 
 import pytest
 
-from src.application.common.result import Result
 from src.domain.models.user.model import User
-from src.domain.models.user.value_objects import (
-    UserId,
-    Username
-)
-from src.application.queries.login.query import (
-    LoginQuery,
-    LoginQueryResult
-)
-from src.application.queries.login.handler import (
-    LoginQueryHandler
-)
-from src.application.queries.login.interfaces import (
-    LoginQueryDBGateway
-)
+from src.domain.models.user.value_objects import UserId, Username
+from src.application.queries.login.query import LoginQuery, LoginQueryResult
+from src.application.queries.login.handler import LoginQueryHandler
+from src.application.queries.login.interfaces import LoginQueryDBGateway
 from src.application.queries.login.errors import (
     UsernameDoesNotExistError,
     PasswordIsIncorrectError
 )
-from tests.application.mocks.password_encoder import (
-    FakePasswordEncoder
-)
+from tests.application.mocks.password_encoder import FakePasswordEncoder
 
 
 @dataclass(frozen=True, slots=True)
@@ -74,7 +61,7 @@ class TestLoginQuery:
 
 class TestLoginQueryHandler:
 
-    def test_handler_should_return_user_id(self):
+    def test_handler_should_return_normal_result(self):
         user = User(
             id=UserId(uuid4()),
             username=Username("johndoe"),
@@ -92,12 +79,18 @@ class TestLoginQueryHandler:
             username=user.username.value,
             password="password"
         )
-        result: Result = handler(query)
 
-        assert result.error == None
-        assert result.value.user_id == user.id.value
+        try:
+            result = handler(query)
+        except (
+            UsernameDoesNotExistError,
+            PasswordIsIncorrectError
+        ) as e:
+            pytest.fail(reason=str(e))
+
+        assert result.user_id == user.id.value
     
-    def test_handler_should_return_error_when_username_does_not_exist(self):
+    def test_handler_should_raise_error_when_username_does_not_exist(self):
         handler = LoginQueryHandler(
             db_gateway=FakeLoginQueryDBGateway(),
             password_encoder=FakePasswordEncoder()
@@ -108,12 +101,13 @@ class TestLoginQueryHandler:
             username=username,
             password="password"
         )
-        result: Result = handler(query)
+        
+        with pytest.raises(UsernameDoesNotExistError) as e:
+            handler(query)
 
-        assert result.error == UsernameDoesNotExistError(username)
-        assert result.value == None
+        assert e.value == UsernameDoesNotExistError(username)
     
-    def test_handler_should_return_error_when_password_is_incorrect(self):
+    def test_handler_should_raise_error_when_password_is_incorrect(self):
         user = User(
             id=UserId(uuid4()),
             username=Username("johndoe"),
@@ -131,7 +125,8 @@ class TestLoginQueryHandler:
             username=user.username.value,
             password="incorrctpassword"
         )
-        result: Result = handler(query)
+        
+        with pytest.raises(PasswordIsIncorrectError) as e:
+            handler(query)
 
-        assert result.error == PasswordIsIncorrectError()
-        assert result.value == None
+        assert e.value == PasswordIsIncorrectError()
