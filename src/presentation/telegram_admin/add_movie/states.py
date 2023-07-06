@@ -9,3 +9,5 @@ class AddMovieStatesGroup(StatesGroup):
     set_status = State()
     set_genres = State()
     set_mpaa = State()
+
+    confirm = State()

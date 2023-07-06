@@ -1,33 +1,41 @@
 from aiogram.types import Message
+from aiogram.fsm.context import FSMContext
 
-from src.application.common.result import Result
-from src.application.common.errors.movie import (
-    MovieDoesNotExistError
-)
-from src.presentation.telegram_admin.interactor import (
-    TelegramAdminInteractor
-)
-from src.application.commands.remove_movie.command import (
-    RemoveMovieCommand
-)
+from src.presentation.telegram_admin.interactor import TelegramAdminInteractor
+from src.application.commands.remove_movie.command import RemoveMovieCommand
+from .states import RemoveMovieStatesGroup
 from .validators import validate_movie_id
 
 
 async def remove_movie_command_handler(
     message: Message,
-    interactor: TelegramAdminInteractor
+    state: FSMContext
+) -> None:
+    await message.answer("Enter id of the movie that should be removed")
+    await state.set_state(RemoveMovieStatesGroup.set_movie_id)
+
+
+async def remove_movie_command_handler_set_movie_id(
+    message: Message,
+    state: FSMContext
 ) -> None:
     movie_id = validate_movie_id(message.text)
 
+    await state.update_data(movie_id=movie_id)
+    await state.set_state(RemoveMovieStatesGroup.confirm)
+
+
+async def remove_movie_command_handler_confirm(
+    message: Message,
+    state: FSMContext,
+    interactor: TelegramAdminInteractor
+) -> None:
+    state_data = await state.get_data()
+    movie_id = state_data.get("movie_id")
+
     command = RemoveMovieCommand(movie_id)
-    result = interactor.handle_remove_movie_command(
-        command=command
-    )
+    interactor.handle_remove_movie_command(command)
 
-    match result:
-
-        case Result(None, MovieDoesNotExistError() as error):
-            await message.answer(f"Movie {movie_id} doesn't exist")
-        
-        case Result(None, None):
-            await message.answer("Movie removed")
+    await message.answer("Movie has been successfully removed")
+    await state.set_state(None)
+            
