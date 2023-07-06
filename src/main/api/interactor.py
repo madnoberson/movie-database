@@ -1,55 +1,35 @@
 from dataclasses import dataclass
 
 from src.presentation.api.interactor import ApiInteractor
-from src.application.common.interfaces.database_gateway import (
-    DatabaseGateway
-)
-from src.application.common.interfaces.passoword_encoder import (
-    PasswordEncoder
-)
+from src.application.common.interfaces.database_gateway import DatabaseGateway
+from src.application.common.interfaces.passoword_encoder import PasswordEncoder
 from src.application.commands.register.command import (
-    RegisterCommand
+    RegisterCommand, RegisterCommandResult
 )
-from src.application.commands.register.handler import (
-    RegisterCommandHandler,
-    CommandHandlerResult as RegisterCommandHandlerResult
-)
+from src.application.commands.register.handler import RegisterCommandHandler
 from src.application.commands.rate_movie.command import (
-    RateMovieCommand
+    RateMovieCommand, RateMovieCommandResult
 )
-from src.application.commands.rate_movie.handler import (
-    RateMovieCommandHandler,
-    CommandHandlerResult as RateMovieCommandHandlerResult
-)
+from src.application.commands.rate_movie.handler import RateMovieCommandHandler
 from src.application.commands.reevaluate_movie.command import (
-    ReevaluateMovieCommand
+    ReevaluateMovieCommand, ReevaluateMovieCommandResult
 )
-from src.application.commands.reevaluate_movie.handler import (
-    ReevaluateMovieCommandHandler,
-    CommandHandlerResult as ReevaluateMovieCommandHandlerResult
-)
+from src.application.commands.reevaluate_movie.handler import ReevaluateMovieCommandHandler
 from src.application.commands.remove_user_movie_rating.command import (
-    RemoveUserMovieRatingCommand
+    RemoveUserMovieRatingCommand, RemoveUserMovieRatingCommandResult
 )
 from src.application.commands.remove_user_movie_rating.handler import (
-    RemoveUserMovieRatingCommandHandler,
-    CommandHandlerResult as RemoveUserMovieRatingCommandHandlerResult
+    RemoveUserMovieRatingCommandHandler
 )
-from src.application.queries.login.query import (
-    LoginQuery
-)
-from src.application.queries.login.handler import (
-    LoginQueryHandler,
-    QueryHanlderResult as LoginQueryHandlerResult
-)
+from src.application.queries.login.query import LoginQuery, LoginQueryResult
+from src.application.queries.login.handler import LoginQueryHandler
 from src.application.queries.username_existence.query import (
-    CheckUsernameExistenceQuery
+    CheckUsernameExistenceQuery, CheckUsernameExistenceQueryResult
 )
 from src.application.queries.username_existence.handler import (
-    CheckUsernameExistenceQueryHandler,
-    QueryHandlerResult as CheckUsernameExistenceQueryHandlerResult
+    CheckUsernameExistenceQueryHandler
 )
-# FIXME: Simplify imports
+
 
 @dataclass(frozen=True, slots=True)
 class ApiInteractorImpl(ApiInteractor):
@@ -60,7 +40,7 @@ class ApiInteractorImpl(ApiInteractor):
     def handle_register_command(
         self,
         command: RegisterCommand
-    ) -> RegisterCommandHandlerResult:
+    ) -> RegisterCommandResult:
         handler = RegisterCommandHandler(
             db_gateway=self.db_gateway,
             password_encoder=self.password_encoder
@@ -70,7 +50,7 @@ class ApiInteractorImpl(ApiInteractor):
     def handle_rate_movie_command(
         self,
         command: RateMovieCommand
-    ) -> RateMovieCommandHandlerResult:
+    ) -> RateMovieCommandResult:
         handler = RateMovieCommandHandler(
             db_gateway=self.db_gateway
         )
@@ -79,7 +59,7 @@ class ApiInteractorImpl(ApiInteractor):
     def handle_reevaluate_movie_command(
         self,
         command: ReevaluateMovieCommand
-    ) -> ReevaluateMovieCommandHandlerResult:
+    ) -> ReevaluateMovieCommandResult:
         handler = ReevaluateMovieCommandHandler(
             db_gateway=self.db_gateway
         )
@@ -88,7 +68,7 @@ class ApiInteractorImpl(ApiInteractor):
     def handle_remove_user_movie_rating_command(
         self,
         command: RemoveUserMovieRatingCommand
-    ) -> RemoveUserMovieRatingCommandHandlerResult:
+    ) -> RemoveUserMovieRatingCommandResult:
         handler = RemoveUserMovieRatingCommandHandler(
             db_gateway=self.db_gateway
         )
@@ -97,7 +77,7 @@ class ApiInteractorImpl(ApiInteractor):
     def handle_login_query(
         self,
         query: LoginQuery
-    ) -> LoginQueryHandlerResult:
+    ) -> LoginQueryResult:
         handler = LoginQueryHandler(
             db_gateway=self.db_gateway,
             password_encoder=self.password_encoder
@@ -107,7 +87,7 @@ class ApiInteractorImpl(ApiInteractor):
     def handle_check_username_existence_query(
         self,
         query: CheckUsernameExistenceQuery
-    ) -> CheckUsernameExistenceQueryHandlerResult:
+    ) -> CheckUsernameExistenceQueryResult:
         hanlder = CheckUsernameExistenceQueryHandler(
             db_gateway=self.db_gateway
         )

@@ -33,3 +33,23 @@ class UserMovieRatingAleadyExistsErrorSchema(BaseModel):
 
     movie_id: UUID
 
+
+def get_rate_movie_responses() -> dict:
+    return {
+        201: {"model": RateMovieOutSchema},
+        401: {"model": ""},
+        404: {"model": MovieDoesNotExistErrorSchema},
+        409: {"model": UserMovieRatingAleadyExistsErrorSchema}
+    }
+
+
+def get_reevaluate_movie_responses() -> dict:
+    return {
+        201: {"model": RateMovieOutSchema},
+        404: {"model": MovieDoesNotExistErrorSchema},
+        409: {"model": UserMovieRatingDoesNotExistErrorSchema}
+    }
+
+
+def get_remove_movie_rating_responses() -> dict:
+    return {}

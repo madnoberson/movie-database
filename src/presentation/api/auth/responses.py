@@ -14,3 +14,17 @@ class UsernameDoesNotExistErrorSchema(BaseModel):
 class IncorrectPasswordErrorSchema(BaseModel):
 
     message: str
+
+
+def get_register_responses() -> dict:
+    return {
+        409: {"model": UsernameAlreadyExistsErrorSchema}
+    }
+
+
+def get_login_responses() -> dict:
+    return {
+        404: {"model": UsernameDoesNotExistErrorSchema},
+        401: {"model": IncorrectPasswordErrorSchema}
+    }
+    
