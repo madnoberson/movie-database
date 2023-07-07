@@ -6,3 +6,7 @@ from uuid import UUID
 class MovieDoesNotExistError(Exception):
 
     movie_id: UUID
+
+    @property
+    def message(self) -> str:
+        return f"Movie doesn`t exist"

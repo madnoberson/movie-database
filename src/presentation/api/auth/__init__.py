@@ -9,7 +9,7 @@ def setup_routes(router: APIRouter) -> None:
     router.add_api_route(
         path="/register",
         endpoint=register,
-        status_code=200,
+        status_code=201,
         methods=["post"],
         responses=register_responses
     )

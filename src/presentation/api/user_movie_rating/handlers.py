@@ -9,7 +9,7 @@ from src.application.commands.rate_movie.command import RateMovieCommand
 from src.application.commands.reevaluate_movie.command import ReevaluateMovieCommand
 from src.application.commands.remove_user_movie_rating.command import RemoveUserMovieRatingCommand
 from .requests import RateMovieSchema, ReevaluateMovieSchema
-from .responses import RateMovieOutSchema, ReevaluateMovieOutSchema
+from .responses import RateMovieOutSchema, ReevaluateMovieOutSchema, RemoveUserMovieRatingOutSchema
 
 
 def rate_movie(
@@ -39,7 +39,7 @@ def reevaluate_movie(
     user_id: Annotated[UUID | None, Depends(get_user_id)],
     movie_id: UUID,
     data: ReevaluateMovieSchema
-) -> None:
+) -> ReevaluateMovieOutSchema:
     if not user_id:
         raise HTTPException(401)
     
@@ -60,7 +60,18 @@ def remove_movie_rating(
     interactor: Annotated[ApiInteractor, Depends()],
     user_id: Annotated[UUID | None, Depends(get_user_id)],
     movie_id: UUID
-):
+) -> ReevaluateMovieOutSchema:
     if not user_id:
         raise HTTPException(401)
+
+    command = RemoveUserMovieRatingCommand(
+        user_id=user_id,
+        movie_id=movie_id
+    )
+    result = interactor.handle_remove_user_movie_rating_command(command)
+
+    return RemoveUserMovieRatingOutSchema(
+        new_movie_rating=result.new_movie_rating,
+        new_movie_rating_count=result.new_movie_rating_count
+    )
     

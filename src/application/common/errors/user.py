@@ -6,3 +6,7 @@ from uuid import UUID
 class UserDoesNotExistError(Exception):
     
     user_id: UUID
+
+    @property
+    def message(self) -> str:
+        return f"User doesn't exist"

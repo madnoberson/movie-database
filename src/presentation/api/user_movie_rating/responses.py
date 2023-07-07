@@ -1,7 +1,8 @@
 from datetime import datetime
-from uuid import UUID
 
 from pydantic import BaseModel
+
+from src.presentation.api.common.error_schemas import BaseErrorSchema
 
 
 class RateMovieOutSchema(BaseModel):
@@ -12,6 +13,15 @@ class RateMovieOutSchema(BaseModel):
     created_at: datetime
 
 
+def get_rate_movie_responses() -> dict:
+    return {
+        201: {"model": RateMovieOutSchema},
+        401: {"model": BaseErrorSchema},
+        404: {"model": BaseErrorSchema},
+        409: {"model": BaseErrorSchema}
+    }
+
+
 class ReevaluateMovieOutSchema(BaseModel):
 
     new_user_rating: float
@@ -19,37 +29,25 @@ class ReevaluateMovieOutSchema(BaseModel):
     new_movie_rating_count: int
 
 
-class MovieDoesNotExistErrorSchema(BaseModel):
-
-    movie_id: UUID
-
-
-class UserMovieRatingDoesNotExistErrorSchema(BaseModel):
-
-    movie_id: UUID
-
-
-class UserMovieRatingAleadyExistsErrorSchema(BaseModel):
-
-    movie_id: UUID
-
-
-def get_rate_movie_responses() -> dict:
-    return {
-        201: {"model": RateMovieOutSchema},
-        401: {"model": ""},
-        404: {"model": MovieDoesNotExistErrorSchema},
-        409: {"model": UserMovieRatingAleadyExistsErrorSchema}
-    }
-
 
 def get_reevaluate_movie_responses() -> dict:
+
     return {
-        201: {"model": RateMovieOutSchema},
-        404: {"model": MovieDoesNotExistErrorSchema},
-        409: {"model": UserMovieRatingDoesNotExistErrorSchema}
+        200: {"model": RateMovieOutSchema},
+        401: {"model": BaseErrorSchema},
+        404: {"model": BaseErrorSchema}
     }
+
+
+class RemoveUserMovieRatingOutSchema(BaseModel):
+
+    new_movie_rating: float
+    new_movie_rating_count: int
 
 
 def get_remove_movie_rating_responses() -> dict:
-    return {}
+    return {
+        200: {"model": RemoveUserMovieRatingOutSchema},
+        401: {"model": BaseErrorSchema},
+        404: {"model": BaseErrorSchema}
+    }

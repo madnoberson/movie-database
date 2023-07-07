@@ -1,30 +1,20 @@
-from pydantic import BaseModel
+from typing import Literal
 
+from src.presentation.api.common.error_schemas import BaseErrorSchema
 
-class UsernameAlreadyExistsErrorSchema(BaseModel):
-
-    username: str
-
-
-class UsernameDoesNotExistErrorSchema(BaseModel):
-
-    username: str
-
-
-class IncorrectPasswordErrorSchema(BaseModel):
-
-    message: str
 
 
 def get_register_responses() -> dict:
     return {
-        409: {"model": UsernameAlreadyExistsErrorSchema}
+        201: {"model": Literal[True]},
+        409: {"model": BaseErrorSchema}
     }
 
 
 def get_login_responses() -> dict:
     return {
-        404: {"model": UsernameDoesNotExistErrorSchema},
-        401: {"model": IncorrectPasswordErrorSchema}
+        200: {"model": Literal[True]},
+        401: {"model": BaseErrorSchema},
+        404: {"model": BaseErrorSchema}
     }
     

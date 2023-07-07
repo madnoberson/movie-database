@@ -8,3 +8,7 @@ class UsernameAlreadyExistsError(Exception):
 
     username: str
 
+    @property
+    def message(self) -> str:
+        return f"Username already exists"
+

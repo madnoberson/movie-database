@@ -6,4 +6,8 @@ from uuid import UUID
 class UserMovieRatingDoesNotExistError(Exception):
     
     movie_id: UUID
+
+    @property
+    def message(self) -> str:
+        return f"Movie rating doesn't exist"
     
