@@ -1,28 +1,41 @@
-from src.domain.models.movie.constants import MovieGenreEnum
+from src.domain.models.movie.constants import (
+    MovieGenreEnum, MovieStatusEnum
+)
 
 
 def set_title() -> str:
-    template = (
-        "<b>Title:</b>"
-    )
-    return template
+    """
+    Returns message text for
+    `add_movie_command_set_genres`
+    """
+
+    return "<b>Title:</b>"
 
 
 def set_release_date() -> str:
-    template = (
-        "<b>Release date:</b>"
-    )
-    return template
+    """
+    Returns message text for
+    `add_movie_command_set_release_date`
+    """
+
+    return "<b>Release date:</b>"
 
 
 def set_poster() -> str:
-    template = (
-        "<b>Poster:</b>"
-    )
-    return template
+    """
+    Returns message text for
+    `add_movie_command_set_poster`
+    """
+
+    return "<b>Poster:</b>"
 
 
 def set_genres(selected: list[MovieGenreEnum] = []) -> str:
+    """
+    Returns message text for 
+    `add_movie_command_set_genres`
+    """
+
     template = "<b>Genres: {}</b>"
     genres = ", ".join(map(lambda s: s.name.capitalize(), selected))
     formatted_template = template.format(genres)
@@ -31,20 +44,29 @@ def set_genres(selected: list[MovieGenreEnum] = []) -> str:
 
 
 def set_status() -> str:
-    template = (
-        "<b>Status</b>"
-    )
-    return template
+    """
+    Returns message text for
+    `add_movie_command_set_status`
+    """
+
+    return "<b>Status</b>"
 
 
 def set_mpaa() -> str:
-    template = (
-        "<b>Mpaa:</b>"
-    )
-    return template
+    """
+    Returns message text for
+    `add_movie_command_set_mpaa`
+    """
+
+    return "<b>Mpaa:</b>"
 
 
 def confirm(**data) -> str:
+    """
+    Returns messsage text for
+    `add_movie_command_confirm`
+    """
+
     template = (
         "<b>Title:</b> {}\n"
         "<b>Release date:</b> {}\n"
@@ -55,11 +77,18 @@ def confirm(**data) -> str:
         "<b>You are going to create movie with this data.\n"
         "Please confirm.</b>"
     )
+
+    genre_list = map(
+        lambda s: s.name.capitalize(),
+        data.get("genres", [])
+    )
+    status: MovieStatusEnum = data.get("status")
+
     formatted_template = template.format(
         data.get("title"),
         data.get("release_date"),
-        data.get("genres"),
-        data.get("status"),
+        ", ".join(genre_list),
+        status.name.capitalize() if status else None,
         data.get("mpaa")
     )
 

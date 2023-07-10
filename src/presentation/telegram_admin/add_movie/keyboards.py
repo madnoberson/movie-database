@@ -79,7 +79,7 @@ def set_mpaa() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     for enum_field in MPAAEnum:
         builder.button(
-            text=enum_field.name.capitalize(),
+            text=enum_field.name,
             callback_data=SetMpaaCallbackFactory(value=enum_field)
         )
     

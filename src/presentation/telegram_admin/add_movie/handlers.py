@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
-from aiogram.filters import Command, Text
+from aiogram.filters import Command
 
 from src.presentation.telegram_admin.interactor import TelegramAdminInteractor
 from src.application.commands.add_movie.command import AddMovieCommand
@@ -178,8 +178,10 @@ async def add_movie_command_handler_set_mpaa(
     state: FSMContext
 ) -> None:
     await state.update_data(mpaa=callback_data.value)
+    state_data = await state.get_data()
+
     await callback.message.edit_text(
-        text=templates.confirm(),
+        text=templates.confirm(**state_data),
         reply_markup=keyboards.confirm()
     )
     await callback.answer()
