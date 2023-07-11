@@ -1,49 +1,31 @@
 from typing import Protocol
 
 from src.application.common.database_protocols.atomic import SupportsAtomic
-from src.application.common.database_protocols.user import (
-    SupportsSaveUser,
-    SupportsGetUserById,
-    SupportsGetUserByUsername,
-    SupportsCheckUsernameExistence,
-    SupportsCheckUserIdExistence
-)
-from src.application.common.database_protocols.movie import (
-    SupportsSaveMovie,
-    SupportsGetMovieById,
-    SupportsUpdateMovie,
-    SupportsCheckMovieIdExistence,
-    SupportsRemoveMovie
-)
-from src.application.common.database_protocols.user_movie_rating import (
-    SupportsSaveUserMovieRating,
-    SupportsGetUserMovieRatingByUserIdAndMovieId,
-    SupportsCheckUserMovieRatingExistence,
-    SupportsUpdateUserMovieRating,
-    SupportsRemoveUserMovieRatingByUserIdAndMovieId
-)
+from src.application.common.database_protocols import user as user_protocols
+from src.application.common.database_protocols import movie as movie_protocols
+from src.application.common.database_protocols import user_movie_rating as umr_protocols
 
 
 class DatabaseGateway(
     SupportsAtomic,
 
-    SupportsSaveUser,
-    SupportsGetUserById,
-    SupportsGetUserByUsername,
-    SupportsCheckUsernameExistence,
-    SupportsCheckUserIdExistence,
+    user_protocols.SupportsSaveUser,
+    user_protocols.SupportsGetUserById,
+    user_protocols.SupportsGetUserByUsername,
+    user_protocols.SupportsCheckUsernameExistence,
+    user_protocols.SupportsCheckUserIdExistence,
 
-    SupportsSaveMovie,
-    SupportsGetMovieById,
-    SupportsUpdateMovie,
-    SupportsRemoveMovie,
-    SupportsCheckMovieIdExistence,
+    movie_protocols.SupportsSaveMovie,
+    movie_protocols.SupportsGetMovieById,
+    movie_protocols.SupportsUpdateMovie,
+    movie_protocols.SupportsRemoveMovie,
+    movie_protocols.SupportsCheckMovieIdExistence,
 
-    SupportsSaveUserMovieRating,
-    SupportsUpdateUserMovieRating,
-    SupportsGetUserMovieRatingByUserIdAndMovieId,
-    SupportsCheckUserMovieRatingExistence,
-    SupportsRemoveUserMovieRatingByUserIdAndMovieId,
+    umr_protocols.SupportsSaveUserMovieRating,
+    umr_protocols.SupportsUpdateUserMovieRating,
+    umr_protocols.SupportsGetUserMovieRatingByUserIdAndMovieId,
+    umr_protocols.SupportsCheckUserMovieRatingExistence,
+    umr_protocols.SupportsRemoveUserMovieRatingByUserIdAndMovieId,
 
     Protocol
 ):

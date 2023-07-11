@@ -1,5 +1,5 @@
 from src.domain.models.movie.constants import (
-    MovieGenreEnum, MovieStatusEnum
+    MovieGenreEnum, MovieStatusEnum, MPAAEnum
 )
 
 
@@ -75,7 +75,7 @@ def confirm(**data) -> str:
         "<b>Mpaa:</b> {}\n\n"
 
         "<b>You are going to create movie with this data.\n"
-        "Please confirm.</b>"
+        "Please, confirm.</b>"
     )
 
     genre_list = map(
@@ -83,13 +83,14 @@ def confirm(**data) -> str:
         data.get("genres", [])
     )
     status: MovieStatusEnum = data.get("status")
+    mpaa: MPAAEnum = data.get("mpaa")
 
     formatted_template = template.format(
         data.get("title"),
         data.get("release_date"),
         ", ".join(genre_list),
-        status.name.capitalize() if status else None,
-        data.get("mpaa")
+        status.name.capitalize() if status is not None else None,
+        mpaa.name if mpaa is not None else None
     )
 
     return formatted_template

@@ -38,4 +38,3 @@ class SupportsRemoveMovie(Protocol):
     @abstractmethod
     def remove_movie_by_id(self, movie_id: MovieId) -> None:
         raise NotImplementedError
-    

@@ -11,7 +11,7 @@ from .errors import UsernameDoesNotExistError, PasswordIsIncorrectError
 class LoginQueryHandler:
     """
     Raises:
-        * `UsernameDoesNotExistError`
+        * `UsernameDoesNotExistError` \n
         * `PasswordIsIncorrectError` \n
     Returns:
         * `LoginQueryResult`
