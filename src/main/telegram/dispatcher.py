@@ -1,30 +1,17 @@
 from aiogram import Dispatcher
 
-from src.infrastructure.psycopg.psycopg import get_psycopg2_connection
-from src.infrastructure.psycopg.gateway import PsycopgDatabaseGateway
-from src.infrastructure.password_encoder import HashlibPasswordEncoder
-from src.presentation.telegram.auth.handlers import auth_router
-from .interactor import TelegramInteractorImpl
-from .middlewares import TelegramInteractorMiddleware
+from src.presentation.telegram.common.error_handlers import setup_error_handlers
 from .config import PostgresConfig
+from .routes import setup_routes
+from .middlewares import setup_middlewares
 
 
 def create_dipatcher(postgres_config: PostgresConfig) -> Dispatcher:
-    psycopg_conn = get_psycopg2_connection(postgres_config.dsn)
-
-    db_gateway = PsycopgDatabaseGateway(psycopg_conn)
-    password_encoder = HashlibPasswordEncoder()
-
-    ioc = TelegramInteractorImpl(
-        db_gateway=db_gateway,
-        password_encoder=password_encoder
-    )
-    tg_interactor_middleware = TelegramInteractorMiddleware(ioc)
-
     dp = Dispatcher()
-
-    dp.message.middleware(tg_interactor_middleware)
-    dp.include_router(auth_router)
     
+    setup_routes(dp)
+    setup_error_handlers(dp)
+    setup_middlewares(dp, postgres_config)
+
     return dp
 
