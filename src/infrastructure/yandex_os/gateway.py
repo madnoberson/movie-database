@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Annotated
+from io import BytesIO
 
 from boto3 import Session
 from boto3_type_annotations.s3 import Client
@@ -21,13 +22,14 @@ class YandexOSFilebaseGateway(FilebaseGateway):
 
     def save_movie_poster(
         self,
-        poster: bytes,
+        poster: BytesIO,
         key: MoviePosterKey
     ) -> None:
         self.boto3_client.upload_fileobj(
             Fileobj=poster,
             Bucket=self.image_bucket,
-            Key=key
+            Key=key.value,
+            ExtraArgs={"ContentType":"image/png"}
         )
     
     def remove_movie_poster(

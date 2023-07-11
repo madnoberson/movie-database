@@ -29,7 +29,7 @@ class AddMovieCommandHandler:
 
         if movie_poster_key := command.poster:
             movie_poster_key = MoviePosterKey(
-                value=f"{movie_uuid}-poster"
+                value=f"{movie_uuid}-poster.png"
             )
             self.fb_gateway.save_movie_poster(
                 poster=command.poster,

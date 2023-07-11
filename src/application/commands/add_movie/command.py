@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 from datetime import date
+from io import BytesIO
 from uuid import UUID
 
 from src.domain.models.movie.constants import (
@@ -19,7 +20,7 @@ class AddMovieCommand:
     status: Optional[MovieStatusEnum] = None
     genres: Optional[list[MovieGenreEnum]] = None
     mpaa: Optional[MPAAEnum] = None
-    poster: Optional[bytes] = None
+    poster: Optional[BytesIO] = None
 
     def __post_init__(self) -> None:
         # FIXME: Kinda ugly. Simplify this for better readability
@@ -27,7 +28,7 @@ class AddMovieCommand:
             isinstance(self.title, str) and
             len(self.title) > 0 and
             isinstance(self.release_date, date) and
-            (isinstance(self.poster, bytes) or self.poster is None) and
+            (isinstance(self.poster, BytesIO) or self.poster is None) and
             (isinstance(self.status, MovieStatusEnum) or self.status is None) and
             (   
                 self.genres is None or

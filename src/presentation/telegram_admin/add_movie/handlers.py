@@ -1,4 +1,6 @@
-from aiogram import Router, F
+from datetime import date
+
+from aiogram import Bot, Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
@@ -9,6 +11,7 @@ from src.application.commands.add_movie.command import AddMovieCommand
 from . import templates
 from . import keyboards
 from . import callbacks
+from . import errors
 
 
 __all__ = ("setup_handlers",)
@@ -85,6 +88,9 @@ async def add_movie_command_handler_set_title(
     message: Message,
     state: FSMContext
 ) -> None:
+    if message.text is None:
+        raise errors.InvalidTitleError()
+
     await message.answer(templates.set_release_date())
     await state.update_data(title=message.text)
     await state.set_state(AddMovieStatesGroup.set_release_date)
@@ -94,20 +100,36 @@ async def add_movie_command_handler_set_release_date(
     message: Message,
     state: FSMContext
 ) -> None:
+    try:
+        raw_release_date = message.text.split(".")
+        raw_release_date = map(int, raw_release_date)
+        y, m, d = list(raw_release_date)
+        release_date = date(y, m, d)
+    except:
+        raise errors.InvalidReleaseDateError()
+
     await message.answer(templates.set_poster())
-    await state.update_data(release_date="2008.02.28")
+    await state.update_data(release_date=release_date)
     await state.set_state(AddMovieStatesGroup.set_poster)
 
 
 async def add_movie_command_handler_set_poster(
     message: Message,
     state: FSMContext,
+    bot: Bot
 ) -> None:
+    if message.photo is not None:
+        photo = message.photo[-1]
+        poster = await bot.download(photo)
+        await state.update_data(
+            poster=poster,
+            poster_id=photo.file_id
+        )
+
     await message.answer(
         text=templates.set_genres(),
         reply_markup=keyboards.set_genres()
     )
-    await state.update_data(poster=None)
     await state.set_state(AddMovieStatesGroup.set_genres)
 
 
@@ -180,10 +202,19 @@ async def add_movie_command_handler_set_mpaa(
     await state.update_data(mpaa=callback_data.value)
     state_data = await state.get_data()
 
-    await callback.message.edit_text(
-        text=templates.confirm(**state_data),
-        reply_markup=keyboards.confirm()
-    )
+    if state_data.get("poster_id"):
+        await callback.message.delete()
+        await callback.message.answer_photo(
+            photo=state_data.get("poster_id"),
+            caption=templates.confirm(**state_data),
+            reply_markup=keyboards.confirm()
+        )
+    else:
+        await callback.message.edit_text(
+            text=templates.confirm(**state_data),
+            reply_markup=keyboards.confirm()
+        )
+        
     await callback.answer()
 
 
@@ -193,7 +224,8 @@ async def add_movie_command_handler_confirm(
     interactor: TelegramAdminInteractor
 ) -> None:
     state_data = await state.get_data()
-
+    state_data.pop("poster_id", None)
+    
     command = AddMovieCommand(**state_data)
     interactor.handle_add_movie_command(command)
 

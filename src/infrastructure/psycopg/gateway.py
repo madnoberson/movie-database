@@ -8,7 +8,7 @@ from src.application.common.interfaces.database_gateway import (
 )
 from src.domain.models.movie.model import Movie
 from src.domain.models.movie.value_objects import (
-    MovieId, MovieTitle
+    MovieId, MovieTitle, MoviePosterKey
 )
 from src.domain.models.movie.constants import (
     MovieStatusEnum,
@@ -159,6 +159,9 @@ class PsycopgDatabaseGateway(DatabaseGateway):
             
             if mpaa := movie.mpaa:
                 mpaa = movie.mpaa.value
+            
+            if movie_poster_key := movie.poster_key:
+                movie_poster_key = movie.poster_key.value
 
             cur.execute(
                 """
@@ -186,7 +189,7 @@ class PsycopgDatabaseGateway(DatabaseGateway):
                     movie.rating_count,
                     movie_status,
                     mpaa,
-                    movie.poster_key
+                    movie_poster_key
                 )
             )
             if movie.genres:
@@ -251,6 +254,9 @@ class PsycopgDatabaseGateway(DatabaseGateway):
         if mpaa := movie_data[6]:
             mpaa = MPAAEnum(mpaa)
         
+        if movie_poster_key := movie_data[7]:
+            movie_poster_key = MoviePosterKey(movie_poster_key)
+        
         genres = [
             MovieGenreEnum(genre_data[0])
             for genre_data in genres_data
@@ -262,10 +268,10 @@ class PsycopgDatabaseGateway(DatabaseGateway):
             release_date=movie_data[2],
             rating=movie_data[3],
             rating_count=movie_data[4],
-            status=movie_status,
             genres=genres,
+            status=movie_status,
             mpaa=mpaa,
-            poster_key=movie_data[7]
+            poster_key=movie_poster_key
         )
     
     def update_movie(self, movie: Movie) -> None:
@@ -275,6 +281,9 @@ class PsycopgDatabaseGateway(DatabaseGateway):
             
             if mpaa := movie.mpaa:
                 mpaa = MPAAEnum(mpaa)
+
+            if movie_poster_key := movie.poster_key:
+                movie_poster_key = MoviePosterKey(movie_poster_key)
 
             cur.execute(
                 """
@@ -286,7 +295,8 @@ class PsycopgDatabaseGateway(DatabaseGateway):
                     rating = %s,
                     rating_count = %s,
                     status = %s,
-                    mpaa = %s
+                    mpaa = %s,
+                    poster_key = %s
                 WHERE
                     movies.id = %s
                 """,
@@ -297,6 +307,7 @@ class PsycopgDatabaseGateway(DatabaseGateway):
                     movie.rating_count,
                     movie_status,
                     mpaa,
+                    movie_poster_key,
                     movie.id.value
                 )
             )

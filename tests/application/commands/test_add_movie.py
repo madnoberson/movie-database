@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import date
+from io import BytesIO
 
 import pytest
 
@@ -49,7 +50,7 @@ class AddMovieCommandFBGatewaySpy(
 
     def save_movie_poster(
         self,
-        poster: bytes,
+        poster: BytesIO,
         key: MoviePosterKey
     ) -> None:
         self.poster_added = True
@@ -65,7 +66,7 @@ class TestAddMovieCommand:
                 status=MovieStatusEnum(0),
                 genres=[MovieGenreEnum(0), MovieGenreEnum(1)],
                 mpaa=MPAAEnum(0),
-                poster=bytes("postery_bytes", encoding="utf-8")
+                poster=BytesIO(bytes("postery_bytes", encoding="utf-8"))
             )
         except ValueError:
             pytest.fail()
@@ -101,7 +102,7 @@ class TestAddMovieCommandHandler:
         command = AddMovieCommand(
             title="There will be blood",
             release_date=date(2008, 2, 28),
-            poster=bytes("poster_bytes", encoding="utf-8"),
+            poster=BytesIO(bytes("poster_bytes", encoding="utf-8")),
             status=MovieStatusEnum(0),
             genres=[MovieGenreEnum(1), MovieGenreEnum(6)],
             mpaa=MPAAEnum(3)
