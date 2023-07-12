@@ -36,6 +36,22 @@ class PostgresConfig(BaseSettings):
         return dsn
 
 
+class RedisConfig(BaseSettings):
+
+    host: str = Field(
+        default="127.0.0.1",
+        env="redis_host"
+    )
+    port: int = Field(
+        default=6379,
+        env="redis_port"
+    )
+    db: int = Field(
+        default=0,
+        env="redis_db"
+    )
+
+
 class TelegramConfig(BaseSettings):
 
     token: str = Field(env="telegram_bot_token")
@@ -45,3 +61,4 @@ class Config:
 
     telegram: TelegramConfig = TelegramConfig()
     postgres: PostgresConfig = PostgresConfig()
+    redis: RedisConfig = RedisConfig()

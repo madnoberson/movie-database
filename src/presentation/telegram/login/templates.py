@@ -14,3 +14,12 @@ def enter_password() -> str:
     """
 
     return "<b>Password:</b>"
+
+
+def successfully_loged_in() -> str:
+    """
+    Returns message text for success of
+    `login_command_handler_enter_password`
+    """
+
+    return "<b>Successfully loged in</b>"

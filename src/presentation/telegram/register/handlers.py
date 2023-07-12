@@ -4,10 +4,10 @@ from aiogram.filters import Command
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 
+from src.presentation.telegram.common.errors import InvalidPasswordError, UserIsAlreadyLoggedIn
 from src.presentation.telegram.interactor import TelegramInteractor
 from src.application.queries.username_existence.query import CheckUsernameExistenceQuery
 from src.application.commands.register.command import RegisterCommand
-from src.presentation.telegram.common.errors import InvalidPassword
 from . import templates
 
 
@@ -39,6 +39,10 @@ async def register_command_handler(
     message: Message,
     state: FSMContext
 ) -> None:
+    state_data = await state.get_data()
+    if state_data.get("user_id") is not None:
+        raise UserIsAlreadyLoggedIn()
+
     await message.answer(templates.set_username())
     await state.set_state(RegisterStatesGroup.set_username)
 
@@ -55,7 +59,7 @@ async def register_command_handler_set_username(
     res = interactor.handle_check_username_existence_query(query)
 
     if res.exists:
-        await message.answer()
+        await message.answer(templates.username_exists(username))
     else:
         await state.update_data(username=username)
         await message.answer(templates.set_password())
@@ -68,17 +72,18 @@ async def register_command_handler_set_password(
     interactor: TelegramInteractor
 ) -> None:
     if (password := message.text) is None:
-        raise InvalidPassword()
+        raise InvalidPasswordError()
     
     state_data = await state.get_data()
     command = RegisterCommand(
         username=state_data.get("username"),
         password=password
     )
-    interactor.handle_register_command(command)
+    res = interactor.handle_register_command(command)
 
+    await state.update_data(user_id=res.user_id.hex, password=None)
     await message.answer(templates.successfully_registred())
-    await state.clear()
+    await state.set_state(None)
 
 
 

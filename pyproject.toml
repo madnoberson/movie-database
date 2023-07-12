@@ -25,6 +25,7 @@ pytest = "^7.3.2"
 
 [tool.poetry.group.telegram.dependencies]
 aiogram = "^3.0.0b5"
+redis = "^4.6.0"
 
 
 [tool.poetry.group.cli.dependencies]

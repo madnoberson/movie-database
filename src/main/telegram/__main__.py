@@ -15,7 +15,7 @@ async def main() -> None:
     config = Config()
 
     bot = create_bot(config.telegram)
-    dp = create_dipatcher(config.postgres)
+    dp = create_dipatcher(config.postgres, config.redis)
 
     await dp.start_polling(bot)
 
