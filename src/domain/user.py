@@ -8,7 +8,7 @@ class User:
 
     id: UUID
     username: str
-    hashed_password: str
+    encoded_password: str
     created_at: datetime
 
     @classmethod
@@ -16,12 +16,12 @@ class User:
         cls,
         user_id: UUID,
         username: str,
-        hashed_password: str,
+        encoded_password: str,
         created_at: datetime
     ) -> "User":
         return User(
             id=user_id,
             username=username,
-            hashed_password=hashed_password,
+            encoded_password=encoded_password,
             created_at=created_at
         )
