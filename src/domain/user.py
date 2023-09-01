@@ -11,6 +11,11 @@ class User:
     username: str
     encoded_password: str
     created_at: datetime
+    updated_at: datetime
+    is_confirmed: bool
+    is_active: bool
+
+    avatar_url: str | None
 
     @classmethod
     def create(
@@ -19,6 +24,7 @@ class User:
     ) -> "User":
         return User(
             id=user_id, email=email, username=username,
-            encoded_password=encoded_password, created_at=created_at
+            encoded_password=encoded_password, created_at=created_at,
+            is_confirmed=False, is_active=True, avatar_url=None
         )
     
