@@ -7,21 +7,18 @@ from uuid import UUID
 class User:
 
     id: UUID
+    email: str
     username: str
     encoded_password: str
     created_at: datetime
 
     @classmethod
     def create(
-        cls,
-        user_id: UUID,
-        username: str,
-        encoded_password: str,
-        created_at: datetime
+        cls, user_id: UUID, email: str, username: str,
+        encoded_password: str, created_at: str
     ) -> "User":
         return User(
-            id=user_id,
-            username=username,
-            encoded_password=encoded_password,
-            created_at=created_at
+            id=user_id, email=email, username=username,
+            encoded_password=encoded_password, created_at=created_at
         )
+    
