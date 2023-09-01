@@ -28,3 +28,5 @@ class User:
             is_confirmed=False, is_active=True, avatar_url=None
         )
     
+    def confirm(self) -> None:
+        self.is_confirmed = True
