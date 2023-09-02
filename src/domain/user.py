@@ -31,6 +31,9 @@ class User:
     def confirm(self) -> None:
         self.is_confirmed = True
     
+    def deactivate(self) -> None:
+        self.is_active = False
+    
     def update_email(self, email: str, updated_at: datetime) -> None:
         self.email = email
         self.updated_at = updated_at
