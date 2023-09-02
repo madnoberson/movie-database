@@ -33,8 +33,16 @@ class User:
     
     def update_email(self, email: str, updated_at: datetime) -> None:
         self.email = email
-        self.is_confirmed = False
-    
+        self.updated_at = updated_at
+
+    def update_password(self, encoded_password: str, updated_at: datetime) -> None:
+        self.encoded_password = encoded_password
+        self.updated_at = updated_at
+
     def update_username(self, username: str, updated_at: datetime) -> None:
         self.username = username
+        self.updated_at = updated_at
+    
+    def update_avatar(self, avatar_url: str, updated_at: datetime) -> None:
+        self.avatar_url = avatar_url
         self.updated_at = updated_at

@@ -10,20 +10,21 @@ from . import errors
 from . import interfaces
 
 
-logger = getLogger("UpdateEmail")
+logger = getLogger("UpdatePassword")
 
 
 @dataclass(frozen=True, slots=True)
-class UpdateEmail(mixins.SupportsGetAndCacheUser):
+class UpdatePassword(mixins.SupportsGetAndCacheUser):
 
     db_gateway: interfaces.DatabaseGateway
     cb_gateway: interfaces.CachebaseGateway
+    tq_gateway: interfaces.TaskQueueGateway
+    password_encoder: interfaces.PasswordEncoder
 
     @utils.handle_unexpected_exceptions(
-        logger, errors.UserDoesNotExistError, errors.UserNotActiveError,
-        errors.EmailIsSameAsPreviousError
+        logger, errors.UserDoesNotExistError, errors.UserNotActiveError
     )
-    async def __call__(self, data: dto.UpdateEmailDTO) -> None:
+    async def __call__(self, data: dto.UpdatePasswordDTO) -> None:
         # 1.Get user
         user = await self.get_and_cache_user(
             db_gateway=self.db_gateway, cb_gateway=self.cb_gateway,
@@ -36,15 +37,19 @@ class UpdateEmail(mixins.SupportsGetAndCacheUser):
         if not user.is_active:
             raise errors.UserNotActiveError()
         
-        # 3.Update email
-        user.update_email(
-            email=data.email, updated_at=datetime.utcnow()
+        # 3.Update password
+        encoded_password = await self.password_encoder.encode(
+            plain_password=data.password
+        )
+        user.update_password(
+            encoded_password=encoded_password, updated_at=datetime.utcnow()
         )
 
-        # 4.Save changes
+        # 4.Save changes and enqueue `send_password_updated_email` task
         await asyncio.gather(
-            self.db_gateway.update_user(user), self.cb_gateway.update_user(user)
+            self.db_gateway.update_user(user), self.cb_gateway.update_user(),
+            self.tq_gateway.enqueue_send_password_updated_email_task(email=user.email)
         )
         await asyncio.gather(
-            self.db_gateway.commit(), self.cb_gateway.commit()
+            self.db_gateway.commit(), self.cb_gateway.commit(), self.tq_gateway.commit()
         )

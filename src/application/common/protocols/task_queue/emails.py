@@ -22,3 +22,10 @@ class SupportsEnqueueSendUpdateEmailConfirmationEmailTask(Protocol):
     @abstractmethod
     async def enqueue_send_update_email_confirmation_email_task(self, email: str) -> None:
         raise NotImplementedError
+
+
+class SupportsEnqueueSendPasswordUpdatedEmailTask(Protocol):
+
+    @abstractmethod
+    async def enqueue_send_password_updated_email_task(self, email: str) -> None:
+        raise NotImplementedError

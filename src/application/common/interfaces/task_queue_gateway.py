@@ -9,6 +9,7 @@ class DatabaseGateway(
     emails.SupportsEnqueueSendConfirmationEmailTask,
     emails.SupportsEnqueueSendGreetingEmailTask,
     emails.SupportsEnqueueSendUpdateEmailConfirmationEmailTask,
+    emails.SupportsEnqueueSendPasswordUpdatedEmailTask,
     Protocol
 ):
     ...
