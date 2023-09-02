@@ -30,3 +30,11 @@ class User:
     
     def confirm(self) -> None:
         self.is_confirmed = True
+    
+    def update_email(self, email: str, updated_at: datetime) -> None:
+        self.email = email
+        self.is_confirmed = False
+    
+    def update_username(self, username: str, updated_at: datetime) -> None:
+        self.username = username
+        self.updated_at = updated_at

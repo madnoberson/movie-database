@@ -8,6 +8,7 @@ class DatabaseGateway(
     atomacity.SupportsCommit,
     emails.SupportsEnqueueSendConfirmationEmailTask,
     emails.SupportsEnqueueSendGreetingEmailTask,
+    emails.SupportsEnqueueSendUpdateEmailConfirmationEmailTask,
     Protocol
 ):
     ...
