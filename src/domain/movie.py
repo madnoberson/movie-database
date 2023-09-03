@@ -54,6 +54,7 @@ class Movie:
     producer_ids: Sequence[UUID]
     composer_ids: Sequence[UUID]
     editor_ids: Sequence[UUID]
+    actors_ids: Sequence[UUID]
     genres: Sequence[MovieGenreEnum]
     rating_count: int
     created_at: datetime
@@ -73,19 +74,21 @@ class Movie:
         cls, movie_id: UUID, title: str, release_date: date,
         director_ids: Sequence[UUID], writer_ids: Sequence[UUID],
         producer_ids: Sequence[UUID], composer_ids: Sequence[UUID],
-        editor_ids: Sequence[UUID], genres: Sequence[MovieGenreEnum],
-        created_at: datetime, status: MovieStatusEnum | None = None,
-        poster_url: str | None = None, mpaa: MPAAEnum | None = None,
-        budget: int | None = None, revenue: int | None = None,
-        kinopoisk_rating: float | None = None, imdb_rating: float | None = None
+        editor_ids: Sequence[UUID], actor_ids: Sequence[UUID],
+        genres: Sequence[MovieGenreEnum], created_at: datetime,
+        status: MovieStatusEnum | None = None, poster_url: str | None = None,
+        mpaa: MPAAEnum | None = None, budget: int | None = None,
+        revenue: int | None = None, kinopoisk_rating: float | None = None,
+        imdb_rating: float | None = None
     ) -> "Movie":
         return Movie(
             id=movie_id, title=title, release_date=release_date,
             director_ids=director_ids, writer_ids=writer_ids,
             producer_ids=producer_ids, composer_ids=composer_ids,
-            editor_ids=editor_ids, genres=genres, rating_count=0,
-            created_at=created_at, status=status, poster_url=poster_url,
-            mpaa=mpaa, budget=budget, revenue=revenue, rating=None,
+            editor_ids=editor_ids, actors_ids=actor_ids,
+            genres=genres, rating_count=0, created_at=created_at,
+            status=status, poster_url=poster_url, mpaa=mpaa,
+            budget=budget, revenue=revenue, rating=None,
             kinopoisk_rating=kinopoisk_rating, imdb_rating=imdb_rating,
             updated_at=None
         )
