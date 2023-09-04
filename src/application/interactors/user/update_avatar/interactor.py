@@ -43,7 +43,7 @@ class UpdateAvatar(mixins.SupportsGetAndCacheUser):
         
         # 4.Update user avatar
         user.update_avatar(
-            avatar_url=f"{user.id.hex}-avatar", updated_at=datetime.utcnow()
+            avatar_url=f"{user.id.hex}-user_avatar", updated_at=datetime.utcnow()
         )
 
         # 5.Save changes
