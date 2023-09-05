@@ -3,7 +3,7 @@ from datetime import datetime
 from uuid import UUID
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(slots=True)
 class User:
 
     id: UUID
