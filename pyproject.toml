@@ -4,7 +4,6 @@ version = "0.1.0"
 description = ""
 authors = ["Egor <baseddepartmentzx77@gmail.com>"]
 readme = "README.md"
-packages = [{include = "movie_database"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -13,6 +12,11 @@ python = "^3.10"
 [tool.poetry.group.telegram-admin.dependencies]
 asyncpg = "^0.28.0"
 aiobcrypt = "^3.2.0.post1"
+aiogram = "^3.0.0b5"
+
+
+[tool.poetry.group.migration.dependencies]
+yoyo-migrations = "^8.2.0"
 
 [build-system]
 requires = ["poetry-core"]
