@@ -15,4 +15,7 @@ async def set_username(message: Message, state: FSMContext) -> None:
     """Set username for `CreateProfile` use case"""
     ...
 
+
+async def confirm(callback: CallbackQuery, state: FSMContext) -> None:
+    ...
     
