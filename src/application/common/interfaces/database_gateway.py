@@ -8,7 +8,7 @@ from src.application.common.protocols.database import profile
 class DatabaseGateway(
     atomacity.SupportsCommit,
 
-    user.SupportsEnsureUserDoesNotExist,
+    user.SupportsEnsureUserExists,
     user.SupportsSaveUser,
     user.SupportsGetUser,
     user.SupportsUpdateUser,

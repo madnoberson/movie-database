@@ -5,10 +5,10 @@ from uuid import UUID
 from src.domain.user import User
 
 
-class SupportsEnsureUserDoesNotExist(Protocol):
+class SupportsEnsureUserExists(Protocol):
 
     @abstractmethod
-    async def ensure_user_does_not_exist(self, email: str) -> bool:
+    async def ensure_user_exists(self, email: str) -> bool:
         raise NotImplementedError
 
 

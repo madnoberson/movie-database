@@ -16,7 +16,7 @@ class AsyncpgDatabaseGateway(DatabaseGateway):
     connection: Connection
     transaction: Transaction
 
-    async def ensure_user_does_not_exist(self, email: str) -> bool:
+    async def ensure_user_exists(self, email: str) -> bool:
         data = await self.connection.fetchval(
             "SELECT 1 FROM users u WHERE u.email = $1 LIMIT 1", email
         )
