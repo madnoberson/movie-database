@@ -1,8 +1,25 @@
+from typing import Protocol, overload
 from abc import abstractmethod
-from typing import Protocol
 from uuid import UUID
 
 from src.domain.profile import Profile
+
+
+class SupportsCheckProfileExists(Protocol):
+
+    @overload
+    async def check_profile_exists(self, username: str) -> bool:
+        raise NotImplementedError
+    
+    @overload
+    async def check_profile_exists(self, profile_id: UUID) -> bool:
+        raise NotImplementedError
+    
+    @abstractmethod
+    async def check_profile_exists(
+        self, username: str | None = None, profile_id: UUID | None = None
+    ) -> bool:
+        raise NotImplementedError
 
 
 class SupportsSaveProfile(Protocol):

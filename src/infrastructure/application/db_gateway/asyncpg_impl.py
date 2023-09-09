@@ -7,7 +7,7 @@ from asyncpg.transaction import Transaction
 from src.domain.user import User
 from src.domain.profile import Profile
 from src.application.common.interfaces.database_gateway import DatabaseGateway
-from .utils import as_domain_model
+from .utils import as_domain_model, ensure_args
 
 
 @dataclass(frozen=True, slots=True)
@@ -16,10 +16,20 @@ class AsyncpgDatabaseGateway(DatabaseGateway):
     connection: Connection
     transaction: Transaction
 
-    async def check_user_exists(self, email: str) -> bool:
-        data = await self.connection.fetchval(
-            "SELECT 1 FROM users u WHERE u.email = $1 LIMIT 1", email
-        )
+    async def check_user_exists(
+        self, email: str | None = None, user_id: UUID | None = None
+    ) -> bool:
+        ensure_args(email, user_id)
+
+        if email is not None:
+            data = await self.connection.fetchval(
+                "SELECT 1 FROM users u WHERE u.email = $1 LIMIT 1", email
+            )
+        else:
+            data = await self.connection.fetchval(
+                "SELEECT 1 FROM users u WHERE u.id = $1 LIMIT 1", user_id
+            )
+
         return bool(data)
     
     async def save_user(self, user: User) -> None:
@@ -44,6 +54,22 @@ class AsyncpgDatabaseGateway(DatabaseGateway):
             """,
             user.email, user.encoded_password, user.id
         )
+    
+    async def check_profile_exists(
+        self, username: str | None = None, profile_id: UUID | None = None
+    ) -> bool:
+        ensure_args(username, profile_id)
+
+        if username is not None:
+            data = await self.connection.fetchval(
+                "SELECT 1 FROM profiles p WHERE p.username = $1 LIMIT 1", username
+            )
+        else:
+            data = await self.connection.fetchval(
+                "SELECT 1 FROM profiles p WHERE p.id = $1 LIMIT 1", profile_id
+            )
+        
+        return bool(data)
 
     async def save_profile(self, profile: Profile) -> None:
         await self.connection.execute(

@@ -1,25 +1,18 @@
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
-from aiogram.fsm.state import StatesGroup, State
 
 from src.application.interactors.user.create_user.dto import CreateUserDTO
 from src.application.interactors.queries.user.check_email_exists.dto import CheckEmailExistsDTO
 from src.presentation.telegram_admin.common.ioc import TelegramAdminIoC
+from . import states
 from . import templates
 from . import keyboards
-
-
-class CreateUserStates(StatesGroup):
-
-    set_email = State()
-    set_password = State()
-    confirmation = State()
     
 
 async def create_user(message: Message, state: FSMContext) -> None:
     """Entrypoint for `CreateUser` use case dialog"""
     await message.answer(text=templates.set_email())
-    await state.set_state(CreateUserStates.set_email)
+    await state.set_state(states.CreateUserStates.set_email)
 
 
 async def set_email(message: Message, ioc: TelegramAdminIoC, state: FSMContext) -> None:
@@ -31,7 +24,7 @@ async def set_email(message: Message, ioc: TelegramAdminIoC, state: FSMContext) 
     else:
         await message.answer(text=templates.set_password())
         await state.update_data(email=message.text)
-        await state.set_state(CreateUserStates.set_password)
+        await state.set_state(states.CreateUserStates.set_password)
 
 
 async def set_password(message: Message, state: FSMContext) -> None:
@@ -40,7 +33,7 @@ async def set_password(message: Message, state: FSMContext) -> None:
     text = templates.confirm(email=data["email"], password=message.text)
     await message.answer(text=text, reply_markup=keyboards.confirm())
     await state.update_data(password=message.text)
-    await state.set_state(CreateUserStates.confirmation)
+    await state.set_state(states.CreateUserStates.confirmation)
 
 
 async def confirm(callback: CallbackQuery, ioc: TelegramAdminIoC, state: FSMContext) -> None:

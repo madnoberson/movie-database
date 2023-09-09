@@ -1,5 +1,5 @@
+from typing import Protocol, overload
 from abc import abstractmethod
-from typing import Protocol
 from uuid import UUID
 
 from src.domain.user import User
@@ -7,8 +7,18 @@ from src.domain.user import User
 
 class SupportsCheckUserExists(Protocol):
 
-    @abstractmethod
+    @overload
     async def check_user_exists(self, email: str) -> bool:
+        raise NotImplementedError
+    
+    @overload
+    async def check_user_exists(self, user_id: UUID) -> bool:
+        raise NotImplementedError
+    
+    @abstractmethod
+    async def check_user_exists(
+        self, email: str | None = None, user_id: UUID | None = None
+    ) -> bool:
         raise NotImplementedError
 
 

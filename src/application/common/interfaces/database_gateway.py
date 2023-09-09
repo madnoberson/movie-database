@@ -13,6 +13,7 @@ class DatabaseGateway(
     user.SupportsGetUser,
     user.SupportsUpdateUser,
 
+    profile.SupportsCheckProfileExists,
     profile.SupportsSaveProfile,
     profile.SupportsGetProfile,
     profile.SupportsUpdateProfile,
