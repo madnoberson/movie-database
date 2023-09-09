@@ -6,7 +6,7 @@ __all__ = ["TelegramConfig", "PostgresConfig", "Config"]
 
 
 def getenv(key: str, default: Any = None) -> str | None:
-    return os.getenv(key, default) or os.getenv(key.upper(), default)
+    return os.getenv(key) or os.getenv(key.upper()) or default
 
 
 class TelegramConfig:
