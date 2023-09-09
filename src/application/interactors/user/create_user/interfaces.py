@@ -7,7 +7,7 @@ from src.application.common.interfaces.password_encoder import PasswordEncoder
 
 class DatabaseGateway(
     atomacity_db.SupportsCommit,
-    user_db.SupportsEnsureUserExists,
+    user_db.SupportsCheckUserExists,
     user_db.SupportsSaveUser,
     Protocol
 ):

@@ -3,6 +3,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.state import StatesGroup, State
 
 from src.application.interactors.user.create_user.dto import CreateUserDTO
+from src.application.interactors.queries.user.check_email_exists.dto import CheckEmailExistsDTO
 from src.presentation.telegram_admin.common.ioc import TelegramAdminIoC
 from . import templates
 from . import keyboards
@@ -21,11 +22,16 @@ async def create_user(message: Message, state: FSMContext) -> None:
     await state.set_state(CreateUserStates.set_email)
 
 
-async def set_email(message: Message, state: FSMContext) -> None:
+async def set_email(message: Message, ioc: TelegramAdminIoC, state: FSMContext) -> None:
     """Set email for `CreateUser` use case"""
-    await message.answer(text=templates.set_password())
-    await state.update_data(email=message.text)
-    await state.set_state(CreateUserStates.set_password)
+    data = CheckEmailExistsDTO(email=message.text)
+    result = await ioc.check_email_exists(data)
+    if result.email_exists:
+        await message.answer(templates.email_exists())
+    else:
+        await message.answer(text=templates.set_password())
+        await state.update_data(email=message.text)
+        await state.set_state(CreateUserStates.set_password)
 
 
 async def set_password(message: Message, state: FSMContext) -> None:

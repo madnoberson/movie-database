@@ -16,7 +16,7 @@ class CreateUser:
 
     async def __call__(self, data: dto.CreateUserDTO) -> dto.CreateUserResultDTO:
         # 1.Ensure user doesn't exist
-        user_exists = await self.db_gateway.ensure_user_exists(email=data.email)
+        user_exists = await self.db_gateway.check_user_exists(email=data.email)
         if user_exists:
             raise exceptions.UserAlreadyExistsError()
         

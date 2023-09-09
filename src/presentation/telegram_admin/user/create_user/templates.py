@@ -5,6 +5,10 @@ def set_email() -> str:
     return "<b>Email:</b>"
 
 
+def email_exists() -> str:
+    return "<b>Email already exists</b>"
+
+
 def set_password() -> str:
     return "<b>Password:</b>"
 

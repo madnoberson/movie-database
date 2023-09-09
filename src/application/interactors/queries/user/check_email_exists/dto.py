@@ -2,12 +2,12 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True, slots=True)
-class EnsureEmailExistsDTO:
+class CheckEmailExistsDTO:
 
     email: str
 
 
 @dataclass(frozen=True, slots=True)
-class EnsureEmailExistsResultDTO:
+class CheckEmailExistsResultDTO:
 
     email_exists: bool
