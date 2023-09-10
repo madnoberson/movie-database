@@ -15,17 +15,20 @@ from src.application.interactors.queries.profile.check_username_exists.interacto
 from src.presentation.telegram_admin.common.interactor_factory import Interactor, InteractorFactory
 
 
-class DatabaseGatewayFactory(ABC):
+__all__ = ["DatabaseGatewayFactory", "setup_interactor_factories"]
 
-    @abstractmethod
-    async def create_gateway(self) -> AsyncIterator[DatabaseGateway]:
-        raise NotImplementedError
-    
 
 class GatewayFactory(ABC):
 
     @abstractmethod
     async def create_gateway(self) -> AsyncContextManager:
+        raise NotImplementedError
+
+
+class DatabaseGatewayFactory(GatewayFactory, ABC):
+
+    @abstractmethod
+    async def create_gateway(self) -> AsyncContextManager[DatabaseGateway]:
         raise NotImplementedError
 
 
