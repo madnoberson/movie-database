@@ -30,7 +30,7 @@ def confirmed(user_id: UUID, email: str, password: str) -> str:
         "User was successfully created\n\n"
         f"User id: {user_id}\n"
         f"Email: {email}\n"
-        f"Password: {password}\n"
+        f"Password: <span class='tg-spoiler'>{password}</span>\n"
         "</b>"
     )
 
