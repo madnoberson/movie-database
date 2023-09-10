@@ -28,7 +28,7 @@ def confirmed(user_id: UUID, email: str, password: str) -> str:
     return (
         "<b>"
         "User was successfully created\n\n"
-        f"Id: {user_id}\n"
+        f"User id: {user_id}\n"
         f"Email: {email}\n"
         f"Password: {password}\n"
         "</b>"

@@ -18,9 +18,10 @@ async def create_user(message: Message, state: FSMContext) -> None:
 
 
 async def set_email(
-    message: Message, check_email_exists: InteractorFactory[CheckEmailExists], state: FSMContext
+    message: Message, check_email_exists: InteractorFactory[CheckEmailExists],
+    state: FSMContext
 ) -> None:
-    """Set email for `CreateUser` use case"""
+    """Sets email for `CreateUser` use case"""
     async with check_email_exists.create_interactor() as check_email_exists:
         dto = CheckEmailExistsDTO(email=message.text)
         result = await check_email_exists(dto)
@@ -33,7 +34,7 @@ async def set_email(
 
 
 async def set_password(message: Message, state: FSMContext) -> None:
-    """Set password for `CreateUser` use case"""
+    """Sets password for `CreateUser` use case"""
     data = await state.get_data()
     text = templates.confirm(email=data["email"], password=message.text)
     await message.answer(text=text, reply_markup=keyboards.confirm())
@@ -44,20 +45,22 @@ async def set_password(message: Message, state: FSMContext) -> None:
 async def confirm(
     callback: CallbackQuery, create_user: InteractorFactory[CreateUser], state: FSMContext
 ) -> None:
-    """Execute of `CreateUser` use case and end the dialog"""
+    """Executes `CreateUser` use case and ends the dialog"""
     async with create_user.create_interactor() as create_user:
         data = await state.get_data()
         dto = CreateUserDTO(email=data["email"], password=data["password"])
         result = await create_user(dto)
-
-    text = templates.confirmed(user_id=result.user_id, email=data["email"], password=data["password"])
-    await callback.message.edit_text(text=text)
+    text = templates.confirmed(
+        user_id=result.user_id, email=data["email"], password=data["password"]
+    )
+    await callback.message.edit_text(text=text, reply_markup=keyboards.create_profile())
     await callback.answer()
-    await state.clear()
+    await state.update_data(user_id=result.user_id)
+    await state.set_state(None)
 
 
 async def cancel(callback: CallbackQuery, state: FSMContext) -> None:
-    """Cancel preparing for `CreateUser` use case and end the dialog"""
+    """Cancels preparing for `CreateUser` use case and end the dialog"""
     await callback.message.edit_text(templates.canceled())
     await callback.answer()
     await state.clear()

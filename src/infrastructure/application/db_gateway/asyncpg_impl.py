@@ -27,7 +27,7 @@ class AsyncpgDatabaseGateway(DatabaseGateway):
             )
         else:
             data = await self.connection.fetchval(
-                "SELEECT 1 FROM users u WHERE u.id = $1 LIMIT 1", user_id
+                "SELECT 1 FROM users u WHERE u.id = $1 LIMIT 1", user_id
             )
 
         return bool(data)
