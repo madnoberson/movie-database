@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 
 from asyncpg import Pool
 
-from src.main.telegram_admin.ioc import DatabaseGatewayFactory
+from src.main.telegram_admin.interactor_factories import DatabaseGatewayFactory
 from src.infrastructure.application.db_gateway.asyncpg_impl import AsyncpgDatabaseGateway
 
 
