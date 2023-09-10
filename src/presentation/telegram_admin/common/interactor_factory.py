@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic, Callable, AsyncContextManager
+from typing import TypeVar, Generic, AsyncContextManager
 from abc import ABC, abstractmethod
 
 

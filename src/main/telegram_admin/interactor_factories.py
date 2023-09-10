@@ -66,34 +66,27 @@ class InteractorFactoryImpl(InteractorFactory):
         await asyncio.gather(*coros)
         
 
-def create_interactor_factory(
-    interactor: Interactor, db_gateway_factory: DatabaseGatewayFactory,
-    password_encoder: PasswordEncoder
-) -> InteractorFactoryImpl:
-    dependencies_override = {"password_encoder": password_encoder}
-    factories_override = {"db_gateway": db_gateway_factory}
-
-    dependencies = {}
-    factories = {}
-    for dependency_name in interactor.__annotations__.keys():
-        if dependency_name in factories_override:
-            factories.update({dependency_name: factories_override[dependency_name]})
-        elif dependency_name in dependencies_override:
-            dependencies.update({dependency_name: dependencies_override[dependency_name]})
-    
-    return InteractorFactoryImpl(interactor=interactor, factories=factories, dependencies=dependencies)
-
-
 def setup_interactor_factories(
     dispatcher: Dispatcher, db_gateway_factory: DatabaseGatewayFactory,
     password_encoder: PasswordEncoder
 ) -> None:
+    factory_overrides = {"db_gateway": db_gateway_factory}
+    dependency_overrides = {"password_encoder": password_encoder}
+    
+    def create_interactor_factory(interactor: Interactor) -> InteractorFactoryImpl:
+        dependencies, factories = {}, {}
+        for dependency_name in interactor.__annotations__.keys():
+            if dependency_name in factory_overrides:
+                factories.update({dependency_name: factory_overrides[dependency_name]})
+            elif dependency_name in dependency_overrides:
+                dependencies.update({dependency_name: dependency_overrides[dependency_name]})
+        return InteractorFactoryImpl(
+            interactor=interactor, factories=factories, dependencies=dependencies
+        )
+
     interactors = {
         "create_user": CreateUser, "create_profile": CreateProfile,
         "check_email_exists": CheckEmailExists, "check_username_exists": CheckUsernameExists
     }
     for interactor_factory_name, interactor in interactors.items():
-        dispatcher[interactor_factory_name] = create_interactor_factory(
-            interactor=interactor, db_gateway_factory=db_gateway_factory,
-            password_encoder=password_encoder
-        )
+        dispatcher[interactor_factory_name] = create_interactor_factory(interactor)
