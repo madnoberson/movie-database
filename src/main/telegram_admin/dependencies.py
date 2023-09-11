@@ -1,7 +1,7 @@
 from aiogram import Dispatcher
 from asyncpg import create_pool
 
-from src.infrastructure.presentation.db_gateway_factory.asyncpg_impl import AsyncpgDatabaseGatewayFactory
+from src.infrastructure.presentation.common.db_gateway_factory.asyncpg_impl import AsyncpgDatabaseGatewayFactory
 from src.infrastructure.application.password_encoder.aiobcrypt_impl import AiobcryptPasswordEncoder
 from .interactor_factories import setup_interactor_factories
 from .config import PostgresConfig

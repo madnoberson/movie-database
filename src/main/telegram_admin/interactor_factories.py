@@ -1,35 +1,20 @@
 import asyncio
-from typing import AsyncIterator, AsyncContextManager
+from typing import AsyncIterator
 from dataclasses import dataclass, field
-from abc import ABC, abstractmethod
 from contextlib import asynccontextmanager
 
 from aiogram import Dispatcher
 
-from src.application.common.interfaces.database_gateway import DatabaseGateway
 from src.application.common.interfaces.password_encoder import PasswordEncoder
 from src.application.interactors.user.create_user.interactor import CreateUser
 from src.application.interactors.profile.create_profile.interactor import CreateProfile
 from src.application.interactors.queries.user.check_email_exists.interactor import CheckEmailExists
 from src.application.interactors.queries.profile.check_username_exists.interactor import CheckUsernameExists
 from src.presentation.telegram_admin.common.interactor_factory import Interactor, InteractorFactory
+from src.main.common.gateway_factories import GatewayFactory, DatabaseGatewayFactory
 
 
 __all__ = ["DatabaseGatewayFactory", "setup_interactor_factories"]
-
-
-class GatewayFactory(ABC):
-
-    @abstractmethod
-    async def create_gateway(self) -> AsyncContextManager:
-        raise NotImplementedError
-
-
-class DatabaseGatewayFactory(GatewayFactory, ABC):
-
-    @abstractmethod
-    async def create_gateway(self) -> AsyncContextManager[DatabaseGateway]:
-        raise NotImplementedError
 
 
 @dataclass(frozen=True, slots=True)
@@ -41,14 +26,24 @@ class InteractorFactoryImpl(InteractorFactory):
 
     @asynccontextmanager
     async def create_interactor(self) -> AsyncIterator[Interactor]:
+        """
+        Setups dependencies to interactor and returns it.
+        
+        Example:
+
+        .. code-block::python
+        async with interactor_factory.create_interactor() as execute:
+            await exectue(InteractorDTO()) 
+        """
         try:
-            gateways = await self.create_gateways()
+            gateways = await self.open_gateways()
             self.dependencies.update(gateways)
             yield self.interactor(**self.dependencies)
         finally:
             await self.close_gateways()
     
-    async def create_gateways(self) -> dict[str, object]:
+    async def open_gateways(self) -> dict[str, object]:
+        """Creates gateways from gateway factories and returns them"""
         gateways = {}
         for factory_name, factory in self.factories.items():
             context_manager = factory.create_gateway()
@@ -59,6 +54,7 @@ class InteractorFactoryImpl(InteractorFactory):
         return gateways
 
     async def close_gateways(self) -> None:
+        """Closes opened gateways"""
         coros = [
             context_manager.__aexit__(None, None, None)
             for context_manager in self.factories.values()
@@ -74,6 +70,7 @@ def setup_interactor_factories(
     dependency_overrides = {"password_encoder": password_encoder}
     
     def create_interactor_factory(interactor: Interactor) -> InteractorFactoryImpl:
+        """Returns dependency-injected interactor factory"""
         dependencies, factories = {}, {}
         for dependency_name in interactor.__annotations__.keys():
             if dependency_name in factory_overrides:
