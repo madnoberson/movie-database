@@ -11,7 +11,8 @@ async def setup_dependencies(postgres_config: PostgresConfig, dispatcher: Dispat
     # 1.Setup interactor factories
     pool = await create_pool(dsn=postgres_config.dsn)
     setup_interactor_factories(
-        dispatcher=dispatcher, db_gateway_factory=AsyncpgDatabaseGatewayFactory(pool),
+        dispatcher=dispatcher, interactors=[],
+        db_gateway_factory=AsyncpgDatabaseGatewayFactory(pool),
         password_encoder=AiobcryptPasswordEncoder()
     )
 

@@ -6,15 +6,11 @@ from contextlib import asynccontextmanager
 from aiogram import Dispatcher
 
 from src.application.common.interfaces.password_encoder import PasswordEncoder
-from src.application.interactors.user.create_user.interactor import CreateUser
-from src.application.interactors.profile.create_profile.interactor import CreateProfile
-from src.application.interactors.queries.user.check_email_exists.interactor import CheckEmailExists
-from src.application.interactors.queries.profile.check_username_exists.interactor import CheckUsernameExists
 from src.presentation.telegram_admin.common.interactor_factory import Interactor, InteractorFactory
 from src.main.common.gateway_factories import GatewayFactory, DatabaseGatewayFactory
 
 
-__all__ = ["DatabaseGatewayFactory", "setup_interactor_factories"]
+__all__ = ["setup_interactor_factories"]
 
 
 @dataclass(frozen=True, slots=True)
@@ -32,8 +28,10 @@ class InteractorFactoryImpl(InteractorFactory):
         Example:
 
         .. code-block::python
-        async with interactor_factory.create_interactor() as execute:
-            await exectue(InteractorDTO()) 
+        from path_to_some_interactor_dtos import SomeInteractorDTO
+
+        async with some_interactor_factory.create_interactor() as execute:
+            await exectue(SomeInteractorDTO()) 
         """
         try:
             gateways = await self.open_gateways()
@@ -50,7 +48,7 @@ class InteractorFactoryImpl(InteractorFactory):
             gateway = await context_manager.__aenter__()
             gateways.update({factory_name: gateway})
             self.factories.update({factory_name: context_manager})
-        
+            
         return gateways
 
     async def close_gateways(self) -> None:
@@ -63,14 +61,45 @@ class InteractorFactoryImpl(InteractorFactory):
         
 
 def setup_interactor_factories(
-    dispatcher: Dispatcher, db_gateway_factory: DatabaseGatewayFactory,
-    password_encoder: PasswordEncoder
+    dispatcher: Dispatcher, interactors: list[Interactor],
+    db_gateway_factory: DatabaseGatewayFactory, password_encoder: PasswordEncoder
 ) -> None:
-    factory_overrides = {"db_gateway": db_gateway_factory}
-    dependency_overrides = {"password_encoder": password_encoder}
+    """
+    Setup dependency-injected interactor factories to dispatcher.
+    For Example `SomeInteractor` will be wrapped in `InteractorFactory`
+    and can be used in any aiogram function like this:
+
+    .. code-block::python
+    from path_to_some_interactor import SomeInteractor
+    from path_to_some_interactor_dtos import SomeInteractorDTO
+
+    async def aiogram_function(
+        message: Message,
+        some_interactor_factory: InteractorFactory[SomeInteractor]
+        # Note that `SomeInteractor` has become `some_interactor_factory`
+    ) -> None:
+        async with some_interactor_factory.create_interactor() as execute:
+            await execute(SomeInteractorDTO())
+    """
     
+    def create_interactor_factory_name(interactor: Interactor) -> str:
+        """
+        Converts pascal case `interactor` name into snake case with 'interactor_factory' at the end.
+        For example `SomeInteractor` will become `some_interactor_factory`
+        """
+        interactor_name = interactor.__name__[0].lower() + interactor.__name__[1:]
+        interactor_factory_name = ""
+        for letter in interactor_name:
+            if letter.isupper():
+                interactor_factory_name += f"_{letter}"
+                continue
+            interactor_factory_name += letter
+        return interactor_name + "_interactor_factory"
+
     def create_interactor_factory(interactor: Interactor) -> InteractorFactoryImpl:
         """Returns dependency-injected interactor factory"""
+        factory_overrides = {"db_gateway": db_gateway_factory}
+        dependency_overrides = {"password_encoder": password_encoder}
         dependencies, factories = {}, {}
         for dependency_name in interactor.__annotations__.keys():
             if dependency_name in factory_overrides:
@@ -81,9 +110,7 @@ def setup_interactor_factories(
             interactor=interactor, factories=factories, dependencies=dependencies
         )
 
-    interactors = {
-        "create_user": CreateUser, "create_profile": CreateProfile,
-        "check_email_exists": CheckEmailExists, "check_username_exists": CheckUsernameExists
-    }
-    for interactor_factory_name, interactor in interactors.items():
-        dispatcher[interactor_factory_name] = create_interactor_factory(interactor)
+    for interactor in interactors:
+        name = create_interactor_factory_name(interactor)
+        factory = create_interactor_factory(interactor)
+        dispatcher[name] = factory
