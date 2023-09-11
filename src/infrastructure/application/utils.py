@@ -18,7 +18,7 @@ def as_domain_model(
         * Converts `mapping` into `model`.
     ### Supports:
         * Converting `str` into `UUID`
-        * Converting `Sequence[str | int]` into `IntEnum`
+        * Converting `list[str | int]` into `IntEnum`
         * Converting `str` into `datetime`
     """
 
@@ -40,10 +40,11 @@ def as_domain_model(
     for key, value in mapping.items():
         if key not in model_annotations:
             continue
-        if type(model_annotations[key]) == type(value):
+        if model_annotations[key] == type(value):
+            model_data.update({key: value})
             continue
         adapted_value = adapt(value, model_annotations[key])
-        model_data.update(**{key: adapted_value})
+        model_data.update({key: adapted_value})
     
     return model(**model_data)
 
