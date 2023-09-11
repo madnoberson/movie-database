@@ -7,7 +7,7 @@ from asyncpg.transaction import Transaction
 from src.domain.user import User
 from src.domain.profile import Profile
 from src.application.common.interfaces.database_gateway import DatabaseGateway
-from .utils import as_domain_model, ensure_args
+from src.infrastructure.application.utils import as_domain_model, ensure_args
 
 
 @dataclass(frozen=True, slots=True)

@@ -4,7 +4,7 @@ from enum import IntEnum
 from uuid import UUID
 
 
-__all__ = ["as_domain_model"]
+__all__ = ["as_domain_model", "ensure_args"]
 
 
 DomainModel = object
@@ -18,7 +18,7 @@ def as_domain_model(
         * Converts `mapping` into `model`.
     ### Supports:
         * Converting `str` into `UUID`
-        * Converting `list[str | int]` into `IntEnum`
+        * Converting `Sequence[str | int]` into `IntEnum`
         * Converting `str` into `datetime`
     """
 
@@ -50,7 +50,7 @@ def as_domain_model(
 
 def ensure_args(*args) -> None:
     """Ensures that only one arg from `args` is not `None`"""
-    assert len(set(args)) == 2
+    assert args.count(None) == len(args) - 1
 
 
     
