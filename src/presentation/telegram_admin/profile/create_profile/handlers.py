@@ -18,11 +18,11 @@ async def create_profile(callback: CallbackQuery, state: FSMContext) -> None:
 
 
 async def set_username(
-    message: Message, check_username_exists: InteractorFactory[CheckUsernameExists],
-    state: FSMContext
+    message: Message, state: FSMContext,
+    check_username_exists_interactor_factory: InteractorFactory[CheckUsernameExists]
 ) -> None:
     """Sets username for `CreateProfile` use case"""
-    async with check_username_exists.create_interactor() as check_username_exists:
+    async with check_username_exists_interactor_factory.create_interactor() as check_username_exists:
         dto = CheckUsernameExistsDTO(username=message.text)
         result = await check_username_exists(dto)
     if result.username_exists:
@@ -36,11 +36,11 @@ async def set_username(
 
 
 async def confirm(
-    callback: CallbackQuery, create_profile: InteractorFactory[CreateProfile],
-    state: FSMContext
+    callback: CallbackQuery, state: FSMContext,
+    create_profile_interactor_factory: InteractorFactory[CreateProfile]
 ) -> None:
     """Executes `CreateProfile` use case and ends the dialog"""
-    async with create_profile.create_interactor() as create_profile:
+    async with create_profile_interactor_factory.create_interactor() as create_profile:
         data = await state.get_data()
         dto = CreateProfileDTO(user_id=data["user_id"], username=data["username"])
         result = await create_profile(dto)

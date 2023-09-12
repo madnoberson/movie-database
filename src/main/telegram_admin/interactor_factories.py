@@ -1,5 +1,5 @@
 import asyncio
-from typing import AsyncIterator
+from typing import AsyncContextManager, AsyncIterator
 from dataclasses import dataclass, field
 from contextlib import asynccontextmanager
 
@@ -33,32 +33,36 @@ class InteractorFactoryImpl(InteractorFactory):
         async with some_interactor_factory.create_interactor() as execute:
             await exectue(SomeInteractorDTO()) 
         """
+        opened_context_managers = []
         try:
-            gateways = await self.open_gateways()
+            gateways, context_managers = await self.create_gateways()
+            opened_context_managers.extend(context_managers)
             self.dependencies.update(gateways)
             yield self.interactor(**self.dependencies)
         finally:
-            await self.close_gateways()
+            await self.close_context_managers(opened_context_managers)
     
-    async def open_gateways(self) -> dict[str, object]:
-        """Creates gateways from gateway factories and returns them"""
-        gateways = {}
+    async def create_gateways(self) -> tuple[dict[str, object], list[AsyncContextManager]]:
+        """
+        Creates gateways from gateway factories and returns them and opened
+        context managers
+        """
+        gateways, context_managers = {}, []
         for factory_name, factory in self.factories.items():
             context_manager = factory.create_gateway()
+            context_managers.append(context_manager)
             gateway = await context_manager.__aenter__()
             gateways.update({factory_name: gateway})
-            self.factories.update({factory_name: context_manager})
             
-        return gateways
+        return gateways, context_managers
 
-    async def close_gateways(self) -> None:
-        """Closes opened gateways"""
+    async def close_context_managers(self, context_managers: list[AsyncContextManager]) -> None:
         coros = [
             context_manager.__aexit__(None, None, None)
-            for context_manager in self.factories.values()
+            for context_manager in context_managers
         ]
         await asyncio.gather(*coros)
-        
+
 
 def setup_interactor_factories(
     dispatcher: Dispatcher, interactors: list[Interactor],
@@ -91,10 +95,10 @@ def setup_interactor_factories(
         interactor_factory_name = ""
         for letter in interactor_name:
             if letter.isupper():
-                interactor_factory_name += f"_{letter}"
+                interactor_factory_name += f"_{letter.lower()}"
                 continue
             interactor_factory_name += letter
-        return interactor_name + "_interactor_factory"
+        return interactor_factory_name + "_interactor_factory"
 
     def create_interactor_factory(interactor: Interactor) -> InteractorFactoryImpl:
         """Returns dependency-injected interactor factory"""

@@ -18,11 +18,11 @@ async def create_user(message: Message, state: FSMContext) -> None:
 
 
 async def set_email(
-    message: Message, check_email_exists: InteractorFactory[CheckEmailExists],
-    state: FSMContext
+    message: Message, state: FSMContext,
+    check_email_exists_interactor_factory: InteractorFactory[CheckEmailExists]
 ) -> None:
     """Sets email for `CreateUser` use case"""
-    async with check_email_exists.create_interactor() as check_email_exists:
+    async with check_email_exists_interactor_factory.create_interactor() as check_email_exists:
         dto = CheckEmailExistsDTO(email=message.text)
         result = await check_email_exists(dto)
     if result.email_exists:
@@ -43,10 +43,11 @@ async def set_password(message: Message, state: FSMContext) -> None:
 
 
 async def confirm(
-    callback: CallbackQuery, create_user: InteractorFactory[CreateUser], state: FSMContext
+    callback: CallbackQuery, state: FSMContext,
+    create_user_interactor_factory: InteractorFactory[CreateUser]
 ) -> None:
     """Executes `CreateUser` use case and ends the dialog"""
-    async with create_user.create_interactor() as create_user:
+    async with create_user_interactor_factory.create_interactor() as create_user:
         data = await state.get_data()
         dto = CreateUserDTO(email=data["email"], password=data["password"])
         result = await create_user(dto)
