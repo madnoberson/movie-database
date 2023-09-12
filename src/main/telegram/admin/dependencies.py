@@ -7,7 +7,7 @@ from src.application.interactors.queries.user.check_email_exists.interactor impo
 from src.application.interactors.queries.profile.check_username_exists.interactor import CheckUsernameExists
 from src.infrastructure.presentation.common.db_gateway_factory.asyncpg_impl import AsyncpgDatabaseGatewayFactory
 from src.infrastructure.application.password_encoder.aiobcrypt_impl import AiobcryptPasswordEncoder
-from .interactor_factories import setup_interactor_factories
+from src.main.telegram.common.interactor_factories import setup_interactor_factories
 from .config import PostgresConfig
 
 

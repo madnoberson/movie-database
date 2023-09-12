@@ -1,7 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from src.presentation.telegram_admin.common.callbacks import CreateProfile
+from src.presentation.telegram.admin.common.callbacks import CreateProfile
 from . import callbacks
 
 

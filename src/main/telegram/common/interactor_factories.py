@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from aiogram import Dispatcher
 
 from src.application.common.interfaces.password_encoder import PasswordEncoder
-from src.presentation.telegram_admin.common.interactor_factory import Interactor, InteractorFactory
+from src.presentation.telegram.common.interactor_factory import Interactor, InteractorFactory
 from src.main.common.gateway_factories import GatewayFactory, DatabaseGatewayFactory
 
 
@@ -35,20 +35,23 @@ class InteractorFactoryImpl(InteractorFactory):
         """
         opened_context_managers = []
         try:
-            gateways, context_managers = await self.create_gateways()
+            gateways, context_managers = await self.create_gateways(self.factories)
             opened_context_managers.extend(context_managers)
             self.dependencies.update(gateways)
             yield self.interactor(**self.dependencies)
         finally:
             await self.close_context_managers(opened_context_managers)
     
-    async def create_gateways(self) -> tuple[dict[str, object], list[AsyncContextManager]]:
+    @staticmethod
+    async def create_gateways(
+        factories: dict[str, GatewayFactory]
+    ) -> tuple[dict[str, object], list[AsyncContextManager]]:
         """
         Creates gateways from gateway factories and returns them and opened
         context managers
         """
         gateways, context_managers = {}, []
-        for factory_name, factory in self.factories.items():
+        for factory_name, factory in factories.items():
             context_manager = factory.create_gateway()
             context_managers.append(context_manager)
             gateway = await context_manager.__aenter__()
@@ -56,7 +59,8 @@ class InteractorFactoryImpl(InteractorFactory):
             
         return gateways, context_managers
 
-    async def close_context_managers(self, context_managers: list[AsyncContextManager]) -> None:
+    @staticmethod
+    async def close_context_managers(context_managers: list[AsyncContextManager]) -> None:
         coros = [
             context_manager.__aexit__(None, None, None)
             for context_manager in context_managers
@@ -79,10 +83,10 @@ def setup_interactor_factories(
 
     async def aiogram_function(
         message: Message,
-        some_interactor_factory: InteractorFactory[SomeInteractor]
-        # Note that `SomeInteractor` has become `some_interactor_factory`
+        some_interactor_interactor_factory: InteractorFactory[SomeInteractor]
+        # Note: `SomeInteractor` has become `some_interactor_interactor_factory`
     ) -> None:
-        async with some_interactor_factory.create_interactor() as execute:
+        async with some_interactor_interactor_factory.create_interactor() as execute:
             await execute(SomeInteractorDTO())
     """
     

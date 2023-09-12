@@ -1,7 +1,7 @@
 from aiogram import Dispatcher
 
-from src.presentation.telegram_admin.user import create_user_router
-from src.presentation.telegram_admin.profile import create_profile_router
+from src.presentation.telegram.admin.routers.user import create_user_router
+from src.presentation.telegram.admin.routers.profile import create_profile_router
 
 
 def setup_routes(dispatcher: Dispatcher) -> None:

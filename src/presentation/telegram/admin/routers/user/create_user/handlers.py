@@ -5,7 +5,7 @@ from src.application.interactors.user.create_user.dto import CreateUserDTO
 from src.application.interactors.user.create_user.interactor import CreateUser
 from src.application.interactors.queries.user.check_email_exists.dto import CheckEmailExistsDTO
 from src.application.interactors.queries.user.check_email_exists.interactor import CheckEmailExists
-from src.presentation.telegram_admin.common.interactor_factory import InteractorFactory
+from src.presentation.telegram.common.interactor_factory import InteractorFactory
 from . import states
 from . import templates
 from . import keyboards

@@ -5,7 +5,7 @@ from src.application.interactors.profile.create_profile.dto import CreateProfile
 from src.application.interactors.profile.create_profile.interactor import CreateProfile
 from src.application.interactors.queries.profile.check_username_exists.dto import CheckUsernameExistsDTO
 from src.application.interactors.queries.profile.check_username_exists.interactor import CheckUsernameExists
-from src.presentation.telegram_admin.common.interactor_factory import InteractorFactory
+from src.presentation.telegram.common.interactor_factory import InteractorFactory
 from . import states
 from . import templates
 from . import keyboards

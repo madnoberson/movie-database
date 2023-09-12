@@ -1,6 +1,6 @@
 from aiogram import Router, F
 
-from src.presentation.telegram_admin.common.callbacks import CreateProfile
+from src.presentation.telegram.admin.common.callbacks import CreateProfile
 from . import states
 from . import handlers
 from . import filters

@@ -15,7 +15,7 @@ class InteractorFactory(ABC, Generic[Interactor]):
         Example:
 
         .. code-block::python
-        async with interactor_factory.create_interactor() as execute:
-            await exectue(InteractorDTO()) 
+        async with some_interactor_interactor_factory.create_interactor() as execute:
+            await exectue(SomeInteractorDTO()) 
         """
         raise NotImplementedError
