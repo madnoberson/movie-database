@@ -92,8 +92,8 @@ def setup_interactor_factories(
     
     def create_interactor_factory_name(interactor: Interactor) -> str:
         """
-        Converts pascal case `interactor` name into snake case with 'interactor_factory' at the end.
-        For example `SomeInteractor` will become `some_interactor_factory`
+        Converts pascal case `interactor` name into snake case with '_interactor_factory' at the end.
+        For example `SomeInteractor` will become `some_interactor_interactor_factory`
         """
         interactor_name = interactor.__name__[0].lower() + interactor.__name__[1:]
         interactor_factory_name = ""
