@@ -25,7 +25,7 @@ async def set_email(
     async with check_email_exists_interactor_factory.create_interactor() as check_email_exists:
         dto = CheckEmailExistsDTO(email=message.text)
         result = await check_email_exists(dto)
-    if result.email_exists:
+    if result["email_exists"]:
         await message.answer(templates.email_exists())
     else:
         await message.answer(text=templates.set_password())

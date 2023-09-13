@@ -1,10 +1,7 @@
 from typing import Protocol
 
-from src.application.common.protocols.database import profile as profile_db
+from src.application.common.protocols.presenatation_database.profile import SupportsCheckUsernameExists
 
 
-class DatabaseGateway(
-    profile_db.SupportsCheckProfileExists,
-    Protocol
-):
+class PresenstationDatabaseGateway(SupportsCheckUsernameExists, Protocol):
     ...

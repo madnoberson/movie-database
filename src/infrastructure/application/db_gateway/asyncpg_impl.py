@@ -6,7 +6,7 @@ from asyncpg.transaction import Transaction
 
 from src.domain.user import User
 from src.domain.profile import Profile
-from src.application.common.interfaces.database_gateway import DatabaseGateway
+from src.application.common.interfaces.db_gateway import DatabaseGateway
 from src.infrastructure.application.utils import as_domain_model, ensure_args
 
 

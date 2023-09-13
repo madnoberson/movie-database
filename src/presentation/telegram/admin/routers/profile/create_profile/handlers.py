@@ -25,7 +25,7 @@ async def set_username(
     async with check_username_exists_interactor_factory.create_interactor() as check_username_exists:
         dto = CheckUsernameExistsDTO(username=message.text)
         result = await check_username_exists(dto)
-    if result.username_exists:
+    if result["username_exists"]:
         await message.answer(templates.username_exists())
     else:
         data = await state.get_data()

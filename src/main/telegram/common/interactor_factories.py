@@ -7,7 +7,7 @@ from aiogram import Dispatcher
 
 from src.application.common.interfaces.password_encoder import PasswordEncoder
 from src.presentation.telegram.common.interactor_factory import Interactor, InteractorFactory
-from src.main.common.gateway_factories import GatewayFactory, DatabaseGatewayFactory
+from src.main.common import gateway_factories
 
 
 __all__ = ["setup_interactor_factories"]
@@ -17,7 +17,7 @@ __all__ = ["setup_interactor_factories"]
 class InteractorFactoryImpl(InteractorFactory):
     
     interactor: Interactor
-    factories: dict[str, GatewayFactory] = field(default_factory=dict)
+    factories: dict[str, gateway_factories.GatewayFactory] = field(default_factory=dict)
     dependencies: dict[str, object] = field(default_factory=dict)
 
     @asynccontextmanager
@@ -44,7 +44,7 @@ class InteractorFactoryImpl(InteractorFactory):
     
     @staticmethod
     async def create_gateways(
-        factories: dict[str, GatewayFactory]
+        factories: dict[str, gateway_factories.GatewayFactory]
     ) -> tuple[dict[str, object], list[AsyncContextManager]]:
         """
         Creates gateways from gateway factories and returns them and opened
@@ -70,7 +70,8 @@ class InteractorFactoryImpl(InteractorFactory):
 
 def setup_interactor_factories(
     dispatcher: Dispatcher, interactors: list[Interactor],
-    db_gateway_factory: DatabaseGatewayFactory, password_encoder: PasswordEncoder
+    db_gateway_factory: gateway_factories.DatabaseGatewayFactory, password_encoder: PasswordEncoder,
+    pdb_gateway_factory: gateway_factories.PresentationDatabaseGatewayFactory
 ) -> None:
     """
     Setup dependency-injected interactor factories to dispatcher.
@@ -106,7 +107,7 @@ def setup_interactor_factories(
 
     def create_interactor_factory(interactor: Interactor) -> InteractorFactoryImpl:
         """Returns dependency-injected interactor factory"""
-        factory_overrides = {"db_gateway": db_gateway_factory}
+        factory_overrides = {"db_gateway": db_gateway_factory, "pdb_gateway": pdb_gateway_factory}
         dependency_overrides = {"password_encoder": password_encoder}
         dependencies, factories = {}, {}
         for dependency_name in interactor.__annotations__.keys():

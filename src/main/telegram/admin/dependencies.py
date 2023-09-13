@@ -6,6 +6,7 @@ from src.application.interactors.profile.create_profile.interactor import Create
 from src.application.interactors.queries.user.check_email_exists.interactor import CheckEmailExists
 from src.application.interactors.queries.profile.check_username_exists.interactor import CheckUsernameExists
 from src.infrastructure.presentation.common.db_gateway_factory.asyncpg_impl import AsyncpgDatabaseGatewayFactory
+from src.infrastructure.presentation.common.pdb_gateway_factory.asyncpg_impl import AsyncpgPresentationDatabaseGatewayFactory
 from src.infrastructure.application.password_encoder.aiobcrypt_impl import AiobcryptPasswordEncoder
 from src.main.telegram.common.interactor_factories import setup_interactor_factories
 from .config import PostgresConfig
@@ -18,6 +19,7 @@ async def setup_dependencies(postgres_config: PostgresConfig, dispatcher: Dispat
     setup_interactor_factories(
         dispatcher=dispatcher, interactors=interactors,
         db_gateway_factory=AsyncpgDatabaseGatewayFactory(pool),
-        password_encoder=AiobcryptPasswordEncoder()
+        password_encoder=AiobcryptPasswordEncoder(),
+        pdb_gateway_factory=AsyncpgPresentationDatabaseGatewayFactory(pool)
     )
 
