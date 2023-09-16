@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from uuid import UUID
 
+from .base import DomainModel
+
 
 @dataclass(slots=True)
-class Profile:
+class Profile(DomainModel):
 
     id: UUID
     user_id: UUID

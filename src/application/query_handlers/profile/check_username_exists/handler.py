@@ -7,7 +7,7 @@ from . import interfaces
 @dataclass(frozen=True, slots=True)
 class CheckUsernameExists:
 
-    pdb_gateway: interfaces.PresenstationDatabaseGateway
+    pdb_gateway: interfaces.DatabaseQueriesGateway
 
     async def __call__(self, data: dto.CheckUsernameExistsDTO) -> dto.CheckUsernameExistsResultDTO:
         query_result = await self.pdb_gateway.check_username_exists(username=data.username)

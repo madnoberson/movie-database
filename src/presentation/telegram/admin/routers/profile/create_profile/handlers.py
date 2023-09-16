@@ -3,9 +3,9 @@ from aiogram.types import Message, CallbackQuery
 
 from src.application.interactors.profile.create_profile.dto import CreateProfileDTO
 from src.application.interactors.profile.create_profile.interactor import CreateProfile
-from src.application.interactors.queries.profile.check_username_exists.dto import CheckUsernameExistsDTO
-from src.application.interactors.queries.profile.check_username_exists.interactor import CheckUsernameExists
-from src.presentation.telegram.common.interactor_factory import InteractorFactory
+from src.application.query_handlers.profile.check_username_exists.dto import CheckUsernameExistsDTO
+from src.application.query_handlers.profile.check_username_exists.handler import CheckUsernameExists
+from src.presentation.telegram.common.handler_factory import HandlerFactory
 from . import states
 from . import templates
 from . import keyboards
@@ -19,10 +19,10 @@ async def create_profile(callback: CallbackQuery, state: FSMContext) -> None:
 
 async def set_username(
     message: Message, state: FSMContext,
-    check_username_exists_interactor_factory: InteractorFactory[CheckUsernameExists]
+    check_username_exists_factory: HandlerFactory[CheckUsernameExists]
 ) -> None:
     """Sets username for `CreateProfile` use case"""
-    async with check_username_exists_interactor_factory.create_interactor() as check_username_exists:
+    async with check_username_exists_factory.create_handler() as check_username_exists:
         dto = CheckUsernameExistsDTO(username=message.text)
         result = await check_username_exists(dto)
     if result["username_exists"]:
@@ -37,10 +37,10 @@ async def set_username(
 
 async def confirm(
     callback: CallbackQuery, state: FSMContext,
-    create_profile_interactor_factory: InteractorFactory[CreateProfile]
+    create_profile_factory: HandlerFactory[CreateProfile]
 ) -> None:
     """Executes `CreateProfile` use case and ends the dialog"""
-    async with create_profile_interactor_factory.create_interactor() as create_profile:
+    async with create_profile_factory.create_handler() as create_profile:
         data = await state.get_data()
         dto = CreateProfileDTO(user_id=data["user_id"], username=data["username"])
         result = await create_profile(dto)

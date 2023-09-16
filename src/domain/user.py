@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from uuid import UUID
 
+from .base import DomainModel
+
 
 @dataclass(slots=True)
 class User:

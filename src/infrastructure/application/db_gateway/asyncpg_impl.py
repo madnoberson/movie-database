@@ -7,7 +7,7 @@ from asyncpg.transaction import Transaction
 from src.domain.user import User
 from src.domain.profile import Profile
 from src.application.common.interfaces.db_gateway import DatabaseGateway
-from src.infrastructure.application.utils import as_domain_model, ensure_args
+from src.infrastructure.application.utils import as_domain_model
 
 
 @dataclass(frozen=True, slots=True)
@@ -19,8 +19,6 @@ class AsyncpgDatabaseGateway(DatabaseGateway):
     async def check_user_exists(
         self, email: str | None = None, user_id: UUID | None = None
     ) -> bool:
-        ensure_args(email, user_id)
-
         if email is not None:
             data = await self.connection.fetchval(
                 "SELECT 1 FROM users u WHERE u.email = $1 LIMIT 1", email
@@ -58,8 +56,6 @@ class AsyncpgDatabaseGateway(DatabaseGateway):
     async def check_profile_exists(
         self, username: str | None = None, profile_id: UUID | None = None
     ) -> bool:
-        ensure_args(username, profile_id)
-
         if username is not None:
             data = await self.connection.fetchval(
                 "SELECT 1 FROM profiles p WHERE p.username = $1 LIMIT 1", username

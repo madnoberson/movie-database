@@ -3,9 +3,9 @@ from aiogram.types import Message, CallbackQuery
 
 from src.application.interactors.user.create_user.dto import CreateUserDTO
 from src.application.interactors.user.create_user.interactor import CreateUser
-from src.application.interactors.queries.user.check_email_exists.dto import CheckEmailExistsDTO
-from src.application.interactors.queries.user.check_email_exists.interactor import CheckEmailExists
-from src.presentation.telegram.common.interactor_factory import InteractorFactory
+from src.application.query_handlers.user.check_email_exists.dto import CheckEmailExistsDTO
+from src.application.query_handlers.user.check_email_exists.handler import CheckEmailExists
+from src.presentation.telegram.common.handler_factory import HandlerFactory
 from . import states
 from . import templates
 from . import keyboards
@@ -19,10 +19,10 @@ async def create_user(message: Message, state: FSMContext) -> None:
 
 async def set_email(
     message: Message, state: FSMContext,
-    check_email_exists_interactor_factory: InteractorFactory[CheckEmailExists]
+    check_email_exists_factory: HandlerFactory[CheckEmailExists]
 ) -> None:
     """Sets email for `CreateUser` use case"""
-    async with check_email_exists_interactor_factory.create_interactor() as check_email_exists:
+    async with check_email_exists_factory.create_handler() as check_email_exists:
         dto = CheckEmailExistsDTO(email=message.text)
         result = await check_email_exists(dto)
     if result["email_exists"]:
@@ -44,10 +44,10 @@ async def set_password(message: Message, state: FSMContext) -> None:
 
 async def confirm(
     callback: CallbackQuery, state: FSMContext,
-    create_user_interactor_factory: InteractorFactory[CreateUser]
+    create_user_factory: HandlerFactory[CreateUser]
 ) -> None:
     """Executes `CreateUser` use case and ends the dialog"""
-    async with create_user_interactor_factory.create_interactor() as create_user:
+    async with create_user_factory.create_handler() as create_user:
         data = await state.get_data()
         dto = CreateUserDTO(email=data["email"], password=data["password"])
         result = await create_user(dto)

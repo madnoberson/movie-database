@@ -6,39 +6,39 @@ from contextlib import asynccontextmanager
 from aiogram import Dispatcher
 
 from src.application.common.interfaces.password_encoder import PasswordEncoder
-from src.presentation.telegram.common.interactor_factory import Interactor, InteractorFactory
+from src.presentation.telegram.common.handler_factory import Handler, HandlerFactory
 from src.main.common import gateway_factories
 
 
-__all__ = ["setup_interactor_factories"]
+__all__ = ["setup_handler_factories"]
 
 
 @dataclass(frozen=True, slots=True)
-class InteractorFactoryImpl(InteractorFactory):
+class HandleractoryImpl(HandlerFactory):
     
-    interactor: Interactor
+    handler: Handler
     factories: dict[str, gateway_factories.GatewayFactory] = field(default_factory=dict)
     dependencies: dict[str, object] = field(default_factory=dict)
 
     @asynccontextmanager
-    async def create_interactor(self) -> AsyncIterator[Interactor]:
+    async def create_handler(self) -> AsyncIterator[Handler]:
         """
-        Setups dependencies to interactor and returns it.
+        Setups dependencies to handler and returns it.
         
         Example:
 
         .. code-block::python
-        from path_to_some_interactor_dtos import SomeInteractorDTO
+        from path_to_some_handler_dto import SomeHandlerDTO
 
-        async with some_interactor_factory.create_interactor() as execute:
-            await exectue(SomeInteractorDTO()) 
+        async with some_handler_factory.create_handler() as handle:
+            await handle(SomeHandlerDTO()) 
         """
         opened_context_managers = []
         try:
             gateways, context_managers = await self.create_gateways(self.factories)
             opened_context_managers.extend(context_managers)
             self.dependencies.update(gateways)
-            yield self.interactor(**self.dependencies)
+            yield self.handler(**self.dependencies)
         finally:
             await self.close_context_managers(opened_context_managers)
     
@@ -68,58 +68,54 @@ class InteractorFactoryImpl(InteractorFactory):
         await asyncio.gather(*coros)
 
 
-def setup_interactor_factories(
-    dispatcher: Dispatcher, interactors: list[Interactor],
+def setup_handler_factories(
+    dispatcher: Dispatcher, handlers: list[Handler],
     db_gateway_factory: gateway_factories.DatabaseGatewayFactory, password_encoder: PasswordEncoder,
-    pdb_gateway_factory: gateway_factories.PresentationDatabaseGatewayFactory
+    dbq_gateway_factory: gateway_factories.DatabaseQueriesGatewayFactory
 ) -> None:
     """
-    Setup dependency-injected interactor factories to dispatcher.
-    For Example `SomeInteractor` will be wrapped in `InteractorFactory`
+    Setup dependency-injected handler factories to dispatcher.
+    For Example `SomeHandler` will be wrapped in `HandlerFactory`
     and can be used in any aiogram function like this:
 
     .. code-block::python
-    from path_to_some_interactor import SomeInteractor
-    from path_to_some_interactor_dtos import SomeInteractorDTO
+    from path_to_some_handler import SomeHandler
+    from path_to_some_handler_dto import SomeHandlerDTO
 
     async def aiogram_function(
         message: Message,
-        some_interactor_interactor_factory: InteractorFactory[SomeInteractor]
-        # Note: `SomeInteractor` has become `some_interactor_interactor_factory`
+        some_handler_factory: HandlerFactory[SomeHandler]
+        # Note: `SomeHandler` has become `some_handler_factory`
     ) -> None:
-        async with some_interactor_interactor_factory.create_interactor() as execute:
-            await execute(SomeInteractorDTO())
+        async with some_handler_factory.create_handler() as handle:
+            await handle(SomeHandlerDTO())
     """
     
-    def create_interactor_factory_name(interactor: Interactor) -> str:
+    def create_handler_factory_name(handler: Handler) -> str:
         """
-        Converts pascal case `interactor` name into snake case with '_interactor_factory' at the end.
-        For example `SomeInteractor` will become `some_interactor_interactor_factory`
+        Converts pascal case `handler` name into snake case with '_factory' at the end.
+        For example `SomeHandler` will become `some_handler_factory`
         """
-        interactor_name = interactor.__name__[0].lower() + interactor.__name__[1:]
-        interactor_factory_name = ""
-        for letter in interactor_name:
+        handler_name = handler.__name__[0].lower() + handler.__name__[1:]
+        handler_factory_name = ""
+        for letter in handler_name:
             if letter.isupper():
-                interactor_factory_name += f"_{letter.lower()}"
+                handler_factory_name += f"_{letter.lower()}"
                 continue
-            interactor_factory_name += letter
-        return interactor_factory_name + "_interactor_factory"
+            handler_factory_name += letter
+        return handler_factory_name + "_factory"
 
-    def create_interactor_factory(interactor: Interactor) -> InteractorFactoryImpl:
-        """Returns dependency-injected interactor factory"""
-        factory_overrides = {"db_gateway": db_gateway_factory, "pdb_gateway": pdb_gateway_factory}
+    def create_handler_factory(handler: Handler) -> HandleractoryImpl:
+        """Returns dependency-injected handler factory"""
+        factory_overrides = {"db_gateway": db_gateway_factory, "pdb_gateway": dbq_gateway_factory}
         dependency_overrides = {"password_encoder": password_encoder}
         dependencies, factories = {}, {}
-        for dependency_name in interactor.__annotations__.keys():
+        for dependency_name in handler.__annotations__.keys():
             if dependency_name in factory_overrides:
                 factories.update({dependency_name: factory_overrides[dependency_name]})
             elif dependency_name in dependency_overrides:
                 dependencies.update({dependency_name: dependency_overrides[dependency_name]})
-        return InteractorFactoryImpl(
-            interactor=interactor, factories=factories, dependencies=dependencies
-        )
+        return HandleractoryImpl(handler=handler, factories=factories, dependencies=dependencies)
 
-    for interactor in interactors:
-        name = create_interactor_factory_name(interactor)
-        factory = create_interactor_factory(interactor)
-        dispatcher[name] = factory
+    for handler in handlers:
+        dispatcher[create_handler_factory_name(handler)] = create_handler_factory(handler)

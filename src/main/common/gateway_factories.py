@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import AsyncContextManager
 
 from src.application.common.interfaces.db_gateway import DatabaseGateway
-from src.application.common.interfaces.pdb_gateway import PresentationDatabaseGateway
+from src.application.common.interfaces.dbq_gateway import DatabaseQueriesGateway
 
 
 class GatewayFactory(ABC):
@@ -19,8 +19,8 @@ class DatabaseGatewayFactory(GatewayFactory, ABC):
         raise NotImplementedError
 
 
-class PresentationDatabaseGatewayFactory(GatewayFactory, ABC):
+class DatabaseQueriesGatewayFactory(GatewayFactory, ABC):
 
     @abstractmethod
-    async def create_gateway(self) -> AsyncContextManager[PresentationDatabaseGateway]:
+    async def create_gateway(self) -> AsyncContextManager[DatabaseQueriesGateway]:
         raise NotImplementedError
