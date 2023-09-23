@@ -1,1 +1,1 @@
-from .check_email_exists import CheckEmailExists
+from .check_username_exists import CheckUsernameExists
