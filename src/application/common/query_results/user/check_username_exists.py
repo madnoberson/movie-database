@@ -1,5 +1,5 @@
+from typing_extensions import TypedDict
 from dataclasses import dataclass
-from typing import TypedDict
 
 
 class Data(TypedDict):
@@ -11,4 +11,3 @@ class Data(TypedDict):
 class CheckUsernameExists:
     
     data: Data
-    extra: None
