@@ -4,7 +4,7 @@ from aiogram.types import Message, CallbackQuery
 from src.application.queries.auth.login.dto import LoginDTO
 from src.application.queries.auth.login.handler import Login
 from src.presentation.telegram.common.handler_factory import HandlerFactory
-from src.presentation.telegram.common.authenticator import Authenticator
+from src.presentation.telegram.common.session_manager import SessionManager
 from . import states
 from . import templates
 from . import keyboards
@@ -34,17 +34,16 @@ async def set_password(message: Message, state: FSMContext):
 
 async def confirm(
     callback: CallbackQuery, state: FSMContext,
-    login_factory: HandlerFactory[Login], authenticator: Authenticator
+    login_factory: HandlerFactory[Login], session_manager: SessionManager
 ):
     async with login_factory.create_handler() as login:
         data = await state.get_data()
         dto = LoginDTO(username=data["username"], password=data["password"])
         result = await login(dto)
-    await authenticator.save_current_user_id(user_id=result["user_id"])
+    await session_manager.open_session(user_id=result["user_id"])
     await callback.message.edit_text(templates.confirmed())
-    await state.clear()
-    await state.update_data(current_user_id=result["user_id"])
     await callback.answer()
+    await state.clear()
 
 
 async def cancel(callback: CallbackQuery, state: FSMContext):

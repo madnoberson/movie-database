@@ -1,8 +1,8 @@
-from typing import TypeVar, Generic, AsyncContextManager
+from typing import TypeVar, Generic, Callable, AsyncContextManager
 from abc import ABC, abstractmethod
 
 
-Handler = TypeVar("Handler")
+Handler = TypeVar("Handler", bound=Callable[[object], object])
 
 
 class HandlerFactory(ABC, Generic[Handler]):
