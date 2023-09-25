@@ -1,9 +1,7 @@
 from aiogram import Dispatcher
 
-from src.presentation.telegram.routers.auth import create_user_router
+from src.presentation.telegram.routers.auth import create_auth_router
 
 
 def setup_routes(dispatcher: Dispatcher) -> None:
-    dispatcher.include_routers(
-        create_user_router()
-    )
+    dispatcher.include_routers(create_auth_router())
