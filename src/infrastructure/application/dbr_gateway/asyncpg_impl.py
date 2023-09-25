@@ -20,7 +20,7 @@ class AsyncpgDatabaseReadingGateway(DatabaseReadingGateway):
         return as_query_result(user.CheckUsernameExists, {"data": data})
 
     async def login(self, username: str) -> auth.Login:
-        query_result_mapping = await self.connection.fetchrow(
+        qr_data = await self.connection.fetchrow(
             """
             SELECT
                 JSON_BUILD_OBJECT('id', u.id) data,
@@ -29,5 +29,5 @@ class AsyncpgDatabaseReadingGateway(DatabaseReadingGateway):
             """,
             username
         )
-        return as_query_result(auth.Login, query_result_mapping)
+        return as_query_result(auth.Login, qr_data) if qr_data else None
 
