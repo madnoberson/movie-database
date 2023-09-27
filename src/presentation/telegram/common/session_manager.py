@@ -23,7 +23,7 @@ class SessionManager(ABC):
         raise NotImplementedError
     
     @abstractmethod
-    async def get_session_data(self, *keys) -> list[Any] | None:
+    async def get_session_data(self, *keys) -> dict[str, Any] | None:
         """
         Returns data from session associated with `keys` if session
         is open, otherwise returns `None`
