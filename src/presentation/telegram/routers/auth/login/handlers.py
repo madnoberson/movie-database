@@ -3,8 +3,8 @@ from aiogram.types import Message, CallbackQuery
 
 from src.application.queries.auth.login.dto import LoginDTO
 from src.application.queries.auth.login.handler import Login
-from src.presentation.telegram.common.handler_factory import HandlerFactory
-from src.presentation.telegram.common.session_manager import SessionManager
+from src.presentation.telegram.common.interfaces.handler_factory import HandlerFactory
+from src.presentation.telegram.common.interfaces.session_manager import SessionManager
 from . import states
 from . import templates
 from . import keyboards

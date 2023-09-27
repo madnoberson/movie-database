@@ -5,8 +5,8 @@ from src.application.interactors.registration.register.dto import RegisterDTO
 from src.application.interactors.registration.register.interactor import Register
 from src.application.queries.user.check_username_exists.dto import CheckUsernameExistsDTO
 from src.application.queries.user.check_username_exists.handler import CheckUsernameExists
-from src.presentation.telegram.common.handler_factory import HandlerFactory
-from src.presentation.telegram.common.session_manager import SessionManager
+from src.presentation.telegram.common.interfaces.handler_factory import HandlerFactory
+from src.presentation.telegram.common.interfaces.session_manager import SessionManager
 from . import states
 from . import templates
 from . import keyboards
