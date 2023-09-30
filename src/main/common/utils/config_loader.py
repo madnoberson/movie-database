@@ -22,5 +22,4 @@ def load_config(config_type: Type[C], path: str | os.PathLike | None = None) -> 
         with open(file=_path, mode="r", encoding="utf-8") as file:
             return toml.load(file)
         
-    return TypeAdapter(config_type).validate_python(load_toml(path) if path else os.environ)
-
+    return TypeAdapter(config_type).validate_python(load_toml(path) if path else dict(os.environ))
