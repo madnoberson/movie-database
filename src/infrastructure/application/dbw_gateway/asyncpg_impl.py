@@ -19,15 +19,9 @@ class AsyncpgDatabaseWritingGateway(DatabaseWritingGateway):
     async def check_user_exists(
         self, username: str | None = None, user_id: UUID | None = None
     ) -> bool:
-        if username is not None:
-            user_exists = await self.connection.fetchval(
-                "SELECT 1 FROM users u WHERE u.username LIMIT 1", username
-            )
-            return bool(user_exists)
-        user_exists = await self.connection.fetchval(
-            "SELECT 1 FROM users u WHERE u.id = $1", user_id
-        )
-        return bool(user_exists)
+        c, v = (("u.id", user_id) if user_id else ("u.username", username))
+        data = await self.connection.fetchval(f"SELECT 1 FROM users u WHERE {c} = $1", v)
+        return bool(data)
 
     async def save_user(self, user: User) -> None:
         await self.connection.execute(

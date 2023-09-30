@@ -17,17 +17,15 @@ class AsyncpgDatabaseReadingGateway(DatabaseReadingGateway):
         data = await self.connection.fetchval(
             "SELECT 1 username_exists FROM users u WHERE u.username = $1 LIMIT 1", username
         )
-        return as_query_result(user.CheckUsernameExists, {"data": data})
+        return as_query_result(user.CheckUsernameExists, {"data": data or {"username_exists": False}})
 
     async def login(self, username: str) -> auth.Login:
         qr_data = await self.connection.fetchrow(
             """
-            SELECT
-                JSON_BUILD_OBJECT('id', u.id) data,
-                JSON_BUILD_OBJECT('encoded_password', u.encoded_password) extra
+            SELECT ROW_TO_JSON(u.*) data, ROW_TO_JSON(u.*) extra
             FROM users u WHERE u.username = $1 LIMIT 1
             """,
             username
         )
-        return as_query_result(auth.Login, qr_data) if qr_data else None
+        return as_query_result(auth.Login, dict(qr_data)) if qr_data else None
 
