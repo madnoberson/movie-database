@@ -3,7 +3,6 @@ from datetime import datetime
 from uuid import uuid4
 
 from src.domain.user import User
-from src.domain.profile import Profile
 from . import dto
 from . import exceptions
 from . import interfaces
@@ -23,16 +22,14 @@ class Register:
         if user_exists:
             raise exceptions.UserAlreadyExistsError()
         
-        # 2.Create user and profile
+        # 2.Create user
         user = User.create(
             user_id=uuid4(), username=data.username, created_at=datetime.utcnow(),
             encoded_password=await self.password_encoder.encode(data.password)
         )
-        profile = Profile.create(profile_id=uuid4(), user_id=user.id)
 
-        # 3.Save user and profile
+        # 3.Save user
         await self.dbw_gateway.save_user(user)
-        await self.dbw_gateway.save_profile(profile)
         await self.dbw_gateway.commit()
 
         return dto.RegisterResultDTO(user_id=user.id)

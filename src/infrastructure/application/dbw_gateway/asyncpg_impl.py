@@ -5,7 +5,6 @@ from asyncpg import Connection
 from asyncpg.transaction import Transaction
 
 from src.domain.user import User
-from src.domain.profile import Profile
 from src.application.common.interfaces.dbw_gateway import DatabaseWritingGateway
 from src.infrastructure.application.utils import as_domain_model
 
@@ -46,39 +45,6 @@ class AsyncpgDatabaseWritingGateway(DatabaseWritingGateway):
             """,
             user.id
         )
-    
-    async def save_profile(self, profile: Profile) -> None:
-        await self.connection.execute(
-            """
-            INSERT INTO users
-            (
-                id, user_id, rated_movies, rated_series,
-                reviews, followers, following, favourites
-            )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-            """,
-            profile.id, profile.user_id, profile.rated_movies, profile.rated_series,
-            profile.reviews, profile.followers, profile.following, profile.favourites
-        )
-    
-    async def get_profile(self, profile_id: UUID) -> Profile | None:
-        data = await self.connection.fetchrow(
-            "SELECT p.* FROM profiles p WHERE p.id = $1 LIMIT 1", profile_id
-        )
-        return as_domain_model(Profile, data) if data else None
 
-    async def update_profile(self, profile: Profile) -> None:
-        await self.connection.execute(
-            """
-            UPDATE profiles p
-            SET
-                rated_movies = $1, rated_series = $2, reviews = $3,
-                followers = $4, following = $5, favourites = $6
-            WHERE p.id = $7
-            """,
-            profile.rated_movies, profile.rated_series, profile.reviews,
-            profile.followers, profile.following, profile.favourites, profile.id
-        )
-    
     async def commit(self) -> None:
         await self.transaction.commit()
