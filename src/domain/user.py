@@ -2,23 +2,23 @@ from dataclasses import dataclass
 from datetime import datetime
 from uuid import UUID
 
-from .base import DomainModel
-
 
 @dataclass(slots=True)
 class User:
 
     id: UUID
-    email: str
+    username: str
     encoded_password: str
     created_at: datetime
 
+    email: str | None
+
     @classmethod
     def create(
-        cls, user_id: UUID, email: str, encoded_password: str,
-        created_at: datetime
+        cls, user_id: UUID, username: str,
+        encoded_password: str, created_at: datetime
     ) -> "User":
         return User(
-            id=user_id, email=email, encoded_password=encoded_password,
-            created_at=created_at
+            id=user_id, username=username,
+            encoded_password=encoded_password, created_at=created_at
         )

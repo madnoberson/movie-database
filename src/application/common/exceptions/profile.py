@@ -1,6 +1,0 @@
-class ProfileAlreadyExistsError(Exception):
-    ...
-
-
-class ProfileDoesNotExistError(Exception):
-    ...

@@ -9,14 +9,21 @@ readme = "README.md"
 python = "^3.10"
 
 
-[tool.poetry.group.telegram-admin.dependencies]
+[tool.poetry.group.telegram.dependencies]
+aiogram = "^3.0.0b5"
 asyncpg = "^0.28.0"
 aiobcrypt = "^3.2.0.post1"
-aiogram = "^3.0.0b5"
+redis = "^5.0.0"
+pydantic = "^2.4.2"
 
 
-[tool.poetry.group.migration.dependencies]
-yoyo-migrations = "^8.2.0"
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.2"
+
+
+[tool.poetry.group.config-loader.dependencies]
+pydantic = "^2.4.2"
+toml = "^0.10.2"
 
 [build-system]
 requires = ["poetry-core"]

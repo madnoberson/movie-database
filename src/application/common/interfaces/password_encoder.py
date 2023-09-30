@@ -8,5 +8,5 @@ class PasswordEncoder(ABC):
         raise NotImplementedError
     
     @abstractmethod
-    async def verify(self, plain_password: str, hashed_password: str) -> bool:
+    async def verify(self, plain_password: str, encoded_password: str) -> bool:
         raise NotImplementedError
