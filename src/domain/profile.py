@@ -13,11 +13,12 @@ class Profile:
     followers: int
     following: int
     favourites: int
+    watch_later: int
 
     @classmethod
     def create(cls, profile_id: UUID, user_id: UUID) -> "Profile":
         return Profile(
             id=profile_id, user_id=user_id, rated_movies=0, rated_series=0,
-            reviews=0, followers=0, following=0, favourites=0
+            reviews=0, followers=0, following=0, favourites=0, watch_later=0
         )
     
