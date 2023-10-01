@@ -10,11 +10,11 @@ class TelegramConfig:
 @dataclass(frozen=True, slots=True)
 class PostgresConfig:
 
-    host: str
-    port: int
-    name: str
-    user: str
-    pswd: str
+    host: str = "127.0.0.1"
+    port: int = "5432"
+    name: str = "movie_database"
+    user: str = "postgres"
+    pswd: str = "1234"
 
     @property
     def dsn(self) -> str:

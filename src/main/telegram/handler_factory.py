@@ -3,22 +3,22 @@ from typing import AsyncIterator, AsyncContextManager
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 
-from src.presentation.common.gateway_factory import GatewayFactory
-from src.presentation.telegram.common.interfaces.handler_factory import Handler, HandlerFactory
+from src.presentation.common.interfaces.gateway_factory import GatewayFactory
+from src.presentation.telegram.common.interfaces.handler_factory import H, HandlerFactory
 
 
 __all__ = ["HandlerFactoryImpl"]
 
 
 @dataclass(frozen=True, slots=True)
-class HandlerFactoryImpl(HandlerFactory[Handler]):
+class HandlerFactoryImpl(HandlerFactory[H]):
 
-    handler: Handler
+    handler: H
     dependencies: dict[str, object] = field(default_factory=dict)
     factories: dict[str, GatewayFactory] = field(default_factory=dict)
 
     @asynccontextmanager
-    async def create_handler(self) -> AsyncIterator[Handler]:
+    async def create_handler(self) -> AsyncIterator[H]:
         opened_context_managers = []
         try:
             gateways, context_managers = await create_gateways(self.factories)

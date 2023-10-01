@@ -4,7 +4,7 @@ from typing import AsyncIterator
 
 from asyncpg import Pool
 
-from src.presentation.telegram.common.interfaces.dbw_gateway_factory import DatabaseWritingGatewayFactory
+from src.presentation.common.interfaces.dbw_gateway_factory import DatabaseWritingGatewayFactory
 from src.infrastructure.application.dbw_gateway.asyncpg_impl import AsyncpgDatabaseWritingGateway
 
 

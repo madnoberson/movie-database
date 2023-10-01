@@ -2,13 +2,13 @@ from typing import TypeVar, Generic, Callable, AsyncContextManager
 from abc import ABC, abstractmethod
 
 
-Handler = TypeVar("Handler", bound=Callable[[object], object])
+H = TypeVar("H", bound=Callable[[object], object])
 
 
-class HandlerFactory(ABC, Generic[Handler]):
+class HandlerFactory(ABC, Generic[H]):
     
     @abstractmethod
-    async def create_handler(self) -> AsyncContextManager[Handler]:
+    async def create_handler(self) -> AsyncContextManager[H]:
         """
         Setups dependencies to handler and returns it.
         
