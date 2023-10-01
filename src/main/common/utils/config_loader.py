@@ -1,6 +1,6 @@
 import os
 import toml
-from typing import Type, TypeVar, Any
+from typing import Type, TypeVar
 
 from pydantic import TypeAdapter
 
