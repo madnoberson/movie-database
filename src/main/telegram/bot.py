@@ -5,4 +5,4 @@ from .config import TelegramConfig
 
 
 def create_bot(telegram_config: TelegramConfig) -> Bot:
-    return Bot(token=telegram_config.token, parse_mode=ParseMode.HTML)
+    return Bot(token=telegram_config.bot_token, parse_mode=ParseMode.HTML)

@@ -18,8 +18,15 @@ def load_config(config_type: Type[C], path: str | os.PathLike | None = None) -> 
         * `FileNotFoundError` if file doesn't exist
     """
 
-    def load_toml(_path: str | os.PathLike) -> dict[str, Any]:
+    def from_toml(_config_type: Type[C], _path: str | os.PathLike) -> C:
         with open(file=_path, mode="r", encoding="utf-8") as file:
-            return toml.load(file)
-        
-    return TypeAdapter(config_type).validate_python(load_toml(path) if path else dict(os.environ))
+            return TypeAdapter(_config_type).validate_python(toml.load(file))
+    
+    def from_enviroment(_config_type: Type[C]) -> C:
+        config_fields = {}
+        for name, field_type in config_type.__annotations__.items():
+            value = TypeAdapter(field_type).validate_python(dict(os.environ))
+            config_fields.update({name: value})
+        return _config_type(**config_fields)
+
+    return from_toml(config_type, path) if path else from_enviroment(config_type)

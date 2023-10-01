@@ -59,11 +59,11 @@ def create_handler_factory(handler: Handler, dependecies: list[Dependency]) -> H
     def check_gateway_factory(rd: object, d: Dependency) -> bool:
         if not issubclass(type(d), GatewayFactory):
             return False
-        type = get_args(d.create_gateway.__annotations__["return"])[0]
-        return True if type.__name__ == rd.__name__ else False
+        _type = get_args(d.create_gateway.__annotations__["return"])[0]
+        return True if _type.__name__.endswith(rd.__name__) else False
     
     def check_simple_dependency(rd: object, d: Dependency) -> bool:
-        return True if rd.__name__ == d.__name__ else False
+        return True if type(d).__name__.endswith(rd.__name__) else False
 
     simple_dependencies, gateway_factories = {}, {}
     for rdependency_name, rdependency in handler.__annotations__.items():

@@ -9,11 +9,11 @@ def confirm() -> InlineKeyboardMarkup:
 
     builder.button(
         text="Cancel 🚫",
-        callback_data=callbacks.Login(value=False)
+        callback_data=callbacks.Confirm(value=False)
     )
     builder.button(
         text="Confirm ✅",
-        callback_data=callbacks.Login(value=True)
+        callback_data=callbacks.Confirm(value=True)
     )
 
     return builder.as_markup()

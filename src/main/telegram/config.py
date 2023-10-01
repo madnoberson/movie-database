@@ -4,7 +4,7 @@ from dataclasses import dataclass
 @dataclass(frozen=True, slots=True)
 class TelegramConfig:
 
-    token: str
+    bot_token: str
 
 
 @dataclass(frozen=True, slots=True)
