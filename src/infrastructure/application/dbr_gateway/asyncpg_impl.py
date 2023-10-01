@@ -27,5 +27,5 @@ class AsyncpgDatabaseReadingGateway(DatabaseReadingGateway):
             """,
             username
         )
-        return as_query_result(auth.Login, dict(qr_data)) if qr_data else None
+        return as_query_result(auth.Login, qr_data) if qr_data else None
 
