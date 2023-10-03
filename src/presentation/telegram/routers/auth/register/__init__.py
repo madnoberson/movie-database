@@ -22,10 +22,12 @@ def create_register_router() -> Router:
 def setup_handlers(router: Router) -> None:
     router.message.register(handlers.register, Command("register"))
     router.message.register(handlers.set_username, states.Register.set_username, filters.username)
+    router.message.register(handlers.username_is_invalid, states.Register.set_username)
     router.message.register(handlers.set_password, states.Register.set_password, filters.password)
+    router.message.register(handlers.password_is_invalid, states.Register.set_password)
     router.callback_query.register(handlers.confirm, callbacks.Confirm.filter(F.value == True))
     router.callback_query.register(handlers.cancel, callbacks.Confirm.filter(F.value == False))
 
 
 def setup_exception_handlers(router: Router) -> None:
-    router.error.register(exceptions.user_already_exists(), ExceptionTypeFilter(UserAlreadyExistsError))
+    router.error.register(exceptions.user_already_exists, ExceptionTypeFilter(UserAlreadyExistsError))

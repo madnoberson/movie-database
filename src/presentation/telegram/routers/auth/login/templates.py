@@ -2,8 +2,16 @@ def set_username() -> str:
     return "<b>Username:</b>"
 
 
+def username_is_invalid() -> str:
+    return "<b>Username is invalid</b>"
+
+
 def set_password() -> str:
     return "<b>Password:</b>"
+
+
+def password_is_invalid() -> str:
+    return "<b>Password is invalid</b>"
 
 
 def confirm(username: str, password: str) -> str:

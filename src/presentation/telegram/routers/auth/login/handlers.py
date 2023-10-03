@@ -22,6 +22,10 @@ async def set_username(message: Message, state: FSMContext):
     await state.set_state(states.Login.set_password)
 
 
+async def username_is_invalid(message: Message) -> None:
+    await message.answer(text=templates.username_is_invalid())
+
+
 async def set_password(message: Message, state: FSMContext):
     text = templates.confirm(
         username=(await state.get_data())["username"],
@@ -30,6 +34,10 @@ async def set_password(message: Message, state: FSMContext):
     await message.answer(text=text, reply_markup=keyboards.confirm())
     await state.update_data(password=message.text)
     await state.set_state(states.Login.confirm)
+
+
+async def password_is_invalid(message: Message) -> None:
+    await message.answer(text=templates.password_is_invalid())
 
 
 async def confirm(

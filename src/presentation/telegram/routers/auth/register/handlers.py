@@ -33,11 +33,19 @@ async def set_username(
     await state.set_state(states.Register.set_password)
 
 
+async def username_is_invalid(message: Message) -> None:
+    await message.answer(text=templates.username_is_invalid())
+
+
 async def set_password(message: Message, state: FSMContext):
     text = templates.confirm((await state.get_data())["username"])
     await message.answer(text=text, reply_markup=keyboards.confirm())
     await state.set_data(password=message.text)
     await state.set_state(states.Register.confirm)
+
+
+async def password_is_invalid(message: Message) -> None:
+    await message.answer(text=templates.password_is_invalid())
 
 
 async def confirm(
