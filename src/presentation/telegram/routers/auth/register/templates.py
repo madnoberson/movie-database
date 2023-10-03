@@ -6,7 +6,7 @@ def set_username() -> str:
 
 
 def username_already_exists() -> str:
-    return "<b>Username already exists. Enter another one:</b>"
+    return "<b>Username already exists, try another one:</b>"
 
 
 def set_password() -> str:
@@ -29,3 +29,7 @@ def confirmed() -> str:
 
 def canceled() -> str:
     return "<b>Registration was canceled</b>"
+
+
+def user_already_exists() -> str:
+    return "<b>Username already exists, try another one:</b>"

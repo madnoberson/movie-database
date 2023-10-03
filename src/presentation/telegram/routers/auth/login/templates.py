@@ -23,3 +23,11 @@ def confirmed() -> str:
 
 def canceled() -> str:
     return "<b>Loging was canceled</b>"
+
+
+def user_does_not_exist() -> str:
+    return "<b>User doesn't exist. Make sure the username and password are correct</b>"
+
+
+def user_password_is_not_correct() -> str:
+    return "<b>Password is not correct. Please, try again:</b>"
