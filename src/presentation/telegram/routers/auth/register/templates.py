@@ -14,7 +14,7 @@ def username_already_exists() -> str:
 
 
 def set_password() -> str:
-    return "<b>Password:<b>"
+    return "<b>Password:</b>"
 
 
 def password_is_invalid() -> str:

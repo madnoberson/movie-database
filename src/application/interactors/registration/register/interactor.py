@@ -16,9 +16,7 @@ class Register:
 
     async def __call__(self, data: dto.RegisterDTO) -> dto.RegisterResultDTO:
         # 1.Ensure user doesn't exist
-        user_exists = await self.dbw_gateway.check_user_exists(
-            username=data.username
-        )
+        user_exists = await self.dbw_gateway.check_user_exists(username=data.username)
         if user_exists:
             raise exceptions.UserAlreadyExistsError()
         

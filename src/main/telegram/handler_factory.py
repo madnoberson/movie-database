@@ -1,5 +1,5 @@
 import asyncio
-from typing import AsyncIterator, AsyncContextManager
+from typing import Type, AsyncIterator, AsyncContextManager
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 
@@ -13,7 +13,7 @@ __all__ = ["HandlerFactoryImpl"]
 @dataclass(frozen=True, slots=True)
 class HandlerFactoryImpl(HandlerFactory[H]):
 
-    handler: H
+    handler: Type[H]
     dependencies: dict[str, object] = field(default_factory=dict)
     factories: dict[str, GatewayFactory] = field(default_factory=dict)
 

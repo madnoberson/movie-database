@@ -26,25 +26,24 @@ async def set_username(
         dto = CheckUsernameExistsDTO(username=message.text)
         result = await check_username_exists(dto)
     if result["username_exists"]:
-        await message.answer(text=templates.username_already_exists())
-        return
+        return await message.answer(text=templates.username_already_exists())
     await message.answer(text=templates.set_password())
     await state.update_data(username=message.text)
     await state.set_state(states.Register.set_password)
 
 
-async def username_is_invalid(message: Message) -> None:
+async def username_is_invalid(message: Message):
     await message.answer(text=templates.username_is_invalid())
 
 
 async def set_password(message: Message, state: FSMContext):
     text = templates.confirm((await state.get_data())["username"])
     await message.answer(text=text, reply_markup=keyboards.confirm())
-    await state.set_data(password=message.text)
+    await state.update_data(password=message.text)
     await state.set_state(states.Register.confirm)
 
 
-async def password_is_invalid(message: Message) -> None:
+async def password_is_invalid(message: Message):
     await message.answer(text=templates.password_is_invalid())
 
 

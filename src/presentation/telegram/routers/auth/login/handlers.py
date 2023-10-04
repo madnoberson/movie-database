@@ -22,7 +22,7 @@ async def set_username(message: Message, state: FSMContext):
     await state.set_state(states.Login.set_password)
 
 
-async def username_is_invalid(message: Message) -> None:
+async def username_is_invalid(message: Message):
     await message.answer(text=templates.username_is_invalid())
 
 
@@ -36,7 +36,7 @@ async def set_password(message: Message, state: FSMContext):
     await state.set_state(states.Login.confirm)
 
 
-async def password_is_invalid(message: Message) -> None:
+async def password_is_invalid(message: Message):
     await message.answer(text=templates.password_is_invalid())
 
 
