@@ -3,7 +3,7 @@ from datetime import datetime
 from uuid import UUID, uuid4
 from enum import IntEnum
 
-from src.infrastructure.application.utils import as_domain_model
+from src.app.infrastructure.application.utils import as_domain_model
 
 
 class IntEnumExample(IntEnum):
