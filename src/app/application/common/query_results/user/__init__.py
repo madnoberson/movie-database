@@ -1,1 +1,1 @@
-from .check_username_exists import CheckUsernameExists
+from .get_current_user import GetCurrentUser
