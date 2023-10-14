@@ -10,7 +10,7 @@ class AsyncpgAuthenticationReader(AuthenticationReader):
     def __init__(self, connection: Connection) -> None:
         self.connection = connection
 
-    async def login(self, username: str) -> query_resulsts.Login:
+    async def login(self, username: str) -> query_resulsts.Login | None:
         data = await self.connection.fetchrow(
             """
             SELECT ROW_TO_JSON(u.*) data, ROW_TO_JSON(u.*) extra
@@ -18,4 +18,9 @@ class AsyncpgAuthenticationReader(AuthenticationReader):
             """,
             username
         )
+        if data is None: return None
+
+        data = dict(data)
+        data["data"]["user_id"] = data["data"]["id"]
+        
         return as_query_result(query_resulsts.Login, data)

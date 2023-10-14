@@ -10,7 +10,7 @@ from app.presentation.web_api.depends_stub import Stub
 
 def get_soft_identity_provider(
     session_gateway: Annotated[AuthSessionGateway, Depends(Stub(AuthSessionGateway))],
-    session_id: Annotated[str, Cookie(None)]
+    session_id: Annotated[str, Cookie()]
 ) -> SoftSessionIdentityProvider:
     """
     Returns `SoftIdentityProvider` that does nothing if user is not authorized
@@ -20,7 +20,7 @@ def get_soft_identity_provider(
 
 def get_strict_identity_provider(
     session_gateway: Annotated[AuthSessionGateway, Depends(Stub(AuthSessionGateway))],
-    session_id: Annotated[str, Cookie(None)]
+    session_id: Annotated[str, Cookie()]
 ) -> StrictSessionIdentityProvider:
     """
     Returns `StrictIdentityProvider` that raises `UnauthorizedError`

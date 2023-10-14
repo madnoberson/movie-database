@@ -35,7 +35,7 @@ class PostgresConfig:
 
     host: str = "127.0.0.1"
     port: int = 5432
-    name: str = "vsn_admin"
+    name: str = "movie_database"
     user: str = "postgres"
     password: str = "1234"
 

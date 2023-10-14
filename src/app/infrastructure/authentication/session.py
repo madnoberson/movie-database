@@ -8,6 +8,10 @@ from app.application.common.exceptions.authentication import UnauthorizedError
 from app.application.common.interfaces.identity_provider import IdentityProvider
 
 
+def create_redis_connection(host: str, port: int, db: int) -> Redis:
+    return Redis(host=host, port=port, db=db, decode_responses=True)
+
+
 class SessionDoesNotExistError(Exception):
     ...
 
@@ -33,8 +37,10 @@ class AuthSessionGateway:
         session_id = self._create_session_id()
         session_key = f"auth_sessions:{session_id}"
         session_data = {"user_id": session.user_id.hex}
+
         await self.redis.hset(name=session_key, mapping=session_data)
         await self.redis.expire(name=session_key, time=self.expire)
+        
         return session_id
 
     async def get_session(self, session_id: UUID) -> Session:

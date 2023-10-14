@@ -5,4 +5,4 @@ from .config import UvicornConfig
 
 
 def create_server(app: FastAPI, uvicorn_config: UvicornConfig) -> Server:
-    server = Server(Config(app=app, host=uvicorn_config.host, port=uvicorn_config.port))
+    return Server(Config(app=app, host=uvicorn_config.host, port=uvicorn_config.port))
