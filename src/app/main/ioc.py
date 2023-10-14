@@ -1,8 +1,9 @@
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
-from app.application.commands.registration.register import Register
 from app.application.common.interfaces.identity_provider import IdentityProvider
+from app.application.commands.registration.register import Register
+from app.application.commands.movie.create_movie import CreateMovie
 from app.application.queries.authentication.login import Login
 from app.application.queries.user.get_current_user import GetCurrentUser
 from app.infrastructure.database.factories import AsyncpgFactoriesManager
@@ -20,6 +21,14 @@ class IoC(HandlerFactory):
         async with self.factories_manager.build_repository_factory() as factory:
             yield Register(
                 user_repo=factory.build_user_repo(),
+                uow=UnitOfWorkImpl(await factory.build_uow())
+            )
+    
+    @asynccontextmanager
+    async def create_movie(self) -> AsyncIterator[CreateMovie]:
+        async with self.factories_manager.build_repository_factory() as factory:
+            yield CreateMovie(
+                movie_repo=factory.build_movie_repo(),
                 uow=UnitOfWorkImpl(await factory.build_uow())
             )
 

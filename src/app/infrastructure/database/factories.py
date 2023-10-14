@@ -37,6 +37,9 @@ class AsyncpgRepositoryFactory:
 
     def build_user_repo(self) -> repositories.AsyncpgUserRepository:
         return repositories.AsyncpgUserRepository(self.connection)
+
+    def build_movie_repo(self) -> repositories.AsyncpgMovieRepository:
+        return repositories.AsyncpgMovieRepository(self.connection)
     
     async def build_uow(self) -> AsyncpgUnitOfWork:
         transaction = self.connection.transaction()
