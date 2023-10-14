@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "movie-database"
+version = "0.1.0"
+description = ""
+authors = ["Egor <baseddepartmentzx77@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+asyncpg = "^0.28.0"
+pydantic = "^2.4.2"
+
+
+[tool.poetry.group.web_api.dependencies]
+fastapi = "^0.103.2"
+redis = "^5.0.1"
+uvicorn = "^0.23.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
