@@ -9,8 +9,9 @@ from app.domain.common.model import Model
 class Movie(Model):
 
     id: UUID
+    title: str
     created_at: datetime
 
     @classmethod
-    def create(cls, movie_id: UUID, created_at: datetime) -> "Movie":
-        return Movie(id=movie_id, created_at=created_at)
+    def create(cls, movie_id: UUID, title: str, created_at: datetime) -> "Movie":
+        return Movie(id=movie_id, title=title, created_at=created_at)
