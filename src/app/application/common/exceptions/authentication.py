@@ -1,0 +1,6 @@
+class UnauthorizedError(Exception):
+    ...
+
+
+class PasswordIsNotCorrectError(Exception):
+    ...

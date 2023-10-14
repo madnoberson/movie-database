@@ -7,23 +7,14 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-
-
-[tool.poetry.group.telegram.dependencies]
-aiogram = "^3.0.0b5"
 asyncpg = "^0.28.0"
-aiobcrypt = "^3.2.0.post1"
-redis = "^5.0.0"
 pydantic = "^2.4.2"
 
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.4.2"
-
-
-[tool.poetry.group.config-loader.dependencies]
-pydantic = "^2.4.2"
-toml = "^0.10.2"
+[tool.poetry.group.api.dependencies]
+fastapi = "^0.103.2"
+redis = "^5.0.1"
+uvicorn = "^0.23.2"
 
 [build-system]
 requires = ["poetry-core"]
