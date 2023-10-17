@@ -5,7 +5,7 @@ from uuid import UUID, uuid4
 from app.domain.models.movie import Movie
 from app.application.common.handler import CommandHandler
 from app.application.common.interfaces.repositories import MovieRepository
-from app.application.common.protocols.uow import UnitOfWork
+from app.application.common.interfaces.uow import UnitOfWork
 
 
 @dataclass(frozen=True, slots=True)

@@ -4,7 +4,7 @@ from uuid import UUID, uuid4
 
 from app.domain.models.user import User
 from app.application.common.handler import CommandHandler
-from app.application.common.protocols.uow import UnitOfWork
+from app.application.common.interfaces.uow import UnitOfWork
 from app.application.common.exceptions import user as user_exceptions
 from app.application.common.interfaces.repositories import UserRepository
 

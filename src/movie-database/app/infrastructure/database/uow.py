@@ -1,6 +1,6 @@
 from asyncpg.transaction import Transaction
 
-from app.application.common.protocols.uow import UnitOfWork
+from app.application.common.interfaces.uow import UnitOfWork
 
 
 class AsyncpgUnitOfWork(UnitOfWork):

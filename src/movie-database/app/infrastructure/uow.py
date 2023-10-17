@@ -1,6 +1,6 @@
 import asyncio
 
-from app.application.common.protocols.uow import UnitOfWork
+from app.application.common.interfaces.uow import UnitOfWork
 
 
 class UnitOfWorkImpl(UnitOfWork):
