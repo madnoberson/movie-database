@@ -9,7 +9,7 @@ from . import repositories
 from . import readers
 
 
-class AsyncpgFactoriesManager:
+class AsyncpgFactoryManager:
 
     def __init__(
         self,
