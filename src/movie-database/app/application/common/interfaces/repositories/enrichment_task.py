@@ -7,6 +7,10 @@ from app.domain.models.enrichment_task import EnrichmentTask
 class EnrichmentTaskRepository(ABC):
 
     @abstractmethod
+    async def check_enrichment_task_exists(self, kinopoisk_id: str) -> bool:
+        raise NotImplementedError
+
+    @abstractmethod
     async def save_enrichment_task(self, enrichment_task: EnrichmentTask) -> None:
         raise NotImplementedError
     

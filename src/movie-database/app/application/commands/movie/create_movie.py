@@ -3,8 +3,8 @@ from datetime import datetime
 from uuid import UUID, uuid4
 
 from app.domain.models.movie import Movie
-from app.application.common.interfaces.repositories import MovieRepository
 from app.application.common.interfaces.uow import UnitOfWork
+from app.application.common.interfaces import repositories
 from app.application.commands.handler import CommandHandler
 
 
@@ -22,7 +22,11 @@ class OutputDTO:
 
 class CreateMovie(CommandHandler):
 
-    def __init__(self, movie_repo: MovieRepository, uow: UnitOfWork) -> None:
+    def __init__(
+        self,
+        movie_repo: repositories.MovieRepository,
+        uow: UnitOfWork
+    ) -> None:
         self.movie_repo = movie_repo
         self.uow = uow
     

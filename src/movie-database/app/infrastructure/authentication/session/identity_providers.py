@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from app.application.common.exceptions.authentication import UnauthorizedError
+from app.application.common.exceptions.auth import UnauthorizedError
 from app.application.common.interfaces.identity_provider import IdentityProvider
 from .session_gateway import AuthSessionGateway
 

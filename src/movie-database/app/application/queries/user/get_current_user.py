@@ -1,10 +1,9 @@
 from typing import NewType
 
-from app.application.common.exceptions import user as user_exceptions
-from app.application.common.exceptions import authentication as auth_exceptions
-from app.application.common.interfaces.readers import UserReader
-from app.application.common.interfaces.identity_provider import IdentityProvider
 from app.application.common.query_results.user.get_current_user import Data
+from app.application.common.interfaces.identity_provider import IdentityProvider
+from app.application.common.interfaces import readers
+from app.application.common.exceptions import auth as auth_exceptions
 from app.application.queries.handler import QueryHandler
 
 
@@ -15,7 +14,7 @@ class GetCurrentUser(QueryHandler):
 
     def __init__(
         self,
-        user_reader: UserReader,
+        user_reader: readers.UserReader,
         identity_provider: IdentityProvider
     ) -> None:
         self.user_reader = user_reader
@@ -29,8 +28,6 @@ class GetCurrentUser(QueryHandler):
 
         # 2.Get query result
         query_result = await self.user_reader.get_current_user(user_id=current_user_id)
-        if query_result is None:
-            raise user_exceptions.UserDoesNotExistError()
         
         return OutputDTO(query_result.data)
         

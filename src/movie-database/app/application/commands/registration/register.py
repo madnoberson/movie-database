@@ -4,8 +4,8 @@ from uuid import UUID, uuid4
 
 from app.domain.models.user import User
 from app.application.common.interfaces.uow import UnitOfWork
+from app.application.common.interfaces import repositories
 from app.application.common.exceptions import user as user_exceptions
-from app.application.common.interfaces.repositories import UserRepository
 from app.application.commands.handler import CommandHandler
 
 
@@ -24,7 +24,11 @@ class OutputDTO:
 
 class Register(CommandHandler):
 
-    def __init__(self, user_repo: UserRepository, uow: UnitOfWork) -> None:
+    def __init__(
+        self,
+        user_repo: repositories.UserRepository,
+        uow: UnitOfWork
+    ) -> None:
         self.user_repo = user_repo
         self.uow = uow
 

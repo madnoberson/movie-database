@@ -1,0 +1,6 @@
+class EnrichmentTaskAlreadyExistsError(Exception):
+    ...
+
+
+class EnrichmentTaskDoesNotExistError(Exception):
+    ...
