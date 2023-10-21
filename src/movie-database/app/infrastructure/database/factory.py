@@ -41,6 +41,9 @@ class RepositoryFactory:
     def build_movie_repo(self) -> repositories.MovieRepositoryImpl:
         return repositories.MovieRepositoryImpl(self.connection)
     
+    def build_enrichment_task_repo(self) -> repositories.EnrichmentTaskRepositoryImpl:
+        return repositories.EnrichmentTaskRepositoryImpl(self.connection)
+    
     async def build_uow(self) -> AsyncpgUnitOfWork:
         transaction = self.connection.transaction()
         await transaction.start()

@@ -31,12 +31,10 @@ class UserRepositoryImpl(UserRepository):
         data = await self.connection.fetchrow(
             "SELECT * FROM users u WHERE u.id = $1 LIMIT 1", user_id
         )
-        return as_domain_model(User, data)
+        return as_domain_model(User, data) if data else None
     
     async def update_user(self, user: User) -> None:
         await self.connection.execute(
-            """
-            UPDATE users u SET username = $1, password = $2 WHERE u.id = $3
-            """,
+            "UPDATE users u SET username = $1, password = $2 WHERE u.id = $3",
             user.username, user.password, user.id
         )

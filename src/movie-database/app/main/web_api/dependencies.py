@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from app.infrastructure.database.connection_pool import create_connection_pool
 from app.infrastructure.database.factory import DatabaseFactoryManager
+from app.infrastructure.message_broker.factory import EventBusFactory
 from app.infrastructure.authentication.session.redis_connection import create_redis_connection
 from app.infrastructure.authentication.session.session_gateway import AuthSessionGateway
 from app.presentation.handler_factory import HandlerFactory
@@ -16,8 +17,10 @@ async def setup_dependencies(
 ) -> None:
     # 1.Setup IoC
     connection_pool = await create_connection_pool(postgres_config.dsn)
-    db_factory_manager = DatabaseFactoryManager(connection_pool, connection_pool)
-    app.dependency_overrides[HandlerFactory] = lambda: IoC(db_factory_manager)
+    app.dependency_overrides[HandlerFactory] = lambda: IoC(
+        db_factory_manager=DatabaseFactoryManager(connection_pool, connection_pool),
+        event_bus_factory=EventBusFactory()
+    )
 
     # 2.Setup auth session gateway
     redis_connection = create_redis_connection(redis_config.host, redis_config.port, redis_config.db)

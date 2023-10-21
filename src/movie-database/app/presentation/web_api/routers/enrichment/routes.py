@@ -16,7 +16,9 @@ async def create_enrichment_task(
     data: requests.CreateEnrichmentTaskSchema
 ) -> responses.CreateEnrichmentTaskOutSchema:
     async with ioc.create_enrichment_task(identity_provider) as create_enrichment_task:
-        dto = CreateEnrichmentTaskDTO(kinopoisk_id=data.kinopisk_id)
+        dto = CreateEnrichmentTaskDTO(
+            kinopoisk_id=data.kinopisk_id, enrichment_type=data.enrichment_type
+        )
         return await create_enrichment_task(dto)
 
 

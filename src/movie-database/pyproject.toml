@@ -9,10 +9,11 @@ readme = "README.md"
 python = "^3.10"
 asyncpg = "^0.28.0"
 pydantic = "^2.4.2"
+redis = "^5.0.1"
+aio-pika = "^9.3.0"
 
 [tool.poetry.group.web_api.dependencies]
 fastapi = "^0.103.2"
-redis = "^5.0.1"
 uvicorn = "^0.23.2"
 
 [build-system]
