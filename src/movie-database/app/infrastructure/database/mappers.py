@@ -2,7 +2,7 @@ from typing import Mapping, Type, Any
 
 from pydantic import TypeAdapter
 
-from app.domain.common.model import ModelT
+from app.domain.models.model import ModelT
 from app.application.common.query_results.query_result import QueryResultT
 
 

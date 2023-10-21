@@ -4,7 +4,7 @@ from fastapi import Depends, Response
 
 from app.application.commands.registration.register import InputDTO as RegisterDTO
 from app.application.queries.authentication.login import InputDTO as LoginDTO
-from app.infrastructure.authentication.session import Session, AuthSessionGateway
+from app.infrastructure.authentication.session.session_gateway import Session, AuthSessionGateway
 from app.presentation.handler_factory import HandlerFactory
 from app.presentation.web_api.depends_stub import Stub
 from . import requests

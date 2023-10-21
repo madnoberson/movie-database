@@ -4,13 +4,6 @@ from uuid import UUID, uuid4
 
 from redis.asyncio import Redis
 
-from app.application.common.exceptions.authentication import UnauthorizedError
-from app.application.common.interfaces.identity_provider import IdentityProvider
-
-
-def create_redis_connection(host: str, port: int, db: int) -> Redis:
-    return Redis(host=host, port=port, db=db, decode_responses=True)
-
 
 class SessionDoesNotExistError(Exception):
     ...
@@ -37,9 +30,7 @@ class AuthSessionGateway:
         Deletes old sesssion, saves new one and returns its id
         """
         await self._delete_session(user_id=session.user_id)
-        session_id = await self._save_session(session)
-
-        return session_id
+        return await self._save_session(session)
 
     async def get_session(self, session_id: UUID) -> Session:
         """
@@ -71,35 +62,3 @@ class AuthSessionGateway:
 
     def _create_session_id(self) -> str:
         return uuid4().hex
-
-
-class SessionIdentityProvider(IdentityProvider):
-
-    def __init__(
-        self,
-        session_id: UUID | None,
-        auth_session_gateway: AuthSessionGateway
-    ) -> None:
-        self.session_id = session_id
-        self.auth_session_gateway = auth_session_gateway
-
-    async def get_current_user_id(self) -> UUID | None:
-        if self.session_id is None:
-            return await self._handle_unauthorized()
-        session = await self.auth_session_gateway.get_session(self.session_id)
-        return session.user_id
-    
-    async def _handle_unauthorized(self) -> None:
-        raise NotImplementedError
-
-
-class StrictSessionIdentityProvider(SessionIdentityProvider):
-
-    async def _handle_unauthorized(self) -> None:
-        raise UnauthorizedError()
-    
-    
-class SoftSessionIdentityProvider(SessionIdentityProvider):
-
-    async def _handle_unauthorized(self) -> None:
-        return None

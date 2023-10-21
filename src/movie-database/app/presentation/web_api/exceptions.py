@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 
 from app.application.common.exceptions import authentication as auth_exceptions
 from app.application.common.exceptions import user as user_exceptions
-from app.infrastructure.authentication.session import SessionDoesNotExistError
+from app.infrastructure.authentication.session.session_gateway import SessionDoesNotExistError
 
 
 def setup_exception_handlers(app: FastAPI) -> None:

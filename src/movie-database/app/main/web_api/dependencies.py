@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 
 from app.infrastructure.database.connection_pool import create_connection_pool
-from app.infrastructure.database.factories import AsyncpgFactoryManager
-from app.infrastructure.authentication.session import create_redis_connection, AuthSessionGateway
+from app.infrastructure.database.factory import AsyncpgFactoryManager
+from app.infrastructure.authentication.session.redis_connection import create_redis_connection
+from app.infrastructure.authentication.session.session_gateway import AuthSessionGateway
 from app.presentation.handler_factory import HandlerFactory
 from app.presentation.web_api.depends_stub import Stub
 from app.main.ioc import IoC
