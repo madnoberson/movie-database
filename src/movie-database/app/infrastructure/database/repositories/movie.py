@@ -4,7 +4,7 @@ from app.domain.models.movie import Movie
 from app.application.common.interfaces.repositories import MovieRepository
 
 
-class AsyncpgMovieRepository(MovieRepository):
+class MovieRepositoryImpl(MovieRepository):
 
     def __init__(self, connection: Connection) -> None:
         self.connection = connection

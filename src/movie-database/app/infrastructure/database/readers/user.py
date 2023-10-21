@@ -7,7 +7,7 @@ from app.application.common.query_results import user as query_results
 from app.infrastructure.database.mappers import as_query_result
 
 
-class AsyncpgUserReader(UserReader):
+class UserReaderImpl(UserReader):
 
     def __init__(self, connection: Connection) -> None:
         self.connection = connection

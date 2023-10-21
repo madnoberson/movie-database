@@ -1,2 +1,2 @@
-from .user import AsyncpgUserRepository
-from .movie import AsyncpgMovieRepository
+from .user import UserRepositoryImpl
+from .movie import MovieRepositoryImpl

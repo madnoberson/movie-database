@@ -1,11 +1,11 @@
 from typing import NewType
 
-from app.application.common.handler import QueryHandler
 from app.application.common.exceptions import user as user_exceptions
 from app.application.common.exceptions import authentication as auth_exceptions
 from app.application.common.interfaces.readers import UserReader
 from app.application.common.interfaces.identity_provider import IdentityProvider
 from app.application.common.query_results.user.get_current_user import Data
+from app.application.queries.handler import QueryHandler
 
 
 OutputDTO = NewType("OutputDTO", Data)

@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
-from app.application.common.query_results import authentication as query_results
+from app.application.common.query_results import auth as query_results
 
 
-class AuthenticationReader(ABC):
+class AuthReader(ABC):
 
     @abstractmethod
     async def login(self, username: str) -> query_results.Login:

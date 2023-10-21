@@ -7,7 +7,7 @@ from app.application.common.interfaces.repositories import UserRepository
 from app.infrastructure.database.mappers import as_domain_model
 
 
-class AsyncpgUserRepository(UserRepository):
+class UserRepositoryImpl(UserRepository):
 
     def __init__(self, connection: Connection) -> None:
         self.connection = connection

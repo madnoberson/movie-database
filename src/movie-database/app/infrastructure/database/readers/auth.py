@@ -1,16 +1,16 @@
 from asyncpg.connection import Connection
 
-from app.application.common.interfaces.readers import AuthenticationReader
-from app.application.common.query_results import authentication as query_resulsts
+from app.application.common.interfaces.readers import AuthReader
+from app.application.common.query_results import auth as query_results
 from app.infrastructure.database.mappers import as_query_result
 
 
-class AsyncpgAuthenticationReader(AuthenticationReader):
+class AuthnReaderImpl(AuthReader):
 
     def __init__(self, connection: Connection) -> None:
         self.connection = connection
 
-    async def login(self, username: str) -> query_resulsts.Login | None:
+    async def login(self, username: str) -> query_results.Login | None:
         data = await self.connection.fetchrow(
             """
             SELECT ROW_TO_JSON(u.*) data, ROW_TO_JSON(u.*) extra
@@ -23,4 +23,4 @@ class AsyncpgAuthenticationReader(AuthenticationReader):
         data = dict(data)
         data["data"]["user_id"] = data["data"]["id"]
         
-        return as_query_result(query_resulsts.Login, data)
+        return as_query_result(query_results.Login, data)

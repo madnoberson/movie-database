@@ -14,17 +14,3 @@ class Handler(ABC):
 
 
 HandlerT = TypeVar("HandlerT", bound=Handler)
-
-
-class CommandHandler(Handler):
-    ...
-
-
-CommandHandlerT = TypeVar("CommandHandlerT", bound=CommandHandler)
-
-
-class QueryHandler(Handler):
-    ...
-
-
-QueryHandlerT = TypeVar("QueryHandlerT", bound=QueryHandler)

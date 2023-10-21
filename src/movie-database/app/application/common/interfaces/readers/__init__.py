@@ -1,2 +1,2 @@
-from .authentication import AuthenticationReader
+from .auth import AuthReader
 from .user import UserReader
