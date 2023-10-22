@@ -3,7 +3,7 @@ from typing import AsyncIterator
 
 from app.application.common.interfaces.identity_provider import IdentityProvider
 from app.application.commands.registration.register import Register
-from app.application.commands.enrichment_task.create_task import CreateEnrichmentTask
+from app.application.commands.adding_task.create_task import CreateAddingTask
 from app.application.commands.movie.create_movie import CreateMovie
 from app.application.queries.auth.login import Login
 from app.application.queries.user.get_current_user import GetCurrentUser
@@ -32,15 +32,15 @@ class IoC(HandlerFactory):
             )
     
     @asynccontextmanager
-    async def create_enrichment_task(
+    async def create_adding_task(
         self, identity_provider: IdentityProvider
-    ) -> AsyncIterator[CreateEnrichmentTask]:
+    ) -> AsyncIterator[CreateAddingTask]:
         async with (
             self.db_factory_manager.build_repo_factory() as repo_factory,
             self.event_bus_factory.build_event_bus() as event_bus
         ):
-            yield CreateEnrichmentTask(
-                enrichment_task_repo=repo_factory.build_enrichment_task_repo(),
+            yield CreateAddingTask(
+                adding_task_repo=repo_factory.build_adding_task_repo(),
                 identity_provider=identity_provider,
                 event_bus=event_bus,
                 uow=UnitOfWorkImpl(await repo_factory.build_uow(), await event_bus.build_uow())

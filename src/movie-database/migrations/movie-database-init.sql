@@ -11,12 +11,12 @@ CREATE TABLE movies (
     created_at TIMESTAMP NOT NULL
 );
 
-CREATE TABLE enrichment_tasks (
+CREATE TABLE adding_tasks (
     id UUID PRIMARY KEY,
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
-    enrichment_type SMALLINT NOT NULL,
+    creator_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    adding_type SMALLINT NOT NULL,
     kinopoisk_id VARCHAR UNIQUE NOT NULL,
     created_at TIMESTAMPTZ NOT NULL,
-    movie_id UUID REFERENCES movies(id),
+    related_to UUID UNIQUE,
     finished_at TIMESTAMPTZ
 );

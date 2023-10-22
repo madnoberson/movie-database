@@ -1,3 +1,3 @@
 from .user import UserRepository
 from .movie import MovieRepository
-from .enrichment_task import EnrichmentTaskRepository
+from .adding_task import AddingTaskRepository

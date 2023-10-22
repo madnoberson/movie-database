@@ -3,7 +3,7 @@ from typing import AsyncContextManager
 
 from app.application.common.interfaces.identity_provider import IdentityProvider
 from app.application.commands.registration.register import Register
-from app.application.commands.enrichment_task.create_task import CreateEnrichmentTask
+from app.application.commands.adding_task.create_task import CreateAddingTask
 from app.application.commands.movie.create_movie import CreateMovie
 from app.application.queries.auth.login import Login
 from app.application.queries.user.get_current_user import GetCurrentUser
@@ -16,9 +16,9 @@ class HandlerFactory(ABC):
         raise NotImplementedError
     
     @abstractmethod
-    async def create_enrichment_task(
+    async def create_adding_task(
         self, identity_provider: IdentityProvider
-    ) -> AsyncContextManager[CreateEnrichmentTask]:
+    ) -> AsyncContextManager[CreateAddingTask]:
         raise NotImplementedError
     
     @abstractmethod

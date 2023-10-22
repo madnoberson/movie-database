@@ -1,0 +1,6 @@
+class AddingTaskAlreadyExistsError(Exception):
+    ...
+
+
+class AddingTaskDoesNotExistError(Exception):
+    ...
