@@ -4,7 +4,7 @@ from fastapi import Depends, Response
 
 from app.application.commands.registration.register import InputDTO as RegisterDTO
 from app.application.queries.auth.login import InputDTO as LoginDTO
-from app.infrastructure.authentication.session.session_gateway import Session, AuthSessionGateway
+from app.infrastructure.authentication.session.session_gateway import Session, SessionGateway
 from app.presentation.handler_factory import HandlerFactory
 from app.presentation.web_api.depends_stub import Stub
 from . import requests
@@ -12,7 +12,7 @@ from . import requests
 
 async def register(
     ioc: Annotated[HandlerFactory, Depends()],
-    session_gateway: Annotated[AuthSessionGateway, Depends(Stub(AuthSessionGateway))],
+    session_gateway: Annotated[SessionGateway, Depends(Stub(SessionGateway))],
     data: requests.RegisterSchema,
     response: Response
 ) -> Literal[True]:
@@ -25,7 +25,7 @@ async def register(
 
 async def login(
     ioc: Annotated[HandlerFactory, Depends()],
-    session_gateway: Annotated[AuthSessionGateway, Depends(Stub(AuthSessionGateway))],
+    session_gateway: Annotated[SessionGateway, Depends(Stub(SessionGateway))],
     data: requests.LoginSchema,
     response: Response
 ) -> Literal[True]:

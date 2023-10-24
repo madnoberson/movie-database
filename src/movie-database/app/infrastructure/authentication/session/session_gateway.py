@@ -15,7 +15,7 @@ class Session:
     user_id: UUID
 
 
-class AuthSessionGateway:
+class SessionGateway:
 
     def __init__(
         self,

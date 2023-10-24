@@ -2,13 +2,13 @@ from typing import Annotated
 
 from fastapi import Depends, Cookie
 
-from app.infrastructure.authentication.session.session_gateway import AuthSessionGateway
+from app.infrastructure.authentication.session.session_gateway import SessionGateway
 from app.infrastructure.authentication.session import identity_providers
 from app.presentation.web_api.depends_stub import Stub
 
 
 def get_soft_identity_provider(
-    session_gateway: Annotated[AuthSessionGateway, Depends(Stub(AuthSessionGateway))],
+    session_gateway: Annotated[SessionGateway, Depends(Stub(SessionGateway))],
     session_id: Annotated[str, Cookie()]
 ) -> identity_providers.SoftSessionIdentityProvider:
     """
@@ -18,7 +18,7 @@ def get_soft_identity_provider(
 
 
 def get_strict_identity_provider(
-    session_gateway: Annotated[AuthSessionGateway, Depends(Stub(AuthSessionGateway))],
+    session_gateway: Annotated[SessionGateway, Depends(Stub(SessionGateway))],
     session_id: Annotated[str, Cookie()]
 ) -> identity_providers.StrictSessionIdentityProvider:
     """
