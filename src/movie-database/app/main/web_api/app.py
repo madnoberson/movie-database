@@ -7,7 +7,7 @@ from . import config
 
 
 async def create_app(
-    fastapi_config: config.FastapiConfig, postgres_config: config.PostgresConfig,
+    fastapi_config: config.FastAPIConfig, postgres_config: config.PostgresConfig,
     redis_config: config.RedisConfig
 ) -> FastAPI:
     app = FastAPI(

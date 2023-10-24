@@ -13,7 +13,7 @@ def load_config() -> "Config":
 
 
 @dataclass(frozen=True, slots=True)
-class FastapiConfig:
+class FastAPIConfig:
 
     title: str = "Movie database"
     version: str = "0.1.0"
@@ -57,7 +57,7 @@ class RedisConfig:
 @dataclass(frozen=True, slots=True)
 class Config:
 
-    fastapi: FastapiConfig
+    fastapi: FastAPIConfig
     uvicorn: UvicornConfig
     postgres: PostgresConfig
     redis: RedisConfig

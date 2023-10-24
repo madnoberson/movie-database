@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from app.infrastructure.database.connection_pool import create_connection_pool
 from app.infrastructure.database.factory import DatabaseFactoryManager
 from app.infrastructure.message_broker.factory import EventBusFactory
-from app.infrastructure.authentication.session.redis_connection import create_redis_connection
+from app.infrastructure.authentication.session.connection import create_redis_connection
 from app.infrastructure.authentication.session.session_gateway import AuthSessionGateway
 from app.presentation.handler_factory import HandlerFactory
 from app.presentation.web_api.depends_stub import Stub
