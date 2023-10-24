@@ -10,7 +10,7 @@ async def main() -> None:
 
     app = await create_app(
         fastapi_config=config.fastapi, postgres_config=config.postgres,
-        redis_config=config.redis
+        session_gateway_config=config.session_gateway
     )
     server = create_server(app, config.uvicorn)
 

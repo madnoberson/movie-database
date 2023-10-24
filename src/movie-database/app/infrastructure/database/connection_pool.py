@@ -13,7 +13,7 @@ async def set_connection_codecs(connection: Connection) -> None:
     )
 
 
-async def create_connection_pool(
+async def create_database_connection_pool(
     dsn: str, min_size: int | None = 10, max_size: int | None = 10,
     max_queries: int | None = 50000, max_inactive_connection_lifetime: int | None = 300
 ) -> Pool:
