@@ -6,7 +6,9 @@ from datetime import timedelta
 
 __all__ = (
     "load_config", "Config", "FastAPIConfig",
-    "UvicornConfig", "DatabaseConfig", "SessionGatewayConfig"
+    "UvicornConfig", "DatabaseConfig", "EventBusConfig",
+    "SessionGatewayConfig",
+    
 )
 
 
@@ -28,8 +30,7 @@ def load_config() -> "Config":
     )
     event_bus_config = load_event_bus_config(
         rq_host_env="EVENT_BUS_RQ_HOST", rq_port_env="EVENT_BUS_RQ_PORT",
-        rq_login_env="EVENT_BUS_RQ_LOGIN", rq_password_env="EVENT_BUS_RQ_PASSWORD",
-        max_connections_env="EVENT_BUS_MAX_CONNECTIONS"
+        rq_login_env="EVENT_BUS_RQ_LOGIN", rq_password_env="EVENT_BUS_RQ_PASSWORD"
 
     )
     session_gateway_config = load_session_gateway_config(
@@ -144,20 +145,17 @@ class EventBusConfig:
     rq_port: int
     rq_login: str
     rq_password: str
-    max_connections: int
 
 
 def load_event_bus_config(
     rq_host_env: str, rq_port_env: str,
-    rq_login_env: str, rq_password_env: str,
-    max_connections_env: str
+    rq_login_env: str, rq_password_env: str
 ) -> EventBusConfig:
     return EventBusConfig(
         rq_host=get_env(rq_host_env, default="127.0.0.1"),
         rq_port=get_env(rq_port_env, int, default=5672),
         rq_login=get_env(rq_login_env, default="guest"),
-        rq_password=get_env(rq_password_env, default="guest"),
-        max_connections=get_env(max_connections_env, int, default=2)
+        rq_password=get_env(rq_password_env, default="guest")
     )
 
 

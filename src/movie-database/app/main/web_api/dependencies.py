@@ -28,8 +28,7 @@ async def setup_dependencies(
 
     event_bus_connection = await create_event_bus_connection(
         rq_host=event_bus_config.rq_host, rq_port=event_bus_config.rq_port,
-        rq_login=event_bus_config.rq_login, rq_password=event_bus_config.rq_password,
-        max_size=event_bus_config.max_connections
+        rq_login=event_bus_config.rq_login, rq_password=event_bus_config.rq_password
     )
     event_bus_factory = EventBusFactory(event_bus_connection)
 

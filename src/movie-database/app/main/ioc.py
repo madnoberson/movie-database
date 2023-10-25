@@ -43,7 +43,7 @@ class IoC(HandlerFactory):
                 adding_task_repo=repo_factory.build_adding_task_repo(),
                 identity_provider=identity_provider,
                 event_bus=event_bus,
-                uow=UnitOfWorkImpl(await repo_factory.build_uow(), await event_bus.build_uow())
+                uow=UnitOfWorkImpl(await repo_factory.build_uow(), event_bus.build_uow())
             )
     
     @asynccontextmanager
