@@ -19,11 +19,11 @@ class SessionGateway:
 
     def __init__(
         self,
-        redis: Redis,
-        expire: timedelta | None = timedelta(hours=24)
+        connection: Redis,
+        session_lifetime: timedelta
     ) -> None:
-        self.redis = redis
-        self.expire = expire
+        self.connection = connection
+        self.session_lifetime = session_lifetime
 
     async def save_session(self, session: Session) -> str:
         """
@@ -36,7 +36,7 @@ class SessionGateway:
         """
         Returns session if exists, otherwise raises `SessionDoesNotExistError`
         """
-        data = await self.redis.hgetall(f"auth_sessions:session_id:{session_id}")
+        data = await self.connection.hgetall(f"auth_sessions:session_id:{session_id}")
         if not data:
             raise SessionDoesNotExistError()
         return Session(user_id=UUID(data["user_id"]))
@@ -46,19 +46,19 @@ class SessionGateway:
         session_key = f"auth_sessions:session_id:{session_id}"
         session_data = {"user_id": session.user_id.hex}
 
-        await self.redis.set(
+        await self.connection.set(
             name=f"auth_sessions:user_id:{session.user_id.hex}",
-            value=session_id, ex=self.expire
+            value=session_id, ex=self.session_lifetime
         )
-        await self.redis.hset(name=session_key, mapping=session_data)
-        await self.redis.expire(name=session_key, time=self.expire)
+        await self.connection.hset(name=session_key, mapping=session_data)
+        await self.connection.expire(name=session_key, time=self.session_lifetime)
 
         return session_id
     
     async def _delete_session(self, user_id: UUID) -> None:
-        session_id = await self.redis.get(f"auth_sessions:user_id:{user_id.hex}")
+        session_id = await self.connection.get(f"auth_sessions:user_id:{user_id.hex}")
         if session_id is not None:
-            await self.redis.delete(f"auth_sessions:session_id:{session_id}")
+            await self.connection.delete(f"auth_sessions:session_id:{session_id}")
 
     def _create_session_id(self) -> str:
         return uuid4().hex

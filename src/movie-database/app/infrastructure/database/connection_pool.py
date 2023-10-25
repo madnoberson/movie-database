@@ -14,11 +14,11 @@ async def set_connection_codecs(connection: Connection) -> None:
 
 
 async def create_database_connection_pool(
-    dsn: str, min_size: int | None = 10, max_size: int | None = 10,
-    max_queries: int | None = 50000, max_inactive_connection_lifetime: int | None = 300
+    postgres_dsn: str, min_size: int, max_size: int, max_queries: int,
+    max_inactive_connection_lifetime: int
 ) -> Pool:
     return await create_pool(
-        dsn=dsn, min_size=min_size, max_size=max_size, max_queries=max_queries,
+        dsn=postgres_dsn, min_size=min_size, max_size=max_size, max_queries=max_queries,
         max_inactive_connection_lifetime=max_inactive_connection_lifetime,
         init=set_connection_codecs
     )

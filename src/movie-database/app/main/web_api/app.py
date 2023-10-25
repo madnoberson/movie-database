@@ -7,8 +7,8 @@ from . import config
 
 
 async def create_app(
-    fastapi_config: config.FastAPIConfig, postgres_config: config.PostgresConfig,
-    session_gateway_config: config.SessionGatewayConfig
+    fastapi_config: config.FastAPIConfig, database_config: config.DatabaseConfig,
+    event_bus_config: config.EventBusConfig, session_gateway_config: config.SessionGatewayConfig
 ) -> FastAPI:
     app = FastAPI(
         title=fastapi_config.title, version=fastapi_config.version,
@@ -16,7 +16,7 @@ async def create_app(
         docs_url=fastapi_config.docs_url, redoc_url=fastapi_config.redoc_url
     )
     await setup_dependencies(
-        app=app, postgres_config=postgres_config,
+        app=app, database_config=database_config, event_bus_config=event_bus_config,
         session_gateway_config=session_gateway_config
     )
     setup_exception_handlers(app)
