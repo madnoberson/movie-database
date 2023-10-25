@@ -4,10 +4,11 @@ version = "0.1.0"
 description = ""
 authors = ["Egor <baseddepartmentzx77@gmail.com>"]
 readme = "README.md"
+packages = [{include = "movie_enricher"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-faststream = {extras = ["rabbit"], version = "^0.2.4"}
+faststream = {extras = ["rabbit"], version = "^0.2.8"}
 
 
 [build-system]
