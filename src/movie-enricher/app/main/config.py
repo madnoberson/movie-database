@@ -3,6 +3,11 @@ from dataclasses import dataclass
 from typing import TypeVar, Callable
 
 
+__all__ = (
+    "load_config", "Config", "FastStreamConfig"
+)
+
+
 def load_config() -> "Config":
     faststream_config = load_faststream_config(
         title_env="FASTSTREAM_TITLE", version_env="FASTSTREAM_VERSION",

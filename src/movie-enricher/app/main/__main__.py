@@ -1,12 +1,15 @@
 import asyncio
 
-from faststream import FastStream
-from faststream.rabbit import RabbitBroker
+from .config import load_config
+from .app import create_app
 
 
 async def main() -> None:
-    app = FastStream()
-    ...
+    config = load_config()
+
+    app = create_app(config.faststream)
+
+    await app.run()
 
 
 asyncio.run(main())
