@@ -12,7 +12,7 @@ class EventBusImpl(EventBus):
 
     EXCHANGE_NAME = "amq.topic"
     ROUTING_KEY_PREFIX = "movie_database"
-    ROUTING_KEY_SUFFIXES = {
+    ROUTING_KEYS = {
         AddingTaskEvent: "adding_tasks"
     }
 
@@ -39,5 +39,5 @@ class EventBusImpl(EventBus):
     def _build_routing_key(self, event: EventT) -> str:
         return "{}.{}".format(
             self.ROUTING_KEY_PREFIX,
-            self.ROUTING_KEY_SUFFIXES[type(event).mro()[1]]
+            self.ROUTING_KEYS[type(event).mro()[1]]
         )
