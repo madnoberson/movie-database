@@ -2,7 +2,7 @@ from app.domain.events.event import EventT
 
 from aio_pika.abc import AbstractChannel, AbstractTransaction
 
-from app.domain.events.adding_task import AddingTaskEvent
+from app.domain.events import adding_task as adding_task_events
 from app.application.common.interfaces.event_bus import EventBus
 from .uow import EventBusUnitOfWork
 from .mappers import as_message
@@ -10,10 +10,13 @@ from .mappers import as_message
 
 class EventBusImpl(EventBus):
 
-    EXCHANGE_NAME = "amq.topic"
+    EXCHANGE_NAME = "movie_database"
     ROUTING_KEY_PREFIX = "movie_database"
-    ROUTING_KEYS = {
-        AddingTaskEvent: "adding_tasks"
+    ROUTING_KEY_ROOTS = {
+        adding_task_events.AddingTaskEvent: "adding_tasks"
+    }
+    ROUTING_KEY_SUFFIXES = {
+        adding_task_events.AddingTaskCreatedEvent: "created"
     }
 
     def __init__(
@@ -37,7 +40,8 @@ class EventBusImpl(EventBus):
         return EventBusUnitOfWork(self.transaction)
     
     def _build_routing_key(self, event: EventT) -> str:
-        return "{}.{}".format(
+        return "{}.{}.{}".format(
             self.ROUTING_KEY_PREFIX,
-            self.ROUTING_KEYS[type(event).mro()[1]]
+            self.ROUTING_KEY_ROOTS[type(event).mro()[1]],
+            self.ROUTING_KEY_SUFFIXES[type(event)]
         )

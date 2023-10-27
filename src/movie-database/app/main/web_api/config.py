@@ -31,7 +31,6 @@ def load_config() -> "Config":
     event_bus_config = load_event_bus_config(
         rq_host_env="EVENT_BUS_RQ_HOST", rq_port_env="EVENT_BUS_RQ_PORT",
         rq_login_env="EVENT_BUS_RQ_LOGIN", rq_password_env="EVENT_BUS_RQ_PASSWORD"
-
     )
     session_gateway_config = load_session_gateway_config(
         redis_host_env="SESSION_GATEWAY_REDIS_HOST", redis_port_env="SESSION_GATEWAY_REDIS_PORT",
