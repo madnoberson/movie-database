@@ -13,7 +13,7 @@ class Superuser(Model):
     username: str
     email: str
     password: str
-    is_blocked: bool
+    is_active: bool
     permissions: list[SuperUserPermissionEnum]
     created_at: datetime
 
@@ -25,6 +25,6 @@ class Superuser(Model):
     ) -> "Superuser":
         return Superuser(
             id=superuser_id, username=username, email=email,
-            password=password, is_blocked=False, permissions=permissions,
+            password=password, is_active=False, permissions=permissions,
             created_at=created_at
         )

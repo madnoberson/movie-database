@@ -7,6 +7,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+asyncpg = "^0.28.0"
+pydantic = "^2.4.2"
+redis = "^5.0.1"
 
 [tool.poetry.group.message_broker.dependencies]
 faststream = {extras = ["rabbit"], version = "^0.2.9"}
