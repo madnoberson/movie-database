@@ -62,7 +62,7 @@ class CreateAddingTask(CommandHandler):
         # 4.Save enrichment task
         await self.adding_task_repo.save_adding_task(adding_task)
 
-        # 5.Publish `EnrichmentTaskCreated` event
+        # 5.Publish `AddingTaskCreated` event
         event = AddingTaskCreatedEvent(
             id=adding_task.id, creator_id=adding_task.creator_id,
             adding_type=adding_task.adding_type,
