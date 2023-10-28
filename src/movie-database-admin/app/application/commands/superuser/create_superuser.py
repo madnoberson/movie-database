@@ -9,6 +9,7 @@ from app.application.common.interfaces.uow import UnitOfWork
 from app.application.common.interfaces.identity_provider import IdentityProvider
 from app.application.common.interfaces import repositories
 from app.application.common.exceptions import superuser as superuser_exceptions
+from app.application.common.exceptions import auth as auth_exceptions
 from app.application.commands.handler import CommandHandler
 
 
@@ -25,7 +26,7 @@ class InputDTO:
 class OutputDTO:
 
     superuser_id: UUID
-    superuser_permissions: list[SuperUserPermissionEnum]
+    permissions: list[SuperUserPermissionEnum]
 
 
 class CreateSuperuser(CommandHandler):
@@ -69,6 +70,5 @@ class CreateSuperuser(CommandHandler):
         await self.uow.commit()
 
         return OutputDTO(
-            superuser_id=superuser.id,
-            superuser_permissions=superuser.permissions
+            superuser_id=superuser.id, permissions=superuser.permissions
         )

@@ -29,7 +29,7 @@ class RepositoryFactory:
     def __init__(self, connection: Connection) -> None:
         self.connection = connection
 
-    def build_user_repo(self) -> repositories.SuperuserRepositoryImpl:
+    def build_superuser_repo(self) -> repositories.SuperuserRepositoryImpl:
         return repositories.SuperuserRepositoryImpl(self.connection)
 
     async def build_uow(self) -> RepositoryUnitOfWork:

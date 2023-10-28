@@ -21,9 +21,11 @@ class SessionIdentityProvider(IdentityProvider):
 
     async def get_access_policy(self) -> AccessPolicy:
         """
-        Returns current superuser access policy.
-        Raises `SessionDoesNotExistError` if session doesn't exist,
-        or `AccessPolicyDoesNotExistError` if access policy doesn't exist
+        Returns current superuser access policy. \n
+        Raises:
+            * `UnauthorizedError` of `session_id` is `None`
+            * `SessionDoesNotExistError` if session doesn't exist
+            * `AccessPolicyDoesNotExistError` if access policy doesn't exist
         """
         superuser_id = await self._get_current_superuser_id()
 
@@ -33,14 +35,8 @@ class SessionIdentityProvider(IdentityProvider):
     
     async def _get_current_superuser_id(self) -> UUID | None:
         if not self.session_id:
-            return await self._handle_unauthorized()
+            return self._handle_unauthorized()
         return await self.session_gateway.get_session(self.session_id)
 
-    async def _handle_unauthorized(self) -> None:
-        raise NotImplementedError
-
-
-class StrictSessionIdentityProvider(SessionIdentityProvider):
-
-    async def _handle_unauthorized(self) -> None:
+    def _handle_unauthorized(self) -> None:
         raise UnauthorizedError()

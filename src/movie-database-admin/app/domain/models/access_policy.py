@@ -8,7 +8,7 @@ from .model import Model
 @dataclass(slots=True)
 class AccessPolicy(Model):
 
-    superuser_id: UUID
+    superuser_id: UUID | None
     is_active: bool
     permissions: list[SuperUserPermissionEnum]
 
@@ -21,3 +21,7 @@ class AccessPolicy(Model):
             id=superuser_id, is_active=is_active,
             permissions=permissions
         )
+    
+    @property
+    def is_unauthorized(self) -> bool:
+        return self.superuser_id is None
