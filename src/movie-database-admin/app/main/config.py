@@ -5,12 +5,20 @@ from datetime import timedelta
 
 
 __all__ = (
-    "load_config", "Config", "FastStreamConfig",
-    "DatabaseConfig", "IdentityProviderConfig"
+    "load_config", "Config", "FastAPIConfig", "UvicornConfig",
+    "FastStreamConfig", "DatabaseConfig", "IdentityProviderConfig"
 )
 
 
 def load_config() -> "Config":
+    fastapi_config = load_fastapi_config(
+        title_env="FASTAPI_TITLE", version_env="FASTAPI_VERSION",
+        description_env="FASTAPI_DESCRIPTION", summary_env="FASTAPI_SUMMARY",
+        docs_url_env="FASTAPI_DOCS_URL", redoc_url_env="FASTAPI_REDOC_URL"
+    )
+    uvicorn_config = load_uvicorn_config(
+        host_env="UVICORN_HOST", port_env="UVICORN_PORT"
+    )
     faststream_config = load_faststream_config(
         title_env="FASTSTREAM_TITLE", version_env="FASTSTREAM_VERSION",
         description_env="FASTSTREAM_DESCRIPTION", rq_host_env="FASTSTREAM_RQ_HOST",
@@ -36,17 +44,59 @@ def load_config() -> "Config":
     )
 
     return Config(
-        faststream=faststream_config, database=database_config,
-        identity_provider=identity_provider_config
+        faststream=faststream_config, fastapi=fastapi_config, uvicorn=uvicorn_config,
+        database=database_config, identity_provider=identity_provider_config
     )
 
 
 @dataclass(frozen=True, slots=True)
 class Config:
 
+    fastapi: "FastAPIConfig"
+    uvicorn: "UvicornConfig"
     faststream: "FastStreamConfig"
     database: "DatabaseConfig"
     identity_provider: "IdentityProviderConfig"
+
+
+@dataclass(frozen=True, slots=True)
+class FastAPIConfig:
+
+    title: str
+    version: str
+    description: str
+    summary: str
+    docs_url: str
+    redoc_url: str
+
+
+def load_fastapi_config(
+    title_env: str, version_env: str,
+    description_env: str, summary_env: str,
+    docs_url_env: str, redoc_url_env: str
+) -> FastAPIConfig:
+    return FastAPIConfig(
+        title=get_env(title_env, default="Movie database"),
+        version=get_env(version_env, default="0.1.0"),
+        description=get_env(description_env, default=""),
+        summary=get_env(summary_env, default=""),
+        docs_url=get_env(docs_url_env, default="/docs"),
+        redoc_url=get_env(redoc_url_env, default="/redoc")
+    )
+
+
+@dataclass(frozen=True, slots=True)
+class UvicornConfig:
+
+    host: str
+    port: int
+
+
+def load_uvicorn_config(host_env: str, port_env: str) -> UvicornConfig:
+    return UvicornConfig(
+        host=get_env(host_env, default="127.0.0.1"),
+        port=get_env(port_env, int, default=8000)
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -109,7 +159,7 @@ def load_database_config(
     return DatabaseConfig(
         postgres_host=get_env(postgres_host_env, default="127.0.0.1"),
         postgres_port=get_env(postgres_port_env, int, default=5432),
-        postgres_name=get_env(postgres_name_env, default="movie_database"),
+        postgres_name=get_env(postgres_name_env, default="movie_database_admin"),
         postgres_user=get_env(postgres_user_env, default="postgres"),
         postgres_password=get_env(postgres_password_env, default="1234"),
         max_queries=get_env(max_queries_env, int, default=50000),

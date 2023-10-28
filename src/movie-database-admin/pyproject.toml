@@ -14,6 +14,10 @@ redis = "^5.0.1"
 [tool.poetry.group.message_broker.dependencies]
 faststream = {extras = ["rabbit"], version = "^0.2.9"}
 
+[tool.poetry.group.web_api.dependencies]
+fastapi = "^0.104.0"
+uvicorn = "^0.23.2"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
