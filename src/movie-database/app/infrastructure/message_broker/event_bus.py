@@ -12,11 +12,8 @@ class EventBusImpl(EventBus):
 
     EXCHANGE_NAME = "movie_database"
     ROUTING_KEY_PREFIX = "movie_database"
-    ROUTING_KEY_ROOTS = {
-        adding_task_events.AddingTaskEvent: "adding_tasks"
-    }
-    ROUTING_KEY_SUFFIXES = {
-        adding_task_events.AddingTaskCreatedEvent: "created"
+    ROUTING_KEYS = {
+        adding_task_events.AddingTaskCreatedEvent: "adding_tasks.created"
     }
 
     def __init__(
@@ -40,8 +37,7 @@ class EventBusImpl(EventBus):
         return EventBusUnitOfWork(self.transaction)
     
     def _build_routing_key(self, event: EventT) -> str:
-        return "{}.{}.{}".format(
+        return "{}.{}".format(
             self.ROUTING_KEY_PREFIX,
-            self.ROUTING_KEY_ROOTS[type(event).mro()[1]],
-            self.ROUTING_KEY_SUFFIXES[type(event)]
+            self.ROUTING_KEYS[type(event)]
         )

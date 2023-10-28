@@ -6,12 +6,8 @@ from app.domain.models.adding_task import AddingTaskTypeEnum
 from .event import Event
 
 
-class AddingTaskEvent(Event):
-    ...
-
-
 @dataclass(frozen=True, slots=True)
-class AddingTaskCreatedEvent(AddingTaskEvent):
+class AddingTaskCreatedEvent(Event):
     
     id: UUID
     creator_id: UUID
