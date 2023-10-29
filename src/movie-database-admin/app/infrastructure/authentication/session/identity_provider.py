@@ -8,7 +8,7 @@ from .access_policy_gateway import AccessPolicyGateway
 
 
 class SessionIdentityProvider(IdentityProvider):
-
+    
     def __init__(
         self,
         session_id: UUID | None,
@@ -28,10 +28,11 @@ class SessionIdentityProvider(IdentityProvider):
             * `AccessPolicyDoesNotExistError` if access policy doesn't exist
         """
         superuser_id = await self._get_current_superuser_id()
-
-        return await self.access_policy_gateway.get_access_policy(
+        access_policy = await self.access_policy_gateway.get_access_policy(
             superuser_id=superuser_id
         )
+
+        return access_policy
     
     async def _get_current_superuser_id(self) -> UUID | None:
         if not self.session_id:

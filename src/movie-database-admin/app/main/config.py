@@ -39,6 +39,7 @@ def load_web_api_config() -> WebApiConfig:
         postgres_name_env="DB_POSTGRES_NAME", postgres_user_env="DB_POSTGRES_USER",
         postgres_password_env="DB_POSTGRES_PASSWORD", max_queries_env="DB_MAX_QUERIES",
         min_connections_env="DB_MIN_CONNECTIONS", max_connections_env="DB_MAX_CONNECTIONS",
+        max_inactive_connection_lifetime_env="DB_INACTIVE_CONNECTION_LIFETIME"
     )
     identity_provider_config = _load_identity_provider_config(
         session_gateway_redis_host_env="IDENTITY_PROVIDER_SESSION_GATEWAY_REDIS_HOST",
@@ -119,7 +120,7 @@ class UvicornConfig:
 def _load_uvicorn_config(host_env: str, port_env: str) -> UvicornConfig:
     return UvicornConfig(
         host=get_env(host_env, default="127.0.0.1"),
-        port=get_env(port_env, int, default=8000)
+        port=get_env(port_env, int, default=8080)
     )
 
 
@@ -221,7 +222,7 @@ def _load_identity_provider_config(
         session_gateway_redis_host=get_env(session_gateway_redis_host_env, default="127.0.0.1"),
         session_gateway_redis_port=get_env(session_gateway_redis_port_env, int, default=6379),
         session_gateway_redis_db=get_env(session_gateway_redis_db_env, int, default=1),
-        session_gateway_redis_password_env=get_env(session_gateway_redis_password_env),
+        session_gateway_redis_password=get_env(session_gateway_redis_password_env),
         session_gateway_session_lifetime=get_env(
             session_gateway_session_lifetime_env,
             lambda m: timedelta(minutes=int(m)), default=timedelta(hours=24)
