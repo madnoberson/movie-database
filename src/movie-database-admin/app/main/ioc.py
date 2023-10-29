@@ -4,6 +4,7 @@ from typing import AsyncIterator
 from app.domain.services.access import AccessService
 from app.application.common.interfaces.identity_provider import IdentityProvider
 from app.application.commands.superuser.create_superuser import CreateSuperuser
+from app.application.queries.auth.login import Login
 from app.infrastructure.database.factory import DatabaseFactoryManager
 from app.infrastructure.uow import UnitOfWorkImpl
 from app.presentation.handler_factory import HandlerFactory
@@ -30,3 +31,8 @@ class IoC(HandlerFactory):
                 access_service=self.access_service,
                 uow=UnitOfWorkImpl(await repo_factory.build_uow())
             )
+    
+    @asynccontextmanager
+    async def login(self) -> AsyncIterator[Login]:
+        async with self.db_factory_manager.build_reader_factory() as reader_factory:
+            yield Login(auth_reader=reader_factory.build_auth_reader())
