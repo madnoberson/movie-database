@@ -1,2 +1,6 @@
 class UnauthorizedError(Exception):
     ...
+
+
+class IncorrectPasswordError(Exception):
+    ...
