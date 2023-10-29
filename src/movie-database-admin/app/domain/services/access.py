@@ -9,6 +9,7 @@ class AccessService:
         self, access_policy: AccessPolicy
     ) -> None:
         if (
+            not access_policy.is_active and
             not SuperUserPermissionEnum.SUPERUSERS
             in access_policy.permissions
         ):
