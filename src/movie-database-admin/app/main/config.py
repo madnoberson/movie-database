@@ -5,33 +5,42 @@ from datetime import timedelta
 
 
 __all__ = (
-    "load_config", "Config", "FastAPIConfig", "UvicornConfig",
-    "FastStreamConfig", "DatabaseConfig", "IdentityProviderConfig"
+    "load_web_api_config",
+    "load_message_broker_config",
+    "FastAPIConfig",
+    "UvicornConfig",
+    "FastStreamConfig",
+    "DatabaseConfig",
+    "IdentityProviderConfig"
 )
 
 
-def load_config() -> "Config":
-    fastapi_config = load_fastapi_config(
+@dataclass(frozen=True, slots=True)
+class WebApiConfig:
+
+    database: "DatabaseConfig"
+
+    fastapi: "FastAPIConfig"
+    uvicorn: "UvicornConfig"
+    identity_provider: "IdentityProviderConfig"
+
+
+def load_web_api_config() -> WebApiConfig:
+    fastapi_config = _load_fastapi_config(
         title_env="FASTAPI_TITLE", version_env="FASTAPI_VERSION",
         description_env="FASTAPI_DESCRIPTION", summary_env="FASTAPI_SUMMARY",
         docs_url_env="FASTAPI_DOCS_URL", redoc_url_env="FASTAPI_REDOC_URL"
     )
-    uvicorn_config = load_uvicorn_config(
+    uvicorn_config = _load_uvicorn_config(
         host_env="UVICORN_HOST", port_env="UVICORN_PORT"
     )
-    faststream_config = load_faststream_config(
-        title_env="FASTSTREAM_TITLE", version_env="FASTSTREAM_VERSION",
-        description_env="FASTSTREAM_DESCRIPTION", rq_host_env="FASTSTREAM_RQ_HOST",
-        rq_port_env="FASTSTREAM_RQ_PORT", rq_login_env="FASTSTREAM_RQ_LOGIN",
-        rq_password_env="FASTSTREAM_RQ_PASSWORD"
-    )
-    database_config = load_database_config(
+    database_config = _load_database_config(
         postgres_host_env="DB_POSTGRES_HOST", postgres_port_env="DB_POSTGRES_PORT",
         postgres_name_env="DB_POSTGRES_NAME", postgres_user_env="DB_POSTGRES_USER",
         postgres_password_env="DB_POSTGRES_PASSWORD", max_queries_env="DB_MAX_QUERIES",
         min_connections_env="DB_MIN_CONNECTIONS", max_connections_env="DB_MAX_CONNECTIONS",
     )
-    identity_provider_config = load_identity_provider_config(
+    identity_provider_config = _load_identity_provider_config(
         session_gateway_redis_host_env="IDENTITY_PROVIDER_SESSION_GATEWAY_REDIS_HOST",
         session_gateway_redis_db_env="IDENTITY_PROVIDER_SESSION_GATEWAY_REDIS_PORT",
         session_gateway_redis_port_env="IDENTITY_PROVIDER_SESSION_GATEWAY_REDIS_DB",
@@ -43,20 +52,35 @@ def load_config() -> "Config":
         access_policy_gateway_redis_password_env="IDENTITY_PROVIDER_ACCESS_POLICY_GATEWAY_REDIS_PASSWORD"
     )
 
-    return Config(
-        faststream=faststream_config, fastapi=fastapi_config, uvicorn=uvicorn_config,
-        database=database_config, identity_provider=identity_provider_config
+    return WebApiConfig(
+        database=database_config, fastapi=fastapi_config, uvicorn=uvicorn_config,
+        identity_provider=identity_provider_config
     )
 
 
 @dataclass(frozen=True, slots=True)
-class Config:
+class MessageBrokerConfig:
 
-    fastapi: "FastAPIConfig"
-    uvicorn: "UvicornConfig"
-    faststream: "FastStreamConfig"
     database: "DatabaseConfig"
-    identity_provider: "IdentityProviderConfig"
+
+    faststream: "FastStreamConfig"
+
+
+def load_message_broker_config() -> MessageBrokerConfig:
+    database_config = _load_database_config(
+        postgres_host_env="DB_POSTGRES_HOST", postgres_port_env="DB_POSTGRES_PORT",
+        postgres_name_env="DB_POSTGRES_NAME", postgres_user_env="DB_POSTGRES_USER",
+        postgres_password_env="DB_POSTGRES_PASSWORD", max_queries_env="DB_MAX_QUERIES",
+        min_connections_env="DB_MIN_CONNECTIONS", max_connections_env="DB_MAX_CONNECTIONS",
+    )
+    faststream_config = _load_faststream_config(
+        title_env="FASTSTREAM_TITLE", version_env="FASTSTREAM_VERSION",
+        description_env="FASTSTREAM_DESCRIPTION", rq_host_env="FASTSTREAM_RQ_HOST",
+        rq_port_env="FASTSTREAM_RQ_PORT", rq_login_env="FASTSTREAM_RQ_LOGIN",
+        rq_password_env="FASTSTREAM_RQ_PASSWORD"
+    )
+
+    return MessageBrokerConfig(database=database_config, faststream=faststream_config)
 
 
 @dataclass(frozen=True, slots=True)
@@ -70,7 +94,7 @@ class FastAPIConfig:
     redoc_url: str
 
 
-def load_fastapi_config(
+def _load_fastapi_config(
     title_env: str, version_env: str,
     description_env: str, summary_env: str,
     docs_url_env: str, redoc_url_env: str
@@ -92,7 +116,7 @@ class UvicornConfig:
     port: int
 
 
-def load_uvicorn_config(host_env: str, port_env: str) -> UvicornConfig:
+def _load_uvicorn_config(host_env: str, port_env: str) -> UvicornConfig:
     return UvicornConfig(
         host=get_env(host_env, default="127.0.0.1"),
         port=get_env(port_env, int, default=8000)
@@ -111,7 +135,7 @@ class FastStreamConfig:
     rq_password: str
 
 
-def load_faststream_config(
+def _load_faststream_config(
     title_env: str, version_env: str,
     description_env: str, rq_host_env: str,
     rq_port_env: str, rq_login_env: str,
@@ -149,7 +173,7 @@ class DatabaseConfig:
         )
 
 
-def load_database_config(
+def _load_database_config(
     postgres_host_env: str, postgres_port_env: str,
     postgres_name_env: str, postgres_user_env: str,
     postgres_password_env: str, max_queries_env: str,
@@ -186,7 +210,7 @@ class IdentityProviderConfig:
     access_policy_gateway_redis_password: str | None
 
 
-def load_identity_provider_config(
+def _load_identity_provider_config(
     session_gateway_redis_host_env: str, session_gateway_redis_port_env: str,
     session_gateway_redis_db_env: str, session_gateway_redis_password_env: str,
     session_gateway_session_lifetime_env: str, access_policy_gateway_redis_host_env: str,
