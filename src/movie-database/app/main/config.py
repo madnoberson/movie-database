@@ -7,8 +7,10 @@ from datetime import timedelta
 __all__ = (
     "load_web_api_config",
     "WebApiConfig",
+    "MessageBrokerConfig",
     "FastAPIConfig",
     "UvicornConfig",
+    "FastStreamConfig",
     "DatabaseConfig",
     "EventBusConfig",
     "IdentityProviderConfig"
@@ -61,6 +63,31 @@ def load_web_api_config() -> "WebApiConfig":
 
 
 @dataclass(frozen=True, slots=True)
+class MessageBrokerConfig:
+
+    database: "DatabaseConfig"
+
+    faststream: "FastStreamConfig"
+
+
+def load_message_broker_config() -> MessageBrokerConfig:
+    database_config = _load_database_config(
+        postgres_host_env="DB_POSTGRES_HOST", postgres_port_env="DB_POSTGRES_PORT",
+        postgres_name_env="DB_POSTGRES_NAME", postgres_user_env="DB_POSTGRES_USER",
+        postgres_password_env="DB_POSTGRES_PASSWORD", max_queries_env="DB_MAX_QUERIES",
+        min_connections_env="DB_MIN_CONNECTIONS", max_connections_env="DB_MAX_CONNECTIONS",
+    )
+    faststream_config = _load_faststream_config(
+        title_env="FASTSTREAM_TITLE", version_env="FASTSTREAM_VERSION",
+        description_env="FASTSTREAM_DESCRIPTION", rq_host_env="FASTSTREAM_RQ_HOST",
+        rq_port_env="FASTSTREAM_RQ_PORT", rq_login_env="FASTSTREAM_RQ_LOGIN",
+        rq_password_env="FASTSTREAM_RQ_PASSWORD"
+    )
+
+    return MessageBrokerConfig(database=database_config, faststream=faststream_config)
+
+
+@dataclass(frozen=True, slots=True)
 class FastAPIConfig:
 
     title: str
@@ -97,6 +124,35 @@ def _load_uvicorn_config(host_env: str, port_env: str) -> UvicornConfig:
     return UvicornConfig(
         host=get_env(host_env, default="127.0.0.1"),
         port=get_env(port_env, int, default=8000)
+    )
+
+
+@dataclass(frozen=True, slots=True)
+class FastStreamConfig:
+
+    title: str
+    version: str
+    description: str
+    rq_host: str
+    rq_port: int
+    rq_login: str
+    rq_password: str
+
+
+def _load_faststream_config(
+    title_env: str, version_env: str,
+    description_env: str, rq_host_env: str,
+    rq_port_env: str, rq_login_env: str,
+    rq_password_env: str
+) -> FastStreamConfig:
+    return FastStreamConfig(
+        title=get_env(title_env, default="Movie database"),
+        version=get_env(version_env, default="0.1.0"),
+        description=get_env(description_env, default=""),
+        rq_host=get_env(rq_host_env, default="127.0.0.1"),
+        rq_port=get_env(rq_port_env, int, default=5672),
+        rq_login=get_env(rq_login_env, default="guest"),
+        rq_password=get_env(rq_password_env, default="guest")
     )
 
 
