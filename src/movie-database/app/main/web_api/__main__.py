@@ -1,17 +1,18 @@
 import asyncio
 
-from .config import load_config
+from app.main.config import load_web_api_config
 from .app import create_app
 from .server import create_server
 
 
 async def main() -> None:
-    config = load_config()
+    config = load_web_api_config()
 
     app = await create_app(
-        fastapi_config=config.fastapi, database_config=config.database,
+        fastapi_config=config.fastapi,
+        database_config=config.database,
         event_bus_config=config.event_bus,
-        session_gateway_config=config.session_gateway
+        identity_gateway_config=config.identity_provider
     )
     server = create_server(app, config.uvicorn)
 

@@ -1,57 +1,63 @@
 import os
-from dataclasses import dataclass
 from typing import TypeVar, Callable
+from dataclasses import dataclass
 from datetime import timedelta
 
 
 __all__ = (
-    "load_config", "Config", "FastAPIConfig",
-    "UvicornConfig", "DatabaseConfig", "EventBusConfig",
-    "SessionGatewayConfig",
-    
+    "load_web_api_config",
+    "WebApiConfig",
+    "FastAPIConfig",
+    "UvicornConfig",
+    "DatabaseConfig",
+    "EventBusConfig",
+    "IdentityProviderConfig"
 )
 
 
-def load_config() -> "Config":
-    fastapi_config = load_fastapi_config(
+@dataclass(frozen=True, slots=True)
+class WebApiConfig:
+
+    database: "DatabaseConfig"
+    event_bus: "EventBusConfig"
+
+    fastapi: "FastAPIConfig"
+    uvicorn: "UvicornConfig"
+    identity_provider: "IdentityProviderConfig"
+
+
+def load_web_api_config() -> "WebApiConfig":
+    fastapi_config = _load_fastapi_config(
         title_env="FASTAPI_TITLE", version_env="FASTAPI_VERSION",
         description_env="FASTAPI_DESCRIPTION", summary_env="FASTAPI_SUMMARY",
         docs_url_env="FASTAPI_DOCS_URL", redoc_url_env="FASTAPI_REDOC_URL"
     )
-    uvicorn_config = load_uvicorn_config(
+    uvicorn_config = _load_uvicorn_config(
         host_env="UVICORN_HOST", port_env="UVICORN_PORT"
     )
-    database_config = load_database_config(
+    database_config = _load_database_config(
         postgres_host_env="DB_POSTGRES_HOST", postgres_port_env="DB_POSTGRES_PORT",
         postgres_name_env="DB_POSTGRES_NAME", postgres_user_env="DB_POSTGRES_USER",
         postgres_password_env="DB_POSTGRES_PASSWORD", max_queries_env="DB_MAX_QUERIES",
         min_connections_env="DB_MIN_CONNECTIONS", max_connections_env="DB_MAX_CONNECTIONS",
         max_inactive_connection_lifetime_env="DB_INACTIVE_CONNECTION_LIFETIME"
     )
-    event_bus_config = load_event_bus_config(
+    event_bus_config = _load_event_bus_config(
         rq_host_env="EVENT_BUS_RQ_HOST", rq_port_env="EVENT_BUS_RQ_PORT",
         rq_login_env="EVENT_BUS_RQ_LOGIN", rq_password_env="EVENT_BUS_RQ_PASSWORD"
     )
-    session_gateway_config = load_session_gateway_config(
-        redis_host_env="SESSION_GATEWAY_REDIS_HOST", redis_port_env="SESSION_GATEWAY_REDIS_PORT",
-        redis_db_env="SESSION_GATEWAY_REDIS_DB", redis_password_env="SESSION_GATEWAY_REDIS_PASSWORD",
-        session_lifetime_env="SESSION_GATEWAY_LIFETIME"
+    identity_provider_config = _load_identity_provider_config(
+        session_gateway_redis_host_env="IDENTITY_PROVIDER_SESSION_GATEWAY_REDIS_HOST",
+        session_gateway_redis_db_env="IDENTITY_PROVIDER_SESSION_GATEWAY_REDIS_PORT",
+        session_gateway_redis_port_env="IDENTITY_PROVIDER_SESSION_GATEWAY_REDIS_DB",
+        session_gateway_redis_password_env="IDENTITY_PROVIDER_SESSION_GATEWAY_REDIS_PASSWORD",
+        session_gateway_session_lifetime_env="IDENTITY_PROVIDER_SESSION_GATEWAY_SESSION_LIFETIME"
     )
 
-    return Config(
+    return WebApiConfig(
         fastapi=fastapi_config, uvicorn=uvicorn_config, database=database_config,
-        event_bus=event_bus_config, session_gateway=session_gateway_config
+        event_bus=event_bus_config, identity_provider=identity_provider_config
     )
-
-
-@dataclass(frozen=True, slots=True)
-class Config:
-
-    fastapi: "FastAPIConfig"
-    uvicorn: "UvicornConfig"
-    database: "DatabaseConfig"
-    event_bus: "EventBusConfig"
-    session_gateway: "SessionGatewayConfig"
 
 
 @dataclass(frozen=True, slots=True)
@@ -65,7 +71,7 @@ class FastAPIConfig:
     redoc_url: str
 
 
-def load_fastapi_config(
+def _load_fastapi_config(
     title_env: str, version_env: str,
     description_env: str, summary_env: str,
     docs_url_env: str, redoc_url_env: str
@@ -87,7 +93,7 @@ class UvicornConfig:
     port: int
 
 
-def load_uvicorn_config(host_env: str, port_env: str) -> UvicornConfig:
+def _load_uvicorn_config(host_env: str, port_env: str) -> UvicornConfig:
     return UvicornConfig(
         host=get_env(host_env, default="127.0.0.1"),
         port=get_env(port_env, int, default=8000)
@@ -115,7 +121,7 @@ class DatabaseConfig:
         )
 
 
-def load_database_config(
+def _load_database_config(
     postgres_host_env: str, postgres_port_env: str,
     postgres_name_env: str, postgres_user_env: str,
     postgres_password_env: str, max_queries_env: str,
@@ -146,7 +152,7 @@ class EventBusConfig:
     rq_password: str
 
 
-def load_event_bus_config(
+def _load_event_bus_config(
     rq_host_env: str, rq_port_env: str,
     rq_login_env: str, rq_password_env: str
 ) -> EventBusConfig:
@@ -159,28 +165,28 @@ def load_event_bus_config(
 
 
 @dataclass(frozen=True, slots=True)
-class SessionGatewayConfig:
+class IdentityProviderConfig:
 
-    redis_host: str
-    redis_port: int
-    redis_db: int
-    redis_password: str | None
-    session_lifetime: timedelta
+    session_gateway_redis_host: str
+    session_gateway_redis_port: int
+    session_gateway_redis_db: int
+    session_gateway_redis_password: str | None
+    session_gateway_session_lifetime: timedelta
 
 
-def load_session_gateway_config(
-    redis_host_env: str, redis_port_env: str,
-    redis_db_env: str, redis_password_env: str,
-    session_lifetime_env: str
-) -> SessionGatewayConfig:
-    return SessionGatewayConfig(
-        redis_host=get_env(redis_host_env, default="127.0.0.1"),
-        redis_port=get_env(redis_port_env, int, default=6379),
-        redis_db=get_env(redis_db_env, int, default=0),
-        redis_password=get_env(redis_password_env),
-        session_lifetime=get_env(
-            session_lifetime_env, lambda m: timedelta(minutes=m),
-            default=timedelta(hours=24)
+def _load_identity_provider_config(
+    session_gateway_redis_host_env: str, session_gateway_redis_port_env: str,
+    session_gateway_redis_db_env: str, session_gateway_redis_password_env: str,
+    session_gateway_session_lifetime_env: str
+) -> IdentityProviderConfig:
+    return IdentityProviderConfig(
+        session_gateway_redis_host=get_env(session_gateway_redis_host_env, default="127.0.0.1"),
+        session_gateway_redis_port=get_env(session_gateway_redis_port_env, int, default=6379),
+        session_gateway_redis_db=get_env(session_gateway_redis_db_env, int, default=1),
+        session_gateway_redis_password=get_env(session_gateway_redis_password_env),
+        session_gateway_session_lifetime=get_env(
+            session_gateway_session_lifetime_env,
+            lambda m: timedelta(minutes=int(m)), default=timedelta(hours=24)
         )
     )
 

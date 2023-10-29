@@ -9,12 +9,12 @@ from app.infrastructure.authentication.session.session_gateway import SessionGat
 from app.presentation.handler_factory import HandlerFactory
 from app.presentation.web_api.depends_stub import Stub
 from app.main.ioc import IoC
-from . import config
+from app.main import config
 
 
 async def setup_dependencies(
     app: FastAPI, database_config: config.DatabaseConfig, event_bus_config: config.EventBusConfig,
-    session_gateway_config: config.SessionGatewayConfig
+    identity_provider_config: config.IdentityProviderConfig
 ) -> None:
     # 1.Setup `IoC`
     db_connection_pool = await create_database_connection_pool(
@@ -38,9 +38,12 @@ async def setup_dependencies(
 
     # 2.Setup `SessionGateway`
     session_gateway_connection = create_session_gateway_connection(
-        redis_host=session_gateway_config.redis_host, redis_port=session_gateway_config.redis_port,
-        redis_db=session_gateway_config.redis_db, redis_password=session_gateway_config.redis_password
+        redis_host=identity_provider_config.session_gateway_redis_host,
+        redis_port=identity_provider_config.session_gateway_redis_port,
+        redis_db=identity_provider_config.session_gateway_redis_db,
+        redis_password=identity_provider_config.session_gateway_redis_password
     )
     app.dependency_overrides[Stub(SessionGateway)] = lambda: SessionGateway(
-        connection=session_gateway_connection, session_lifetime=session_gateway_config.session_lifetime
+        connection=session_gateway_connection,
+        session_lifetime=identity_provider_config.session_gateway_session_lifetime
     )
