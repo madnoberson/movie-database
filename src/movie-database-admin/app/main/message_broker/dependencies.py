@@ -1,6 +1,6 @@
 from faststream import FastStream
 
-from . import config
+from app.main import config
 
 
 async def setup_dependencies(
