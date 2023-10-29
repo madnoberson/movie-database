@@ -1,9 +1,15 @@
 from dataclasses import dataclass
 from datetime import datetime
+from enum import IntEnum
 from uuid import UUID
 
-from app.domain.constants import SuperUserPermissionEnum
 from .model import Model
+
+
+class SuperUserPermissionEnum(IntEnum):
+
+    SUPERUSERS = 0
+
 
 
 @dataclass(slots=True)

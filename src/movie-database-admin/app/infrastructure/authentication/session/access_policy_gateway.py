@@ -3,7 +3,7 @@ from uuid import UUID
 from redis.asyncio import Redis
 
 from app.domain.models.access_policy import AccessPolicy
-from app.domain.constants import SuperUserPermissionEnum
+from app.domain.models.superuser import SuperUserPermissionEnum
 
 
 class AccessPolicyDoesNotExistError(Exception):

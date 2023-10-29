@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.domain.constants import SuperUserPermissionEnum
+from app.domain.models.superuser import SuperUserPermissionEnum
 
 
 class CreateSuperuserSchema(BaseModel):

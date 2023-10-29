@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from uuid import UUID
 
-from app.domain.constants import SuperUserPermissionEnum
 from .model import Model
+from .superuser import SuperUserPermissionEnum
 
 
 @dataclass(slots=True)

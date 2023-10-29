@@ -1,5 +1,5 @@
 from app.domain.models.access_policy import AccessPolicy
-from app.domain.constants import SuperUserPermissionEnum
+from app.domain.models.superuser import SuperUserPermissionEnum
 from app.domain.exceptions.access import AccessDeniedError
 
 

@@ -2,14 +2,12 @@ from dataclasses import dataclass
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from app.domain.models.superuser import Superuser
-from app.domain.constants import SuperUserPermissionEnum
+from app.domain.models.superuser import Superuser, SuperUserPermissionEnum
 from app.domain.services.access import AccessService
 from app.application.common.interfaces.uow import UnitOfWork
 from app.application.common.interfaces.identity_provider import IdentityProvider
 from app.application.common.interfaces import repositories
 from app.application.common.exceptions import superuser as superuser_exceptions
-from app.application.common.exceptions import auth as auth_exceptions
 from app.application.commands.handler import CommandHandler
 
 
