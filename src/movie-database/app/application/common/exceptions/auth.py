@@ -2,5 +2,5 @@ class UnauthorizedError(Exception):
     ...
 
 
-class PasswordIsNotCorrectError(Exception):
+class IncorrectPasswordError(Exception):
     ...

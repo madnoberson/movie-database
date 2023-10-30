@@ -37,12 +37,6 @@ class RepositoryFactory:
 
     def build_user_repo(self) -> repositories.UserRepositoryImpl:
         return repositories.UserRepositoryImpl(self.connection)
-
-    def build_movie_repo(self) -> repositories.MovieRepositoryImpl:
-        return repositories.MovieRepositoryImpl(self.connection)
-    
-    def build_adding_task_repo(self) -> repositories.AddingTaskRepositoryImpl:
-        return repositories.AddingTaskRepositoryImpl(self.connection)
     
     async def build_uow(self) -> AsyncpgUnitOfWork:
         transaction = self.connection.transaction()

@@ -31,6 +31,6 @@ class Login(QueryHandler):
 
         # 2.Ensure password is correct
         if query_result.extra.password != data.password:
-            raise auth_exceptions.PasswordIsNotCorrectError()
+            raise auth_exceptions.IncorrectPasswordError()
         
         return query_result.data
