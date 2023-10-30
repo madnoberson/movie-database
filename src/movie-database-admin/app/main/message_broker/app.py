@@ -2,6 +2,7 @@ from faststream import FastStream
 from faststream.rabbit import RabbitBroker
 
 from app.main import config
+from app.presentation.message_broker.routers import setup_routers
 from .dependencies import setup_dependencies
 
 
@@ -13,6 +14,7 @@ async def create_app(
         host=faststream_config.rq_host, port=faststream_config.rq_port,
         login=faststream_config.rq_login, password=faststream_config.rq_password
     )
+    setup_routers(broker)
     
     app = FastStream(
         broker=broker, title=faststream_config.title,

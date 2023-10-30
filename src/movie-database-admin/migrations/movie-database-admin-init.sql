@@ -7,3 +7,9 @@ CREATE TABLE superusers (
     permissions JSON NOT NULL,
     created_at TIMESTAMPTZ NOT NULL
 );
+
+CREATE TABLE users (
+    id UUID PRIMARY KEY,
+    username VARCHAR(64) UNIQUE NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL
+);

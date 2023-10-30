@@ -38,6 +38,9 @@ class RepositoryFactory:
     def build_superuser_repo(self) -> repositories.SuperuserRepositoryImpl:
         return repositories.SuperuserRepositoryImpl(self.connection)
 
+    def build_user_repo(self) -> repositories.UserRepositoryImpl:
+        return repositories.UserRepositoryImpl(self.connection)
+
     async def build_uow(self) -> RepositoryUnitOfWork:
         transaction = self.connection.transaction()
         await transaction.start()
