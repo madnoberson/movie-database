@@ -33,7 +33,7 @@ class AccessPolicyGateway:
     
     async def get_access_policy(self, superuser_id: UUID) -> AccessPolicy:
         """
-        Returns superuser access policy by `superuser_id`, otherwise
+        Returns superuser access policy by `superuser_id` if exists, otherwise
         raises `AccessPolicyDoesNotExistError`
         """
         data = await self.connection.hgetall(

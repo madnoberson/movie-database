@@ -6,7 +6,9 @@ from datetime import timedelta
 
 __all__ = (
     "load_web_api_config",
+    "WebApiConfig",
     "load_message_broker_config",
+    "MessageBrokerConfig",
     "FastAPIConfig",
     "UvicornConfig",
     "FastStreamConfig",
@@ -26,14 +28,6 @@ class WebApiConfig:
 
 
 def load_web_api_config() -> WebApiConfig:
-    fastapi_config = _load_fastapi_config(
-        title_env="FASTAPI_TITLE", version_env="FASTAPI_VERSION",
-        description_env="FASTAPI_DESCRIPTION", summary_env="FASTAPI_SUMMARY",
-        docs_url_env="FASTAPI_DOCS_URL", redoc_url_env="FASTAPI_REDOC_URL"
-    )
-    uvicorn_config = _load_uvicorn_config(
-        host_env="UVICORN_HOST", port_env="UVICORN_PORT"
-    )
     database_config = _load_database_config(
         postgres_host_env="DB_POSTGRES_HOST", postgres_port_env="DB_POSTGRES_PORT",
         postgres_name_env="DB_POSTGRES_NAME", postgres_user_env="DB_POSTGRES_USER",
@@ -51,6 +45,14 @@ def load_web_api_config() -> WebApiConfig:
         access_policy_gateway_redis_port_env="IDENTITY_PROVIDER_ACCESS_POLICY_GATEWAY_REDIS_PORT",
         access_policy_gateway_redis_db_env="IDENTITY_PROVIDER_ACCESS_POLICY_GATEWAY_REDIS_DB",
         access_policy_gateway_redis_password_env="IDENTITY_PROVIDER_ACCESS_POLICY_GATEWAY_REDIS_PASSWORD"
+    )
+    fastapi_config = _load_fastapi_config(
+        title_env="FASTAPI_TITLE", version_env="FASTAPI_VERSION",
+        description_env="FASTAPI_DESCRIPTION", summary_env="FASTAPI_SUMMARY",
+        docs_url_env="FASTAPI_DOCS_URL", redoc_url_env="FASTAPI_REDOC_URL"
+    )
+    uvicorn_config = _load_uvicorn_config(
+        host_env="UVICORN_HOST", port_env="UVICORN_PORT"
     )
 
     return WebApiConfig(
@@ -101,12 +103,12 @@ def _load_fastapi_config(
     docs_url_env: str, redoc_url_env: str
 ) -> FastAPIConfig:
     return FastAPIConfig(
-        title=get_env(title_env, default="Movie database"),
-        version=get_env(version_env, default="0.1.0"),
-        description=get_env(description_env, default=""),
-        summary=get_env(summary_env, default=""),
-        docs_url=get_env(docs_url_env, default="/docs"),
-        redoc_url=get_env(redoc_url_env, default="/redoc")
+        title=_get_env(title_env, default="Movie database"),
+        version=_get_env(version_env, default="0.1.0"),
+        description=_get_env(description_env, default=""),
+        summary=_get_env(summary_env, default=""),
+        docs_url=_get_env(docs_url_env, default="/docs"),
+        redoc_url=_get_env(redoc_url_env, default="/redoc")
     )
 
 
@@ -119,8 +121,8 @@ class UvicornConfig:
 
 def _load_uvicorn_config(host_env: str, port_env: str) -> UvicornConfig:
     return UvicornConfig(
-        host=get_env(host_env, default="127.0.0.1"),
-        port=get_env(port_env, int, default=8080)
+        host=_get_env(host_env, default="127.0.0.1"),
+        port=_get_env(port_env, int, default=8080)
     )
 
 
@@ -143,13 +145,13 @@ def _load_faststream_config(
     rq_password_env: str
 ) -> FastStreamConfig:
     return FastStreamConfig(
-        title=get_env(title_env, default="Movie database admin"),
-        version=get_env(version_env, default="0.1.0"),
-        description=get_env(description_env, default=""),
-        rq_host=get_env(rq_host_env, default="127.0.0.1"),
-        rq_port=get_env(rq_port_env, int, default=5672),
-        rq_login=get_env(rq_login_env, default="guest"),
-        rq_password=get_env(rq_password_env, default="guest")
+        title=_get_env(title_env, default="Movie database admin"),
+        version=_get_env(version_env, default="0.1.0"),
+        description=_get_env(description_env, default=""),
+        rq_host=_get_env(rq_host_env, default="127.0.0.1"),
+        rq_port=_get_env(rq_port_env, int, default=5672),
+        rq_login=_get_env(rq_login_env, default="guest"),
+        rq_password=_get_env(rq_password_env, default="guest")
     )
 
 
@@ -182,15 +184,15 @@ def _load_database_config(
     max_inactive_connection_lifetime_env: str
 ) -> DatabaseConfig:
     return DatabaseConfig(
-        postgres_host=get_env(postgres_host_env, default="127.0.0.1"),
-        postgres_port=get_env(postgres_port_env, int, default=5432),
-        postgres_name=get_env(postgres_name_env, default="movie_database_admin"),
-        postgres_user=get_env(postgres_user_env, default="postgres"),
-        postgres_password=get_env(postgres_password_env, default="1234"),
-        max_queries=get_env(max_queries_env, int, default=50000),
-        min_connections=get_env(min_connections_env, int, default=10),
-        max_connections=get_env(max_connections_env, int, default=10),
-        max_inactive_connection_lifetime=get_env(
+        postgres_host=_get_env(postgres_host_env, default="127.0.0.1"),
+        postgres_port=_get_env(postgres_port_env, int, default=5432),
+        postgres_name=_get_env(postgres_name_env, default="movie_database_admin"),
+        postgres_user=_get_env(postgres_user_env, default="postgres"),
+        postgres_password=_get_env(postgres_password_env, default="1234"),
+        max_queries=_get_env(max_queries_env, int, default=50000),
+        min_connections=_get_env(min_connections_env, int, default=10),
+        max_connections=_get_env(max_connections_env, int, default=10),
+        max_inactive_connection_lifetime=_get_env(
             max_inactive_connection_lifetime_env, int, default=300
         )
     )
@@ -219,24 +221,24 @@ def _load_identity_provider_config(
     access_policy_gateway_redis_password_env: str
 ) -> IdentityProviderConfig:
     return IdentityProviderConfig(
-        session_gateway_redis_host=get_env(session_gateway_redis_host_env, default="127.0.0.1"),
-        session_gateway_redis_port=get_env(session_gateway_redis_port_env, int, default=6379),
-        session_gateway_redis_db=get_env(session_gateway_redis_db_env, int, default=1),
-        session_gateway_redis_password=get_env(session_gateway_redis_password_env),
-        session_gateway_session_lifetime=get_env(
+        session_gateway_redis_host=_get_env(session_gateway_redis_host_env, default="127.0.0.1"),
+        session_gateway_redis_port=_get_env(session_gateway_redis_port_env, int, default=6379),
+        session_gateway_redis_db=_get_env(session_gateway_redis_db_env, int, default=1),
+        session_gateway_redis_password=_get_env(session_gateway_redis_password_env),
+        session_gateway_session_lifetime=_get_env(
             session_gateway_session_lifetime_env,
             lambda m: timedelta(minutes=int(m)), default=timedelta(hours=24)
         ),
-        access_policy_gateway_redis_host=get_env(
+        access_policy_gateway_redis_host=_get_env(
             access_policy_gateway_redis_host_env, default="127.0.0.1"
         ),
-        access_policy_gateway_redis_port=get_env(
+        access_policy_gateway_redis_port=_get_env(
             access_policy_gateway_redis_port_env, int, default=6379
         ),
-        access_policy_gateway_redis_db=get_env(
+        access_policy_gateway_redis_db=_get_env(
             access_policy_gateway_redis_db_env, int, default=1
         ),
-        access_policy_gateway_redis_password=get_env(access_policy_gateway_redis_password_env)
+        access_policy_gateway_redis_password=_get_env(access_policy_gateway_redis_password_env)
     )
 
 
@@ -245,7 +247,7 @@ R = TypeVar("R")
 D = TypeVar("D")
 
 
-def get_env(
+def _get_env(
     key: str, result_factory: Callable[[V], R] = None,
     raise_if_not_exist: bool = False, default: D = None
 ) -> R | D:
