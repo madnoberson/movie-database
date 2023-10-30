@@ -29,7 +29,7 @@ class EnsureUser(CommandHandler):
     
     async def __call__(self, data: InputDTO) -> None:
         # 1.Ensure user doesn't exist
-        if self.user_repo.check_user_exists(username=data.username):
+        if await self.user_repo.check_user_exists(username=data.username):
             raise user_exceptions.UserAlreadyExistsError()
 
         # 2.Create `User`

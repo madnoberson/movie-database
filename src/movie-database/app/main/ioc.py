@@ -23,10 +23,14 @@ class IoC(HandlerFactory):
 
     @asynccontextmanager
     async def register(self) -> AsyncIterator[Register]:
-        async with self.db_factory_manager.build_repo_factory() as repo_factory:
+        async with (
+            self.db_factory_manager.build_repo_factory() as repo_factory,
+            self.event_bus_factory.build_event_bus() as event_bus
+        ):
             yield Register(
                 user_repo=repo_factory.build_user_repo(),
-                uow=UnitOfWorkImpl(await repo_factory.build_uow())
+                event_bus=event_bus,
+                uow=UnitOfWorkImpl(await repo_factory.build_uow(), event_bus.build_uow())
             )
 
     @asynccontextmanager
