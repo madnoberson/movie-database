@@ -3,6 +3,7 @@ from typing import AsyncIterator
 
 from app.application.common.interfaces.identity_provider import IdentityProvider
 from app.application.commands.registration.register import Register
+from app.application.commands.user.change_username import ChangeUsername
 from app.application.queries.auth.login import Login
 from app.application.queries.user.get_current_user import GetCurrentUser
 from app.infrastructure.database.factory import DatabaseFactoryManager
@@ -31,6 +32,17 @@ class IoC(HandlerFactory):
                 user_repo=repo_factory.build_user_repo(),
                 event_bus=event_bus,
                 uow=UnitOfWorkImpl(await repo_factory.build_uow(), event_bus.build_uow())
+            )
+    
+    @asynccontextmanager
+    async def change_username(
+        self, identity_provider: IdentityProvider
+    ) -> AsyncIterator[ChangeUsername]:
+        async with self.db_factory_manager.build_repo_factory() as repo_factory:
+            yield ChangeUsername(
+                user_repo=repo_factory.build_user_repo(),
+                identity_provider=identity_provider,
+                uow=UnitOfWorkImpl(await repo_factory.build_uow())
             )
 
     @asynccontextmanager
