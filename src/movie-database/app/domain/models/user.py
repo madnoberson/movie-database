@@ -22,3 +22,6 @@ class User(Model):
             id=user_id, username=username,
             password=password, created_at=created_at
         )
+    
+    def change_username(self, username: str) -> None:
+        self.username = username
