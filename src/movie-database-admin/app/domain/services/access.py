@@ -14,3 +14,13 @@ class AccessService:
             in access_policy.permissions
         ):
             raise AccessDeniedError()
+    
+    def ensure_can_change_username(
+        self, access_policy: AccessPolicy
+    ) -> None:
+        if (
+            not access_policy.is_active or
+            not SuperUserPermissionEnum.USERS
+            in access_policy.permissions
+        ):
+            raise AccessDeniedError()
