@@ -31,13 +31,13 @@ class SessionIdentityProvider(IdentityProvider):
         access_policy = await self.access_policy_gateway.get_access_policy(
             superuser_id=superuser_id
         )
-
         return access_policy
     
     async def _get_current_superuser_id(self) -> UUID | None:
         if not self.session_id:
             return self._handle_unauthorized()
-        return await self.session_gateway.get_session(self.session_id)
+        session = await self.session_gateway.get_session(self.session_id)
+        return session.superuser_id if session else None
 
     def _handle_unauthorized(self) -> None:
         raise UnauthorizedError()

@@ -9,6 +9,7 @@ from .model import Model
 class SuperUserPermissionEnum(IntEnum):
 
     SUPERUSERS = 0
+    USERS = 1
 
 
 

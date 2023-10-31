@@ -3,8 +3,8 @@ from typing import Annotated, Literal
 from fastapi import Depends, Response
 
 from app.application.queries.auth.login import InputDTO as LoginDTO, OutputDTO as LogintResultDTO
-from app.infrastructure.authentication.session.access_policy_gateway import AccessPolicy, AccessPolicyGateway
-from app.infrastructure.authentication.session.session_gateway import Session, SessionGateway
+from app.infrastructure.authentication.session.access_policy.gateway import AccessPolicy, AccessPolicyGateway
+from app.infrastructure.authentication.session.session.gateway import Session, SessionGateway
 from app.presentation.handler_factory import HandlerFactory
 from app.presentation.web_api.depends_stub import Stub
 from . import requests

@@ -29,7 +29,7 @@ class SessionGateway:
         """
         Deletes old sesssion, saves new one and returns its id
         """
-        await self._delete_session(user_id=session.superuser_id)
+        await self._delete_session(session.superuser_id)
         return await self._save_session(session)
 
     async def get_session(self, session_id: UUID) -> Session:
@@ -41,12 +41,12 @@ class SessionGateway:
         )
         if not data:
             raise SessionDoesNotExistError()
-        return Session(user_id=UUID(data["user_id"]))
+        return Session(superuser_id=UUID(data["superuser_id"]))
     
     async def _save_session(self, session: Session) -> str:
         session_id = self._create_session_id()
         session_key = f"auth_sessions:session_id:{session_id}"
-        session_data = {"user_id": session.superuser_id.hex}
+        session_data = {"superuser_id": session.superuser_id.hex}
 
         await self.connection.set(
             name=f"auth_sessions:superuser_id:{session.superuser_id.hex}",
