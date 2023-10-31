@@ -38,11 +38,15 @@ class IoC(HandlerFactory):
     async def change_username(
         self, identity_provider: IdentityProvider
     ) -> AsyncIterator[ChangeUsername]:
-        async with self.db_factory_manager.build_repo_factory() as repo_factory:
+        async with (
+            self.db_factory_manager.build_repo_factory() as repo_factory,
+            self.event_bus_factory.build_event_bus() as event_bus
+        ):
             yield ChangeUsername(
                 user_repo=repo_factory.build_user_repo(),
+                event_bus=event_bus,
                 identity_provider=identity_provider,
-                uow=UnitOfWorkImpl(await repo_factory.build_uow())
+                uow=UnitOfWorkImpl(await repo_factory.build_uow(), event_bus.build_uow())
             )
 
     @asynccontextmanager

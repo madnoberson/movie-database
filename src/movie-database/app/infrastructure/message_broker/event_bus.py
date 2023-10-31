@@ -12,7 +12,8 @@ class EventBusImpl(EventBus):
 
     EXCHANGE_NAME = "movie_database"
     ROUTING_KEYS = {
-        user_events.UserCreated: "user.created"
+        user_events.UserCreated: "user.created",
+        user_events.UsernameChanged: "user.username_changed"
     }
 
     def __init__(
