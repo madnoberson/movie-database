@@ -67,7 +67,6 @@ def load_web_api_config() -> "WebApiConfig":
 class MessageBrokerConfig:
 
     database: "DatabaseConfig"
-
     faststream: "FastStreamConfig"
 
 
@@ -77,6 +76,7 @@ def load_message_broker_config() -> MessageBrokerConfig:
         postgres_name_env="DB_POSTGRES_NAME", postgres_user_env="DB_POSTGRES_USER",
         postgres_password_env="DB_POSTGRES_PASSWORD", max_queries_env="DB_MAX_QUERIES",
         min_connections_env="DB_MIN_CONNECTIONS", max_connections_env="DB_MAX_CONNECTIONS",
+        max_inactive_connection_lifetime_env="DB_INACTIVE_CONNECTION_LIFETIME"
     )
     faststream_config = _load_faststream_config(
         title_env="FASTSTREAM_TITLE", version_env="FASTSTREAM_VERSION",
