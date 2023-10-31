@@ -49,7 +49,7 @@ class ChangeUsername(CommandHandler):
 
         # 3.Publish `UsernameChanged` to event bus
         username_changed_event = UsernameChanged(
-            user_id=access_policy.superuser_id, new_username=user.username
+            user_id=data.user_id, new_username=user.username
         )
         await self.event_bus.publish(username_changed_event)
 
