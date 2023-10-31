@@ -8,7 +8,7 @@ from app.presentation.handler_factory import HandlerFactory
 from . import events
 
 
-async def user_created(
+async def ensure_user(
     ioc: Annotated[HandlerFactory, Context()],
     event: events.UserCreated
 ) -> None:
@@ -20,7 +20,7 @@ async def user_created(
         await ensure_user(dto)
     
 
-async def username_changed(
+async def ensure_username_change(
     ioc: Annotated[HandlerFactory, Context()],
     event: events.UsernameChanged
 ) -> None:
