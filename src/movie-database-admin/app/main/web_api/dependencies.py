@@ -3,11 +3,10 @@ from fastapi import FastAPI
 from app.domain.services.access import AccessService
 from app.infrastructure.database.connection_pool import create_database_connection_pool
 from app.infrastructure.database.factory import DatabaseFactoryManager
-from app.infrastructure.authentication.session.connection import (
-    create_session_gateway_connection, create_access_policy_gateway_connection
-)
-from app.infrastructure.authentication.session.session_gateway import SessionGateway
-from app.infrastructure.authentication.session.access_policy_gateway import AccessPolicyGateway
+from app.infrastructure.authentication.session.session.connection import create_session_gateway_connection
+from app.infrastructure.authentication.session.session.gateway import SessionGateway
+from app.infrastructure.authentication.session.access_policy.connection import create_access_policy_gateway_connection
+from app.infrastructure.authentication.session.access_policy.gateway import AccessPolicyGateway
 from app.presentation.handler_factory import HandlerFactory
 from app.presentation.web_api.depends_stub import Stub
 from app.main.ioc import IoC

@@ -3,8 +3,8 @@ from uuid import UUID
 from app.domain.models.access_policy import AccessPolicy
 from app.application.common.exceptions.auth import UnauthorizedError
 from app.application.common.interfaces.identity_provider import IdentityProvider
-from .session_gateway import SessionGateway
-from .access_policy_gateway import AccessPolicyGateway
+from .session.gateway import SessionGateway
+from .access_policy.gateway import AccessPolicyGateway
 
 
 class SessionIdentityProvider(IdentityProvider):
