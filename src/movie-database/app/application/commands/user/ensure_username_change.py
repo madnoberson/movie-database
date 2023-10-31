@@ -25,6 +25,7 @@ class EnsureUsernameChange(CommandHandler):
         self.uow = uow
     
     async def __call__(self, data: InputDTO) -> None:
+        print(data)
         # 1.Get user
         user = await self.user_repo.get_user(user_id=data.user_id)
         if user is None:
