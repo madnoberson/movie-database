@@ -5,7 +5,7 @@ from uuid import UUID
 from .model import Model
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(slots=True)
 class User(Model):
 
     id: UUID
@@ -21,3 +21,6 @@ class User(Model):
             id=user_id, username=username,
             created_at=created_at
         )
+    
+    def change_username(self, username: str) -> None:
+        self.username = username
