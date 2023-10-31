@@ -1,13 +1,13 @@
-from faststream.rabbit import RabbitRouter, RabbitRoute
+from faststream.rabbit import RabbitRouter, RabbitRoute, RabbitQueue
 
-from .routes import user_created
+from . import routes
 
 
 def create_user_router() -> RabbitRouter:
-    routes = [
-        RabbitRoute(call=user_created, queue="created")
+    handlers = [
+        RabbitRoute(call=routes.user_created, queue=RabbitQueue("created", True))
     ]
 
-    router = RabbitRouter(prefix="user.", handlers=routes)
+    router = RabbitRouter(prefix="user.", handlers=handlers)
 
     return router
