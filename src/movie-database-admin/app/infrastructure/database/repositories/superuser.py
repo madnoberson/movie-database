@@ -39,13 +39,13 @@ class SuperuserRepositoryImpl(SuperuserRepository):
         )
         return as_domain_model(Superuser, data) if data else None
     
-    async def update_user(self, superuser: Superuser) -> None:
+    async def update_superuser(self, superuser: Superuser) -> None:
         await self.connection.execute(
             """
-            UPDATE users u SET
+            UPDATE superusers su SET
                 username = $1, email = $2, password = $3,
                 is_active = $4, permissions = $5
-            WHERE u.id = $6
+            WHERE su.id = $6
             """,
             superuser.username, superuser.email, superuser.password,
             superuser.is_active,

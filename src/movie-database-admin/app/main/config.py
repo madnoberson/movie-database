@@ -13,6 +13,7 @@ __all__ = (
     "UvicornConfig",
     "FastStreamConfig",
     "DatabaseConfig",
+    "EventBusConfig",
     "IdentityProviderConfig"
 )
 
@@ -21,10 +22,10 @@ __all__ = (
 class WebApiConfig:
 
     database: "DatabaseConfig"
-
+    event_bus: "EventBusConfig"
+    identity_provider: "IdentityProviderConfig"
     fastapi: "FastAPIConfig"
     uvicorn: "UvicornConfig"
-    identity_provider: "IdentityProviderConfig"
 
 
 def load_web_api_config() -> WebApiConfig:
@@ -34,6 +35,10 @@ def load_web_api_config() -> WebApiConfig:
         postgres_password_env="DB_POSTGRES_PASSWORD", max_queries_env="DB_MAX_QUERIES",
         min_connections_env="DB_MIN_CONNECTIONS", max_connections_env="DB_MAX_CONNECTIONS",
         max_inactive_connection_lifetime_env="DB_INACTIVE_CONNECTION_LIFETIME"
+    )
+    event_bus_config = _load_event_bus_config(
+        rq_host_env="EVENT_BUS_RQ_HOST", rq_port_env="EVENT_BUS_RQ_PORT",
+        rq_login_env="EVENT_BUS_RQ_LOGIN", rq_password_env="EVENT_BUS_RQ_PASSWORD"
     )
     identity_provider_config = _load_identity_provider_config(
         session_gateway_redis_host_env="IDENTITY_PROVIDER_SESSION_GATEWAY_REDIS_HOST",
@@ -56,8 +61,9 @@ def load_web_api_config() -> WebApiConfig:
     )
 
     return WebApiConfig(
-        database=database_config, fastapi=fastapi_config, uvicorn=uvicorn_config,
-        identity_provider=identity_provider_config
+        database=database_config, event_bus=event_bus_config,
+        identity_provider=identity_provider_config,
+        fastapi=fastapi_config, uvicorn=uvicorn_config
     )
 
 
@@ -65,7 +71,6 @@ def load_web_api_config() -> WebApiConfig:
 class MessageBrokerConfig:
 
     database: "DatabaseConfig"
-
     faststream: "FastStreamConfig"
 
 
@@ -196,6 +201,27 @@ def _load_database_config(
         max_inactive_connection_lifetime=_get_env(
             max_inactive_connection_lifetime_env, int, default=300
         )
+    )
+
+
+@dataclass(frozen=True, slots=True)
+class EventBusConfig:
+
+    rq_host: str
+    rq_port: int
+    rq_login: str
+    rq_password: str
+
+
+def _load_event_bus_config(
+    rq_host_env: str, rq_port_env: str,
+    rq_login_env: str, rq_password_env: str
+) -> EventBusConfig:
+    return EventBusConfig(
+        rq_host=_get_env(rq_host_env, default="127.0.0.1"),
+        rq_port=_get_env(rq_port_env, int, default=5672),
+        rq_login=_get_env(rq_login_env, default="guest"),
+        rq_password=_get_env(rq_password_env, default="guest")
     )
 
 

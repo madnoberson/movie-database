@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from app.domain.events.user import UsernameChanged
 from app.domain.services.access import AccessService
@@ -13,6 +14,7 @@ from app.application.commands.handler import CommandHandler
 @dataclass(frozen=True, slots=True)
 class InputDTO:
 
+    user_id: UUID
     username: str
 
 
@@ -38,7 +40,7 @@ class ChangeUsername(CommandHandler):
         self.access_service.ensure_can_change_username(access_policy)
         
         # 2.Get user and change username
-        user = await self.user_repo.get_user(user_id=access_policy.superuser_id)
+        user = await self.user_repo.get_user(user_id=data.user_id)
         if user is None:
             raise user_exceptions.UserDoesNotExistError()
         

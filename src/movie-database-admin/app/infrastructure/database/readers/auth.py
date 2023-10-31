@@ -13,7 +13,7 @@ class AuthnReaderImpl(AuthReader):
     async def login(self, username: str) -> query_results.Login | None:
         data = await self.connection.fetchrow(
             """
-            SELECT ROW_TO_JSON(u.*) data, ROW_TO_JSON(u.*) extra
+            SELECT ROW_TO_JSON(su.*) data, ROW_TO_JSON(su.*) extra
             FROM superusers su WHERE su.username = $1 LIMIT 1
             """,
             username
