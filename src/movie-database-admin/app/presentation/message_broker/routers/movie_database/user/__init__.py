@@ -5,7 +5,8 @@ from . import routes
 
 def create_user_router() -> RabbitRouter:
     handlers = [
-        RabbitRoute(call=routes.user_created, queue=RabbitQueue("created", True))
+        RabbitRoute(routes.user_created, RabbitQueue("created", True)),
+        RabbitRoute(routes.username_changed, RabbitQueue("username_changed", True))
     ]
 
     router = RabbitRouter(prefix="user.", handlers=handlers)

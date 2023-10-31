@@ -5,7 +5,7 @@ from uuid import UUID
 from .model import Model
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(slots=True)
 class User(Model):
 
     id: UUID
