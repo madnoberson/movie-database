@@ -38,6 +38,7 @@ class AccessService:
             in access_policy.permissions or
 
             SuperUserPermissionEnum.SUPERUSERS 
-            in superuser.permissions
+            in superuser.permissions and
+            access_policy.superuser_id != superuser.id
         ):
             raise AccessDeniedError()
