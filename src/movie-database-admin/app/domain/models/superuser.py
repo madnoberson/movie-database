@@ -35,3 +35,6 @@ class Superuser(Model):
             password=password, is_active=False, permissions=permissions,
             created_at=created_at
         )
+    
+    def change_password(self, password: str) -> None:
+        self.password = password
