@@ -10,6 +10,7 @@ class SuperUserPermissionEnum(IntEnum):
 
     SUPERUSERS = 0
     USERS = 1
+    MOVIES = 2
 
 
 
