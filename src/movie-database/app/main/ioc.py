@@ -4,6 +4,7 @@ from typing import AsyncIterator
 from app.application.common.interfaces.identity_provider import IdentityProvider
 from app.application.commands.registration.register import Register
 from app.application.commands.user.change_username import ChangeUsername
+from app.application.commands.user.change_password import ChangePassword
 from app.application.commands.user.ensure_username_change import EnsureUsernameChange
 from app.application.queries.auth.login import Login
 from app.application.queries.user.get_current_user import GetCurrentUser
@@ -50,6 +51,17 @@ class IoC(HandlerFactory):
                 uow=UnitOfWorkImpl(await repo_factory.build_uow(), event_bus.build_uow())
             )
     
+    @asynccontextmanager
+    async def change_password(
+        self, identity_provider: IdentityProvider
+    ) -> AsyncIterator[ChangePassword]:
+        async with self.db_factory_manager.build_repo_factory() as repo_factory:
+            yield ChangePassword(
+                user_repo=repo_factory.build_user_repo(),
+                identity_provider=identity_provider,
+                uow=UnitOfWorkImpl(await repo_factory.build_uow())
+            )
+
     @asynccontextmanager
     async def ensure_username_change(
         self
