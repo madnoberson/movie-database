@@ -3,6 +3,7 @@ from app.domain.events.event import EventT
 from aio_pika.abc import AbstractChannel, AbstractTransaction
 
 from app.domain.events import user as user_events
+from app.domain.events import movie as movie_events
 from app.application.common.interfaces.event_bus import EventBus
 from .uow import EventBusUnitOfWork
 from .mappers import as_message
@@ -12,7 +13,8 @@ class EventBusImpl(EventBus):
 
     EXCHANGE_NAME = "movie_database_admin"
     ROUTING_KEYS = {
-        user_events.UsernameChanged: "user.username_changed"
+        user_events.UsernameChanged: "user.username_changed",
+        movie_events.MovieCreated: "movie.created"
     }
 
     def __init__(
