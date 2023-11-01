@@ -12,5 +12,9 @@ def create_users_router() -> APIRouter:
         path="/me/username", endpoint=routes.change_username,
         status_code=204, methods=["put"]
     )
+    router.add_api_route(
+        path="/me/password", endpoint=routes.change_password,
+        status_code=204, methods=["put"]
+    )
 
     return router
