@@ -6,6 +6,7 @@ from app.application.commands.superuser.create_superuser import CreateSuperuser
 from app.application.commands.superuser.change_password import ChangeSuperuserPassword
 from app.application.commands.user.change_username import ChangeUsername
 from app.application.commands.superuser.ensure_superuser import EnsureSuperuser
+from app.application.commands.superuser.ensure_password_change import EnsureSuperuserPasswordChange
 from app.application.commands.user.ensure_user import EnsureUser
 from app.application.commands.user.ensure_username_change import EnsureUsernameChange
 from app.application.queries.auth.login import Login
@@ -35,6 +36,12 @@ class HandlerFactory(ABC):
     async def ensure_superuser(
         self
     ) -> AsyncContextManager[EnsureSuperuser]:
+        raise NotImplementedError
+    
+    @abstractmethod
+    async def ensure_superuser_password_change(
+        self
+    ) -> AsyncContextManager[EnsureSuperuserPasswordChange]:
         raise NotImplementedError
     
     @abstractmethod
