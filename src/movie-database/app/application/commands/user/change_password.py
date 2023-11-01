@@ -38,7 +38,7 @@ class ChangePassword(CommandHandler):
             raise auth_exceptions.IncorrectPasswordError()
 
         # 3.Change password
-        user.change_password(username=data.new_password)
+        user.change_password(password=data.new_password)
         await self.user_repo.update_user(user)
 
         await self.uow.commit()
