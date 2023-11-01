@@ -4,3 +4,9 @@ CREATE TABLE users (
     password VARCHAR(256) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL
 );
+
+CREATE TABLE movies (
+    id UUID PRIMARY KEY,
+    en_name VARCHAR NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL
+);
