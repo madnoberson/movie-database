@@ -12,8 +12,19 @@ class AccessService:
         if (
             not access_policy.is_active or
             
-            not SuperUserPermissionEnum.SUPERUSERS
-            in access_policy.permissions
+            SuperUserPermissionEnum.SUPERUSERS
+            not in access_policy.permissions
+        ):
+            raise AccessDeniedError()
+    
+    def ensure_can_create_movie(
+        self, access_policy: AccessPolicy
+    ) -> None:
+        if (
+            not access_policy.is_active or
+
+            SuperUserPermissionEnum.MOVIES
+            not in access_policy.permissions
         ):
             raise AccessDeniedError()
     
@@ -23,8 +34,8 @@ class AccessService:
         if (
             not access_policy.is_active or
 
-            not SuperUserPermissionEnum.USERS
-            in access_policy.permissions
+            SuperUserPermissionEnum.USERS
+            not in access_policy.permissions
         ):
             raise AccessDeniedError()
     
@@ -34,8 +45,8 @@ class AccessService:
         if (
             not access_policy.is_active or
 
-            not SuperUserPermissionEnum.SUPERUSERS
-            in access_policy.permissions or
+            SuperUserPermissionEnum.SUPERUSERS
+            not in access_policy.permissions or
 
             SuperUserPermissionEnum.SUPERUSERS 
             in superuser.permissions and
