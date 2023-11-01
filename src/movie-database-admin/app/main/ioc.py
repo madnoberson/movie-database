@@ -4,6 +4,7 @@ from typing import AsyncIterator
 from app.domain.services.access import AccessService
 from app.application.common.interfaces.identity_provider import IdentityProvider
 from app.application.commands.superuser.create_superuser import CreateSuperuser
+from app.application.commands.superuser.change_password import ChangeSuperuserPassword
 from app.application.commands.user.change_username import ChangeUsername
 from app.application.commands.user.ensure_user import EnsureUser
 from app.application.commands.user.ensure_username_change import EnsureUsernameChange
@@ -32,6 +33,18 @@ class IoC(HandlerFactory):
     ) -> AsyncIterator[CreateSuperuser]:
         async with self.db_factory_manager.build_repo_factory() as repo_factory:
             yield CreateSuperuser(
+                superuser_repo=repo_factory.build_superuser_repo(),
+                identity_provider=identity_provider,
+                access_service=self.access_service,
+                uow=UnitOfWorkImpl(await repo_factory.build_uow())
+            )
+    
+    @asynccontextmanager
+    async def change_superuser_password(
+        self, identity_provider: IdentityProvider
+    ) -> AsyncIterator[ChangeSuperuserPassword]:
+        async with self.db_factory_manager.build_repo_factory() as repo_factory:
+            yield ChangeSuperuserPassword(
                 superuser_repo=repo_factory.build_superuser_repo(),
                 identity_provider=identity_provider,
                 access_service=self.access_service,
