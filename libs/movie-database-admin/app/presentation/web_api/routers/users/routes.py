@@ -13,7 +13,7 @@ from . import requests
 async def change_username(
     ioc: Annotated[HandlerFactory, Depends()],
     identity_provider: Annotated[IdentityProvider, Depends(get_identity_provider)],
-    data: requests.ChangeUsername,
+    data: requests.ChangeUsernameSchema,
     user_id: UUID
 ) -> None:
     async with ioc.change_username(identity_provider) as change_username:
