@@ -25,3 +25,6 @@ class User(Model):
     
     def change_username(self, username: str) -> None:
         self.username = username
+    
+    def change_password(self, password: str) -> None:
+        self.password = password
