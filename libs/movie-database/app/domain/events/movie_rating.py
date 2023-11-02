@@ -6,9 +6,8 @@ from .event import Event
 
 
 @dataclass(frozen=True, slots=True)
-class MovieRatingCreated(Event):
+class MovieRated(Event):
 
-    id: UUID
     user_id: UUID
     movie_id: UUID
     rating: float

@@ -8,7 +8,6 @@ from .model import Model
 @dataclass(slots=True)
 class MovieRating(Model):
 
-    id: UUID
     user_id: UUID
     movie_id: UUID
     rating: float
@@ -18,14 +17,12 @@ class MovieRating(Model):
 
     @classmethod
     def create(
-        cls, movie_rating_id: UUID, user_id: UUID,
-        movie_id: UUID, created_at: datetime,
-        rating: float
+        cls, user_id: UUID, movie_id: UUID,
+        rating: float, created_at: datetime
     ) -> "MovieRating":
         return MovieRating(
-            id=movie_rating_id, user_id=user_id,
-            movie_id=movie_id, created_at=created_at,
-            rating=rating
+            user_id=user_id, movie_id=movie_id,
+            rating=rating, created_at=created_at
         )
 
     def update(self, rating: float, updated_at: datetime) -> None:
