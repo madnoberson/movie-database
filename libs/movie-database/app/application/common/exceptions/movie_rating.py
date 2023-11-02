@@ -1,0 +1,6 @@
+class MovieRatingAlreadyExistsError(Exception):
+    ...
+
+
+class MovieRatingDoesNotExistError(Exception):
+    ...

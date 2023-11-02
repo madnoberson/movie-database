@@ -20,19 +20,28 @@ class MovieRepositoryImpl(MovieRepository):
     
     async def save_movie(self, movie: Movie) -> None:
         await self.connection.execute(
-            "INSERT INTO movies (id, en_name, created_at) VALUES ($1, $2, $3)",
-            movie.id, movie.en_name, movie.created_at
+            """
+            INSERT INTO movies
+            (id, en_name, user_rating_count, user_rating, created_at)
+            VALUES ($1, $2, $3, $4, $5)
+            """,
+            movie.id, movie.en_name, movie.user_rating_count, movie.user_rating,
+            movie.created_at
         )
     
     async def get_movie(self, movie_id: UUID) -> Movie | None:
         data = await self.connection.fetchrow(
-            "SELECT m.id movie_id, m* FROM movies m WHERE m.id = $1 LIMIT 1",
+            "SELECT m.id movie_id, m.* FROM movies m WHERE m.id = $1 LIMIT 1",
             movie_id
         )
         return as_domain_model(Movie, data) if data else None
 
     async def update_movie(self, movie: Movie) -> None:
         await self.connection.execute(
-            "UPDATE movies m SET en_name = $1, created_at = $2 WHERE m.id = $3",
-            movie.en_name, movie.created_at, movie.id
+            """
+            UPDATE movies m SET
+            en_name = $1, user_rating_count = $2, user_rating = $3 
+            WHERE m.id = $4
+            """,
+            movie.en_name, movie.user_rating_count, movie.user_rating, movie.id
         )
