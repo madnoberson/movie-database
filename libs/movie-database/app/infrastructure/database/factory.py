@@ -41,7 +41,7 @@ class RepositoryFactory:
     def build_movie_repo(self) -> repositories.MovieRepositoryImpl:
         return repositories.MovieRepositoryImpl(self.connection)
     
-    def build_movie_rating_count(self) -> repositories.MovieRatingRepositoryImpl:
+    def build_movie_rating_repo(self) -> repositories.MovieRatingRepositoryImpl:
         return repositories.MovieRatingRepositoryImpl(self.connection)
     
     async def build_uow(self) -> AsyncpgUnitOfWork:

@@ -16,7 +16,6 @@ from app.application.commands.handler import CommandHandler
 @dataclass(frozen=True, slots=True)
 class InputDTO:
 
-    user_id: UUID
     movie_id: UUID
     rating: float
 
