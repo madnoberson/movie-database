@@ -21,7 +21,8 @@ class User(Model):
     ) -> "User":
         return User(
             id=user_id, username=username,
-            password=password, created_at=created_at
+            password=password, rated_movies_count=0,
+            created_at=created_at
         )
     
     def change_username(self, username: str) -> None:
@@ -29,3 +30,9 @@ class User(Model):
     
     def change_password(self, password: str) -> None:
         self.password = password
+    
+    def add_movie_rating(self) -> None:
+        self.rated_movies_count += 1
+    
+    def remove_movie_rating(self) -> None:
+        self.rated_movies_count -= 1
