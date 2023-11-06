@@ -2,9 +2,9 @@ from typing import Annotated
 
 from fastapi import Depends, Cookie
 
-from app.infrastructure.authentication.session.session.gateway import SessionGateway
-from app.infrastructure.authentication.session.access_policy.gateway import AccessPolicyGateway
-from app.infrastructure.authentication.session.identity_provider import SessionIdentityProvider
+from app.infrastructure.auth.session.session.gateway import SessionGateway
+from app.infrastructure.auth.session.access_policy.gateway import AccessPolicyGateway
+from app.infrastructure.auth.session.identity_provider import SessionIdentityProvider
 from app.presentation.web_api.depends_stub import Stub
 
 
