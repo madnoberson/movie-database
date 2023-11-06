@@ -90,7 +90,11 @@ class RateMovie(CommandHandler):
             )
             await self.movie_rating_repo.save_movie_rating(movie_rating)
 
-        # 7.Publish `MovieRated` event to event bus
+        # 7.Update user rated movies count
+        user.add_movie_rating()
+        await self.user_repo.update_user(user)
+
+        # 8.Publish `MovieRated` event to event bus
         movie_rated_event = MovieRated(
             user_id=movie_rating.user_id, movie_id=movie_rating.movie_id,
             rating=movie_rating.rating, created_at=movie_rating.created_at
