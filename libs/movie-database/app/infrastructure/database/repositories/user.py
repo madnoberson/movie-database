@@ -29,7 +29,12 @@ class UserRepositoryImpl(UserRepository):
     
     async def get_user(self, user_id: UUID) -> User | None:
         data = await self.connection.fetchrow(
-            "SELECT * FROM users u WHERE u.id = $1 LIMIT 1", user_id
+            """
+            SELECT u.*, COUNT(mr.*) rated_movies_count
+            FROM users u JOIN movie_ratings mr ON mr.user_id = u.id
+            GROUP BY u.id WHERE u.id = $1 LIMIT 1
+            """,
+            user_id
         )
         return as_domain_model(User, data) if data else None
     

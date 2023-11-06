@@ -28,11 +28,11 @@ class MovieRatingRepositoryImpl(MovieRatingRepository):
         await self.connection.execute(
             """
             INSERT INTO movie_ratings
-            (user_id, movie_id, rating, created_at, updated_at)
-            VALUES ($1, $2, $3, $4, $5)
+            (user_id, movie_id, rating, is_full, created_at, updated_at)
+            VALUES ($1, $2, $3, $4, $5, $6)
             """,
             movie_rating.user_id, movie_rating.movie_id, movie_rating.rating,
-            movie_rating.created_at, movie_rating.updated_at
+            movie_rating.is_full, movie_rating.created_at, movie_rating.updated_at
         )
     
     async def get_movie_rating(
@@ -50,18 +50,17 @@ class MovieRatingRepositoryImpl(MovieRatingRepository):
     async def update_movie_rating(self, movie_rating: MovieRating) -> None:
         await self.connection.execute(
             """
-            UPDATE movie_ratings mr SET rating = $1, updated_at = $2
-            WHERE mr.user_id = $3 AND mr.movie_id = $4
+            UPDATE movie_ratings mr SET rating = $1, is_full = $2, updated_at = $3
+            WHERE mr.user_id = $4 AND mr.movie_id = $5
             """,
-            movie_rating.rating, movie_rating.updated_at,
+            movie_rating.rating, movie_rating.is_full, movie_rating.updated_at,
             movie_rating.user_id, movie_rating.movie_id
         )
     
     async def delete_movie_rating(self, user_id: UUID, movie_id: UUID) -> None:
         await self.connection.execute(
             """
-            DELETE FROM movie_ratings mr
-            WHERE mr.user_id = $1 AND mr.movie_id = $2
+            DELETE FROM movie_ratings mr WHERE mr.user_id = $1 AND mr.movie_id = $2
             """,
             user_id, movie_id
         )

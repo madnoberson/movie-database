@@ -17,6 +17,12 @@ CREATE TABLE movie_ratings (
     user_id UUID FOREIGN KEY REFERENCES users(id),
     movie_id UUID FOREIGN KEY REFERENCES movies(id),
     rating NUMERIC(2, 1) NOT NULL,
+    is_full BOOLEAN NOT NULL,
     created_at TIMESTAMPTZ NOT NULL,
     updated_at TIMESTAMPTZ
+);
+
+CREATE TABLE movie_ratings_policy (
+    required_rated_movies_count SMALLINT,
+    required_time_pass_after_registration SMALLINT
 );
