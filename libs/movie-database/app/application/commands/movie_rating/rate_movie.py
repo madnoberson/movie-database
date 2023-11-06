@@ -79,9 +79,9 @@ class RateMovie(CommandHandler):
             )
             await self.movie_rating_repo.save_movie_rating(movie_rating)
 
-            # 6.2 Update movie rating
+            # 6.2 Update movie's rating
             movie.add_user_rating(user_rating=data.rating)
-            await self.movie_repo.save_movie(movie)
+            await self.movie_repo.update_movie(movie)
         else:
             # 6.1.Create movie rating
             movie_rating = MovieRating.create(
