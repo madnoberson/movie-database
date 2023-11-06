@@ -11,6 +11,7 @@ class User(Model):
     id: UUID
     username: str
     password: str
+    rated_movies_count: int
     created_at: datetime
 
     @classmethod
