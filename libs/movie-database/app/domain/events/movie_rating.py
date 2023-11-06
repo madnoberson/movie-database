@@ -11,4 +11,5 @@ class MovieRated(Event):
     user_id: UUID
     movie_id: UUID
     rating: float
+    is_full: bool
     created_at: datetime
