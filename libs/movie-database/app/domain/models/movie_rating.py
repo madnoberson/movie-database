@@ -22,7 +22,8 @@ class MovieRating(Model):
     ) -> "MovieRating":
         return MovieRating(
             user_id=user_id, movie_id=movie_id,
-            rating=rating, created_at=created_at
+            rating=rating, created_at=created_at,
+            updated_at=None
         )
 
     def update(self, rating: float, updated_at: datetime) -> None:
