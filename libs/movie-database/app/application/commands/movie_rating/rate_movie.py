@@ -68,7 +68,7 @@ class RateMovie(CommandHandler):
         
         # 6.Create full movie rating and update movie rating
         # if user can fully rate movie
-        if await self.movie_rating_service.check_user_can_fully_rate_movie(
+        if self.movie_rating_service.check_user_can_fully_rate_movie(
             user=user, movies_rating_policy=movies_rating_policy
         ):
             # 6.1.Create movie rating

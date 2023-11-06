@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from app.domain.services.movie_rating import MovieRatingService
 from app.infrastructure.database.connection_pool import create_database_connection_pool
 from app.infrastructure.database.factory import DatabaseFactoryManager
 from app.infrastructure.message_broker.connection import create_event_bus_connection
@@ -33,7 +34,8 @@ async def setup_dependencies(
     event_bus_factory = EventBusFactory(event_bus_connection)
 
     app.dependency_overrides[HandlerFactory] = lambda: IoC(
-        db_factory_manager=db_factory_manager, event_bus_factory=event_bus_factory
+        db_factory_manager=db_factory_manager, event_bus_factory=event_bus_factory,
+        movie_rating_service=MovieRatingService()
     )
 
     # 2.Setup `SessionGateway`

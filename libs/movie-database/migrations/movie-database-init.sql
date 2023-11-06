@@ -9,20 +9,25 @@ CREATE TABLE movies (
     id UUID PRIMARY KEY,
     en_name VARCHAR NOT NULL,
     user_rating_count INTEGER NOT NULL,
-    user_rating NUMERIC(2, 4),
+    user_rating REAL,
     created_at TIMESTAMPTZ NOT NULL
 );
 
 CREATE TABLE movie_ratings (
-    user_id UUID FOREIGN KEY REFERENCES users(id),
-    movie_id UUID FOREIGN KEY REFERENCES movies(id),
-    rating NUMERIC(2, 1) NOT NULL,
-    is_full BOOLEAN NOT NULL,
+    user_id UUID,
+    movie_id UUID,
+    rating REAL NOT NULL,
+    is_full BOOLEAN NOT NULL,   
     created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ
+    updated_at TIMESTAMPTZ,
+    PRIMARY KEY (user_id, movie_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (movie_id) REFERENCES movies(id)
 );
 
-CREATE TABLE movie_ratings_policy (
+CREATE TABLE movies_rating_policy (
     required_rated_movies_count SMALLINT,
     required_time_pass_after_registration SMALLINT
 );
+
+INSERT INTO movies_rating_policy VALUES (10, 1);

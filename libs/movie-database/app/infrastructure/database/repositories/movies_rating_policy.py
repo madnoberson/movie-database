@@ -16,6 +16,7 @@ class MoviesRatingPolicyRepositoryImpl(MoviesRatingPolicyRepository):
         data = await self.connection.fetchrow(
             "SELECT mrp.* FROM movies_rating_policy mrp LIMIT 1"
         )
+        data = dict(data)
         data["required_time_pass_after_registration"] = (
             timedelta(days=data["required_time_pass_after_registration"])
         )

@@ -19,5 +19,8 @@ async def setup_dependencies(
         repo_connection_pool=db_connection_pool, reader_connection_pool=db_connection_pool
     )
 
-    ioc = IoC(db_factory_manager=db_factory_manager, event_bus_factory="")
+    ioc = IoC(
+        db_factory_manager=db_factory_manager, event_bus_factory="",
+        movie_rating_service=""
+    )
     app.context.set_global("ioc", ioc)
