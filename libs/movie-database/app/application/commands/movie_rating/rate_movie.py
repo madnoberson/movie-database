@@ -97,7 +97,8 @@ class RateMovie(CommandHandler):
         # 8.Publish `MovieRated` event to event bus
         movie_rated_event = MovieRated(
             user_id=movie_rating.user_id, movie_id=movie_rating.movie_id,
-            rating=movie_rating.rating, created_at=movie_rating.created_at
+            rating=movie_rating.rating, is_full=movie_rating.is_full,
+            created_at=movie_rating.created_at
         )
         await self.event_bus.publish(movie_rated_event)
 
