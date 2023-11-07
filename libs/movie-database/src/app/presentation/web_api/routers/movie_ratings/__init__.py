@@ -14,5 +14,9 @@ def create_movie_ratings_router() -> APIRouter:
         path="/{movie_id}/rating", endpoint=routes.rerate_movie,
         status_code=204, methods=["PUT"]
     )
+    router.add_api_route(
+        path="/{movie_id}/rating", endpoint=routes.unrate_movie,
+        status_code=204, methods=["DELETE"]
+    )
 
     return router
