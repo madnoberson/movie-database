@@ -12,7 +12,8 @@ def get_soft_identity_provider(
     session_id: Annotated[str, Cookie()]
 ) -> identity_providers.SoftSessionIdentityProvider:
     """
-    Returns `SoftIdentityProvider` that does nothing if user is not authorized
+    Returns `SoftSessionIdentityProvider` that does nothing
+    if user is not authorized
     """
     return identity_providers.SoftSessionIdentityProvider(session_id, session_gateway)
 
@@ -22,7 +23,7 @@ def get_strict_identity_provider(
     session_id: Annotated[str, Cookie()]
 ) -> identity_providers.StrictSessionIdentityProvider:
     """
-    Returns `StrictIdentityProvider` that raises `UnauthorizedError`
+    Returns `StrictSessionIdentityProvider` that raises `UnauthorizedError`
     if user is not authorized
     """
     return identity_providers.StrictSessionIdentityProvider(session_id, session_gateway)
