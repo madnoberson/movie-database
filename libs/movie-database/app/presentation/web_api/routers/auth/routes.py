@@ -6,7 +6,7 @@ from app.application.commands.registration.register import InputDTO as RegisterD
 from app.application.queries.auth.login import InputDTO as LoginDTO
 from app.infrastructure.authentication.session.session_gateway import Session, SessionGateway
 from app.presentation.handler_factory import HandlerFactory
-from app.presentation.web_api.depends_stub import Stub
+from app.presentation.web_api.dependencies.depends_stub import Stub
 from . import requests
 
 

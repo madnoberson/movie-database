@@ -8,7 +8,7 @@ from app.infrastructure.message_broker.factory import EventBusFactory
 from app.infrastructure.authentication.session.connection import create_session_gateway_connection
 from app.infrastructure.authentication.session.session_gateway import SessionGateway
 from app.presentation.handler_factory import HandlerFactory
-from app.presentation.web_api.depends_stub import Stub
+from app.presentation.web_api.dependencies.depends_stub import Stub
 from app.main.ioc import IoC
 from app.main import config
 

@@ -4,7 +4,7 @@ from fastapi import Depends, Cookie
 
 from app.infrastructure.authentication.session.session_gateway import SessionGateway
 from app.infrastructure.authentication.session import identity_providers
-from app.presentation.web_api.depends_stub import Stub
+from .depends_stub import Stub
 
 
 def get_soft_identity_provider(
