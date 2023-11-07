@@ -8,6 +8,7 @@ from app.application.commands.user.change_username import ChangeUsername
 from app.application.commands.user.change_password import ChangePassword
 from app.application.commands.movie_rating.rate_movie import RateMovie
 from app.application.commands.movie_rating.rerate_movie import RerateMovie
+from app.application.commands.movie_rating.unrate_movie import UnrateMovie
 from app.application.commands.user.ensure_username_change import EnsureUsernameChange
 from app.application.commands.movie.ensure_movie import EnsureMovie
 from app.application.queries.auth.login import Login
@@ -98,8 +99,24 @@ class IoC(HandlerFactory):
             yield RerateMovie(
                 movie_rating_repo=repo_factory.build_movie_rating_repo(),
                 movie_repo=repo_factory.build_movie_repo(),
+                event_bus=event_bus,
+                identity_provider=identity_provider,
+                movie_rating_service=self.movie_rating_service,
+                uow=UnitOfWorkImpl(await repo_factory.build_uow(), event_bus.build_uow())
+            )
+
+    @asynccontextmanager
+    async def unrate_movie(
+        self, identity_provider: IdentityProvider
+    ) -> AsyncIterator[UnrateMovie]:
+        async with (
+            self.db_factory_manager.build_repo_factory() as repo_factory,
+            self.event_bus_factory.build_event_bus() as event_bus
+        ):
+            yield UnrateMovie(
+                movie_rating_repo=repo_factory.build_movie_rating_repo(),
+                movie_repo=repo_factory.build_movie_repo(),
                 user_repo=repo_factory.build_user_repo(),
-                movies_rating_policy_repo=repo_factory.build_movies_rating_policy_repo(),
                 event_bus=event_bus,
                 identity_provider=identity_provider,
                 movie_rating_service=self.movie_rating_service,

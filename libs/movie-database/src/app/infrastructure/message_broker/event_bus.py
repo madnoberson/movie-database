@@ -16,7 +16,8 @@ class EventBusImpl(EventBus):
         user_events.UserCreated: "user.created",
         user_events.UsernameChanged: "user.username_changed",
         movie_rating_events.MovieRated: "movie_rating.created",
-        movie_rating_events.MovieRerated: "movie_rating.updated"
+        movie_rating_events.MovieRerated: "movie_rating.updated",
+        movie_rating_events.MovieUnrated: "movie_rating.deleted"
     }
 
     def __init__(

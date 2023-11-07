@@ -6,6 +6,7 @@ from fastapi import Depends
 from app.application.common.interfaces.identity_provider import IdentityProvider
 from app.application.commands.movie_rating.rate_movie import InputDTO as RateMovieDTO
 from app.application.commands.movie_rating.rerate_movie import InputDTO as RerateMovieDTO
+from app.application.commands.movie_rating.unrate_movie import InputDTO as UnrateMovieDTO
 from app.presentation.web_api.dependencies.identity_provider import get_strict_identity_provider
 from app.presentation.handler_factory import HandlerFactory
 from . import requests
@@ -29,3 +30,12 @@ async def rerate_movie(
 ) -> None:
     async with ioc.rerate_movie(identity_provider) as rerate_movie:
         await rerate_movie(RerateMovieDTO(movie_id=movie_id, rating=data.rating))
+
+
+async def unrate_movie(
+    ioc: Annotated[HandlerFactory, Depends()],
+    identity_provider: Annotated[IdentityProvider, Depends(get_strict_identity_provider)],
+    movie_id: UUID
+) -> None:
+    async with ioc.unrate_movie(identity_provider) as unrate_movie:
+        await unrate_movie(UnrateMovieDTO(movie_id=movie_id))
