@@ -22,24 +22,11 @@ class MovieRatingService:
         return True
 
     def check_user_can_fully_rerate_movie(
-        self, user: User, movie_rating: MovieRating,
-        movies_rating_policy: MoviesRatingPolicy
+        self, movie_rating: MovieRating
     ) -> bool:
-        if (
-            not movie_rating.is_full
-            and
-            user.rated_movie_count <
-            movies_rating_policy.required_rated_movie_count
-            or
-            datetime.utcnow() - user.created_at <
-            movies_rating_policy.required_days_pass_after_registration
-        ):
-            return False
-        return True
+        return movie_rating.is_full
 
     def check_user_can_fully_unrate_movie(
         self, movie_rating: MovieRating
     ) -> bool:
-        if not movie_rating.is_full:
-            return False
-        return True
+        return movie_rating.is_full
