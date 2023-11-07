@@ -30,13 +30,12 @@ class UserRepositoryImpl(UserRepository):
     async def get_user(self, user_id: UUID) -> User | None:
         data = await self.connection.fetchrow(
             """
-            SELECT u.*, COUNT(mr.*) rated_movies_count
+            SELECT u.*, COUNT(mr.*) rated_movie_count
             FROM users u LEFT JOIN movie_ratings mr ON mr.user_id = u.id
             WHERE u.id = $1 GROUP BY u.id LIMIT 1
             """,
             user_id
         )
-        print(data)
         return as_domain_model(User, data) if data else None
     
     async def update_user(self, user: User) -> None:

@@ -26,8 +26,8 @@ CREATE TABLE movie_ratings (
 );
 
 CREATE TABLE movies_rating_policy (
-    required_rated_movies_count SMALLINT,
-    required_time_pass_after_registration SMALLINT
+    required_rated_movie_count SMALLINT,
+    required_days_pass_after_registration SMALLINT
 );
 
 INSERT INTO movies_rating_policy VALUES (10, 1);
