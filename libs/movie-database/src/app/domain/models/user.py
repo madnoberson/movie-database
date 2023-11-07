@@ -11,7 +11,7 @@ class User(Model):
     id: UUID
     username: str
     password: str
-    rated_movies_count: int
+    rated_movie_count: int
     created_at: datetime
 
     @classmethod
@@ -21,7 +21,7 @@ class User(Model):
     ) -> "User":
         return User(
             id=user_id, username=username,
-            password=password, rated_movies_count=0,
+            password=password, rated_movie_count=0,
             created_at=created_at
         )
     
@@ -32,7 +32,7 @@ class User(Model):
         self.password = password
     
     def add_movie_rating(self) -> None:
-        self.rated_movies_count += 1
+        self.rated_movie_count += 1
     
     def remove_movie_rating(self) -> None:
-        self.rated_movies_count -= 1
+        self.rated_movie_count -= 1

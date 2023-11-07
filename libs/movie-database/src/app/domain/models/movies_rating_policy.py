@@ -7,5 +7,5 @@ from .model import Model
 @dataclass(slots=True)
 class MoviesRatingPolicy(Model):
 
-    required_rated_movies_count: int
-    required_time_pass_after_registration: timedelta
+    required_rated_movie_count: int
+    required_days_pass_after_registration: timedelta
