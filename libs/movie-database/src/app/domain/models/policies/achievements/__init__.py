@@ -1,0 +1,1 @@
+from .rated_movies import RatedMoviesAchievementsPolicy

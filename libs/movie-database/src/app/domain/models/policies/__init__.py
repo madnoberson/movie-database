@@ -1,0 +1,2 @@
+from .achievements import RatedMoviesAchievementsPolicy
+from .movies import MoviesRatingPolicy

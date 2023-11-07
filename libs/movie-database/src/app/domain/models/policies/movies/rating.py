@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import timedelta
 
-from .model import Model
+from app.domain.models.model import Model
 
 
 @dataclass(slots=True)
