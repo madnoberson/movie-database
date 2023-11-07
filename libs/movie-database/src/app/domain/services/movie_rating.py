@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from app.domain.models.policies import MoviesRatingPolicy
+from app.domain.policies import MoviesRatingPolicy
 from app.domain.models.movie_rating import MovieRating
 from app.domain.models.user import User
 

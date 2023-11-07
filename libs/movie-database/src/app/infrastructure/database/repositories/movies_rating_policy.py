@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from asyncpg.connection import Connection
 
-from app.domain.models.policies import MoviesRatingPolicy
+from app.domain.policies import MoviesRatingPolicy
 from app.application.common.interfaces.repositories import MoviesRatingPolicyRepository
 from app.infrastructure.database.mappers import as_domain_model
 
