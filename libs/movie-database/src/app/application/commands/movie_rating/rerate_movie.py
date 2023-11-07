@@ -55,6 +55,7 @@ class RerateMovie(CommandHandler):
         # 3.Update movie rating
         old_movie_rating = movie_rating.rating
         movie_rating.update(rating=data.rating, updated_at=datetime.utcnow())
+        await self.movie_rating_repo.update_movie_rating(movie_rating)
 
         # 4.Get user
         user = await self.user_repo.get_user(user_id=current_user_id)
