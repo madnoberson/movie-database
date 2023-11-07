@@ -98,8 +98,6 @@ class IoC(HandlerFactory):
             yield RerateMovie(
                 movie_rating_repo=repo_factory.build_movie_rating_repo(),
                 movie_repo=repo_factory.build_movie_repo(),
-                user_repo=repo_factory.build_user_repo(),
-                movies_rating_policy_repo=repo_factory.build_movies_rating_policy_repo(),
                 event_bus=event_bus,
                 identity_provider=identity_provider,
                 movie_rating_service=self.movie_rating_service,
