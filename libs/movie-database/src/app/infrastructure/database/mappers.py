@@ -3,6 +3,7 @@ from typing import Mapping, Type, Any
 from pydantic import TypeAdapter
 
 from app.domain.models.model import ModelT
+from app.domain.policies.policy import PolicyT
 from app.application.common.query_results.query_result import QueryResultT
 
 
@@ -12,6 +13,14 @@ def as_domain_model(model: Type[ModelT], mapping: Mapping[str, Any]) -> ModelT:
     don't belong to to `model`
     """
     return TypeAdapter(model).validate_python(dict(mapping))
+
+
+def as_domain_policy(policy: Type[PolicyT], mapping: Mapping[str, Any]) -> PolicyT:
+    """
+    Converts `mapping` into `policy` and returns it. Ignores all fields that
+    don't belong to to `policy`
+    """
+    return TypeAdapter(policy).validate_python(dict(mapping))
     
 
 def as_query_result(query_result: Type[QueryResultT], mapping: Mapping[str, Any]) -> QueryResultT:
