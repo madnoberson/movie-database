@@ -6,6 +6,7 @@ from app.application.commands.registration.register import Register
 from app.application.commands.user.change_username import ChangeUsername
 from app.application.commands.user.change_password import ChangePassword
 from app.application.commands.movie_rating.rate_movie import RateMovie
+from app.application.commands.movie_rating.rerate_movie import RerateMovie
 from app.application.commands.user.ensure_username_change import EnsureUsernameChange
 from app.application.commands.movie.ensure_movie import EnsureMovie
 from app.application.queries.auth.login import Login
@@ -34,6 +35,12 @@ class HandlerFactory(ABC):
     async def rate_movie(
         self, identity_provider: IdentityProvider
     ) -> AsyncContextManager[RateMovie]:
+        raise NotImplementedError
+    
+    @abstractmethod
+    async def rerate_movie(
+        self, identity_provider: IdentityProvider
+    ) -> AsyncContextManager[RerateMovie]:
         raise NotImplementedError
     
     @abstractmethod
