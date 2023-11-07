@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
-from app.domain.models.model import Model
+from app.domain.policies.policy import Policy
 
 
 @dataclass(slots=True)
-class RatedMoviesAchievementsPolicy(Model):
+class RatedMoviesAchievementsPolicy(Policy):
 
     required_rated_movies_for_1_rank: int
     required_rated_movies_for_2_rank: int
