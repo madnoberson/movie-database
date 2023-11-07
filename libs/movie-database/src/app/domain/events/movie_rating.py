@@ -13,3 +13,14 @@ class MovieRated(Event):
     rating: float
     is_full: bool
     created_at: datetime
+
+
+@dataclass(frozen=True, slots=True)
+class MovieRerated(Event):
+
+    user_id: UUID
+    movie_id: UUID
+    rating: float
+    is_full: bool
+    updated_at: datetime
+    

@@ -15,7 +15,8 @@ class EventBusImpl(EventBus):
     ROUTING_KEYS = {
         user_events.UserCreated: "user.created",
         user_events.UsernameChanged: "user.username_changed",
-        movie_rating_events.MovieRated: "movie_rating.created"
+        movie_rating_events.MovieRated: "movie_rating.created",
+        movie_rating_events.MovieRerated: "movie_rating.updated"
     }
 
     def __init__(
