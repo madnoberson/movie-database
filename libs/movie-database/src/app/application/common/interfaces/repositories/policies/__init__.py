@@ -1,1 +1,1 @@
-from .movies import MoviesRatingPolicyRepository
+from .movies import *
