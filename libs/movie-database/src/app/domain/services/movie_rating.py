@@ -36,3 +36,10 @@ class MovieRatingService:
         ):
             return False
         return True
+
+    def check_user_can_fully_unrate_movie(
+        self, movie_rating: MovieRating
+    ) -> bool:
+        if not movie_rating.is_full:
+            return False
+        return True
