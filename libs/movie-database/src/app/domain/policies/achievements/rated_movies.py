@@ -4,9 +4,15 @@ from app.domain.policies.policy import Policy
 
 
 @dataclass(slots=True)
+class RatedMoviesAchievementRules:
+
+    rated_movie_count: int
+
+
+@dataclass(slots=True)
 class RatedMoviesAchievementsPolicy(Policy):
 
-    required_rated_movies_for_1_rank: int
-    required_rated_movies_for_2_rank: int
-    required_rated_movies_for_3_rank: int
-    required_rated_movies_for_4_rank: int
+    rank_1: RatedMoviesAchievementRules
+    rank_2: RatedMoviesAchievementRules
+    rank_3: RatedMoviesAchievementRules
+    rank_4: RatedMoviesAchievementRules
