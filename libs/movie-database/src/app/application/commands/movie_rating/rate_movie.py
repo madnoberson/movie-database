@@ -3,8 +3,11 @@ from datetime import datetime
 from uuid import UUID
 
 from app.domain.models.movie_rating import MovieRating
+from app.domain.models.achievement import Achievement
 from app.domain.events.movie_rating import MovieRated
+from app.domain.events.achievement import AchievementObtained
 from app.domain.services.movie_rating import MovieRatingService
+from app.domain.services.achievement import AchievementService
 from app.application.common.interfaces.identity_provider import IdentityProvider
 from app.application.common.interfaces.event_bus import EventBus
 from app.application.common.interfaces.uow import UnitOfWork
@@ -28,19 +31,25 @@ class RateMovie(CommandHandler):
         movie_rating_repo: repositories.MovieRatingRepository,
         movie_repo: repositories.MovieRepository,
         user_repo: repositories.UserRepository,
+        achievement_repo: repositories.AchievementRepository,
         movies_rating_policy_repo: repositories.MoviesRatingPolicyRepository,
+        rated_movies_achievements_policy_repo: repositories.RatedMoviesAchievementsPolicyRepository,
         event_bus: EventBus,
         identity_provider: IdentityProvider,
         movie_rating_service: MovieRatingService,
+        achievement_service: AchievementService,
         uow: UnitOfWork
     ) -> None:
         self.movie_rating_repo = movie_rating_repo
         self.movie_repo = movie_repo
         self.user_repo = user_repo
+        self.achievement_repo = achievement_repo
         self.movies_rating_policy_repo = movies_rating_policy_repo
+        self.rated_movies_achievements_policy_repo = rated_movies_achievements_policy_repo
         self.event_bus = event_bus
         self.identity_provider = identity_provider
         self.movie_rating_service = movie_rating_service
+        self.achievement_service = achievement_service
         self.uow = uow
     
     async def __call__(self, data: InputDTO) -> None:
@@ -94,7 +103,40 @@ class RateMovie(CommandHandler):
         user.add_movie_rating()
         await self.user_repo.update_user(user)
 
-        # 8.Publish `MovieRated` event to event bus
+        # 8.Get rated movies achievements policy
+        rated_movies_achievements_policy = (
+            await self.rated_movies_achievements_policy_repo.
+            get_rated_movies_achievements_policy()
+        )
+
+        # 9.Create achievement and publish `AchievementObtained` event to event bus
+        # if user can obtain rated movies achievement or achievement already exists
+        achievement_type = self.achievement_service.get_rated_movie_achievement_type(
+            user=user,
+            rated_movies_achievements_policy=rated_movies_achievements_policy
+        )
+        if (
+            achievement_type is not None and
+            await self.achievement_repo.check_achievement_exists(
+                user_id=user.id, achievement_type=achievement_type
+            )
+        ):
+            # 9.1.Create achievement
+            achievement = Achievement.create(
+                user_id=user.id, type=achievement_type,
+                created_at=datetime.utcnow()
+            )
+            await self.achievement_repo.save_achievement(achievement)
+
+            # 9.2.Publish `AchievementObtained` event to event bus
+            achievement_obtained_event = AchievementObtained(
+                user_id=user.id, type=achievement_type,
+                created_at=achievement.created_at
+            )
+            await self.event_bus.publish(achievement_obtained_event)
+
+
+        # 10.Publish `MovieRated` event to event bus
         movie_rated_event = MovieRated(
             user_id=movie_rating.user_id, movie_id=movie_rating.movie_id,
             rating=movie_rating.rating, is_full=movie_rating.is_full,

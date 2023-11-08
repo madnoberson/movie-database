@@ -6,6 +6,7 @@ from app.domain.policies import RatedMoviesAchievementsPolicy
 class AchievementService:
 
     def get_rated_movie_achievement_type(
+        self,
         user: User,
         rated_movies_achievements_policy: RatedMoviesAchievementsPolicy
     ) -> AchievementTypeEnum | None:
