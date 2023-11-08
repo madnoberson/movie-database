@@ -22,4 +22,4 @@ class FilmophileAchievementsPolicyRepositoryImpl(FilmophileAchievementsPolicyRep
             rules = {"rated_movie_count": filmophile_achievement_policy_record["rated_movie_count"]}
             processed_data.update({rank: rules})
 
-        return as_domain_policy(FilmophileAchievementsPolicy, data)
+        return as_domain_policy(FilmophileAchievementsPolicy, processed_data)
