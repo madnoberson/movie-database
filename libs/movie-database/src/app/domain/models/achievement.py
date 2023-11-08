@@ -8,10 +8,10 @@ from .model import Model
 
 class AchievementTypeEnum(IntEnum):
 
-    MOVIES_RATED_1 = 0
-    MOVIES_RATED_2 = 1
-    MOVIES_RATED_3 = 2
-    MOVIES_RATED_4 = 3
+    FILMOPHILE_1 = 0
+    FILMOPHILE_2 = 1
+    FILMOPHILE_3 = 2
+    FILMPPHILE_4 = 3
 
 
 @dataclass(slots=True)

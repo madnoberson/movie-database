@@ -1,1 +1,1 @@
-from .rated_movies import RatedMoviesAchievementsPolicy
+from .filmophile import FilmophileAchievementsPolicy

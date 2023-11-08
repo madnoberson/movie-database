@@ -34,7 +34,7 @@ class RateMovie(CommandHandler):
         user_repo: repositories.UserRepository,
         achievement_repo: repositories.AchievementRepository,
         movies_rating_policy_repo: repositories.MoviesRatingPolicyRepository,
-        rated_movies_achievements_policy_repo: repositories.RatedMoviesAchievementsPolicyRepository,
+        filmophile_achievements_policy_repo: repositories.FilmophileAchievementsPolicyRepository,
         event_bus: EventBus,
         identity_provider: IdentityProvider,
         movie_rating_service: MovieRatingService,
@@ -46,7 +46,7 @@ class RateMovie(CommandHandler):
         self.user_repo = user_repo
         self.achievement_repo = achievement_repo
         self.movies_rating_policy_repo = movies_rating_policy_repo
-        self.rated_movies_achievements_policy_repo = rated_movies_achievements_policy_repo
+        self.filmophile_achievements_policy_repo = filmophile_achievements_policy_repo
         self.event_bus = event_bus
         self.identity_provider = identity_provider
         self.movie_rating_service = movie_rating_service
@@ -61,11 +61,15 @@ class RateMovie(CommandHandler):
             current_user=current_user, movie_id=data.movie_id,
             rating=data.rating
         )
-        await self._give_achievements(current_user=current_user)
+        await self._give_filmophile_achievement_if_possible(
+            current_user=current_user
+        )
 
         await self.uow.commit()
     
-    async def _rate_movie(self, current_user: User, movie_id: UUID, rating: float) -> None:
+    async def _rate_movie(
+        self, current_user: User, movie_id: UUID, rating: float
+    ) -> None:
         # 1.Ensure movie is not rated by user
         if await self.movie_rating_repo.check_movie_rating_exists(
             user_id=current_user.id, movie_id=movie_id
@@ -111,22 +115,24 @@ class RateMovie(CommandHandler):
         )
         await self.event_bus.publish(movie_rated_event)
     
-    async def _give_achievements(self, current_user: User) -> None:
+    async def _give_filmophile_achievement_if_possible(
+        self, current_user: User
+    ) -> None:
         # 1.Get rated movies achievements policy
         rated_movies_achievements_policy = (
-            await self.rated_movies_achievements_policy_repo.
-            get_rated_movies_achievements_policy()
+            await self.filmophile_achievements_policy_repo.
+            get_filmophile_achievements_policy()
         )
 
         # 2.Create achievement and publish `AchievementObtained` event to event bus
         # if user can obtain rated movies achievement and achievement doesn't exist
-        achievement_type = self.achievement_service.get_rated_movie_achievement_type(
+        achievement_type = self.achievement_service.get_filmophile_achievement_type(
             user=current_user,
             rated_movies_achievements_policy=rated_movies_achievements_policy
         )
         if (
             achievement_type is not None and
-            await self.achievement_repo.check_achievement_exists(
+            not await self.achievement_repo.check_achievement_exists(
                 user_id=current_user.id, achievement_type=achievement_type
             )
         ):

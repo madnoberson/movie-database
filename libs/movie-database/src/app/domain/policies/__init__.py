@@ -1,2 +1,2 @@
-from .achievements import RatedMoviesAchievementsPolicy
-from .movies import MoviesRatingPolicy
+from .achievements import *
+from .movies import *

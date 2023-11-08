@@ -1,35 +1,35 @@
 from app.domain.models.user import User
 from app.domain.models.achievement import AchievementTypeEnum
-from app.domain.policies import RatedMoviesAchievementsPolicy
+from app.domain.policies import FilmophileAchievementsPolicy
 
 
 class AchievementService:
 
-    def get_rated_movie_achievement_type(
+    def get_filmophile_achievement_type(
         self,
         user: User,
-        rated_movies_achievements_policy: RatedMoviesAchievementsPolicy
+        filmophile_achievement_policy: FilmophileAchievementsPolicy
     ) -> AchievementTypeEnum | None:
         if (
             user.rated_movie_count ==
-            rated_movies_achievements_policy.rank_1.rated_movie_count
+            filmophile_achievement_policy.rank_1.rated_movie_count
         ):
-            return AchievementTypeEnum.MOVIES_RATED_1
+            return AchievementTypeEnum.FILMOPHILE_1
         elif (
             user.rated_movie_count ==
-            rated_movies_achievements_policy.rank_2.rated_movie_count
+            filmophile_achievement_policy.rank_2.rated_movie_count
         ):
-            return AchievementTypeEnum.MOVIES_RATED_2
+            return AchievementTypeEnum.FILMOPHILE_2
         elif (
             user.rated_movie_count ==
-            rated_movies_achievements_policy.rank_3.rated_movie_count
+            filmophile_achievement_policy.rank_3.rated_movie_count
         ):
-            return AchievementTypeEnum.MOVIES_RATED_3
+            return AchievementTypeEnum.FILMOPHILE_3
         elif (
             user.rated_movie_count ==
-            rated_movies_achievements_policy.rank_4.rated_movie_count
+            filmophile_achievement_policy.rank_4.rated_movie_count
         ):
-            return AchievementTypeEnum.MOVIES_RATED_4
+            return AchievementTypeEnum.FILMPPHILE_4
         
 
         
