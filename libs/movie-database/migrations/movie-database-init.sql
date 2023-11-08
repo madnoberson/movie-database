@@ -31,3 +31,11 @@ CREATE TABLE movies_rating_policy (
 );
 
 INSERT INTO movies_rating_policy VALUES (10, 1);
+
+CREATE TABLE filmophile_achievements_policy (
+    rank SMALLINT PRIMARY KEY,
+    required_rated_movie_count SMALLINT
+);
+
+INSERT INTO filmophile_achievements_policy VALUES
+(0, 10), (1, 100), (2, 500), (3, 1000);

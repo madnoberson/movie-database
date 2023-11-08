@@ -44,8 +44,15 @@ class RepositoryFactory:
     def build_movie_rating_repo(self) -> repositories.MovieRatingRepositoryImpl:
         return repositories.MovieRatingRepositoryImpl(self.connection)
     
-    def build_movies_rating_policy_repo(self) -> repositories.MoviesRatingPolicyRepositoryImpl:
+    def build_movies_rating_policy_repo(
+        self
+    ) -> repositories.MoviesRatingPolicyRepositoryImpl:
         return repositories.MoviesRatingPolicyRepositoryImpl(self.connection)
+    
+    def build_filmophile_achievements_policy_repo(
+        self
+    ) -> repositories.FilmophileAchievementsPolicyRepositoryImpl:
+        return repositories.FilmophileAchievementsPolicyRepositoryImpl(self.connection)
     
     async def build_uow(self) -> AsyncpgUnitOfWork:
         transaction = self.connection.transaction()
