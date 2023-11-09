@@ -21,6 +21,6 @@ async def setup_dependencies(
 
     ioc = IoC(
         db_factory_manager=db_factory_manager, event_bus_factory="",
-        movie_rating_service=""
+        movie_rating_service="", achievement_service=""
     )
     app.context.set_global("ioc", ioc)

@@ -44,6 +44,9 @@ class RepositoryFactory:
     def build_movie_rating_repo(self) -> repositories.MovieRatingRepositoryImpl:
         return repositories.MovieRatingRepositoryImpl(self.connection)
     
+    def build_achievement_repo(self) -> repositories.AchievementRepositoryImpl:
+        return repositories.AchievementRepositoryImpl(self.connection)
+    
     def build_movies_rating_policy_repo(
         self
     ) -> repositories.MoviesRatingPolicyRepositoryImpl:
