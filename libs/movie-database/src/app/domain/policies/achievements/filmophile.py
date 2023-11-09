@@ -4,7 +4,7 @@ from app.domain.policies.policy import Policy
 
 
 @dataclass(slots=True)
-class FilmophileAchievementRules:
+class FilmophileAchievementConditions:
 
     rated_movie_count: int
 
@@ -12,7 +12,7 @@ class FilmophileAchievementRules:
 @dataclass(slots=True)
 class FilmophileAchievementsPolicy(Policy):
 
-    rank_1: FilmophileAchievementRules
-    rank_2: FilmophileAchievementRules
-    rank_3: FilmophileAchievementRules
-    rank_4: FilmophileAchievementRules
+    rank_1: FilmophileAchievementConditions
+    rank_2: FilmophileAchievementConditions
+    rank_3: FilmophileAchievementConditions
+    rank_4: FilmophileAchievementConditions
