@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from app.domain.models.movies_rating_policy import MoviesRatingPolicy
+from app.domain.policies import MoviesRatingPolicy
 
 
 class MoviesRatingPolicyRepository(ABC):

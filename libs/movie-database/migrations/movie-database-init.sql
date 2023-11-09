@@ -31,3 +31,21 @@ CREATE TABLE movies_rating_policy (
 );
 
 INSERT INTO movies_rating_policy VALUES (10, 1);
+
+CREATE TABLE filmophile_achievements (
+    id SMALLINT PRIMARY KEY,
+    title VARCHAR NOT NULL,
+    required_rated_movie_count SMALLINT
+);
+
+INSERT INTO filmophile_achievements VALUES 
+(0, 'Beginner filmophile', 1), (1, 'Advanced beginner filmophile', 100),
+(2, 'Advanced filmophile', 500), (3, 'Veteran filmophile', 1000);
+
+CREATE TABLE user_achievements (
+    user_id UUID NOT NULL,
+    type SMALLINT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    PRIMARY KEY (user_id, type),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);

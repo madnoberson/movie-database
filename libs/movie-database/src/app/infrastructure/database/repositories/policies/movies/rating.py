@@ -2,9 +2,9 @@ from datetime import timedelta
 
 from asyncpg.connection import Connection
 
-from app.domain.models.movies_rating_policy import MoviesRatingPolicy
+from app.domain.policies import MoviesRatingPolicy
 from app.application.common.interfaces.repositories import MoviesRatingPolicyRepository
-from app.infrastructure.database.mappers import as_domain_model
+from app.infrastructure.database.mappers import as_domain_policy
 
 
 class MoviesRatingPolicyRepositoryImpl(MoviesRatingPolicyRepository):
@@ -22,4 +22,4 @@ class MoviesRatingPolicyRepositoryImpl(MoviesRatingPolicyRepository):
             timedelta(days=data["required_days_pass_after_registration"])
         )
         
-        return as_domain_model(MoviesRatingPolicy, data)
+        return as_domain_policy(MoviesRatingPolicy, data)

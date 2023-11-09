@@ -4,6 +4,7 @@ from aio_pika.abc import AbstractChannel, AbstractTransaction
 
 from app.domain.events import user as user_events
 from app.domain.events import movie_rating as movie_rating_events
+from app.domain.events import achievement as achievement_events
 from app.application.common.interfaces.event_bus import EventBus
 from .uow import EventBusUnitOfWork
 from .mappers import as_message
@@ -17,7 +18,8 @@ class EventBusImpl(EventBus):
         user_events.UsernameChanged: "user.username_changed",
         movie_rating_events.MovieRated: "movie_rating.created",
         movie_rating_events.MovieRerated: "movie_rating.updated",
-        movie_rating_events.MovieUnrated: "movie_rating.deleted"
+        movie_rating_events.MovieUnrated: "movie_rating.deleted",
+        achievement_events.AchievementObtained: "achievement.obtained"
     }
 
     def __init__(

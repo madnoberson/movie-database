@@ -1,4 +1,2 @@
-from .user import UserRepositoryImpl
-from .movie import MovieRepositoryImpl
-from .movie_rating import MovieRatingRepositoryImpl
-from .movies_rating_policy import MoviesRatingPolicyRepositoryImpl
+from .models import *
+from .policies import *

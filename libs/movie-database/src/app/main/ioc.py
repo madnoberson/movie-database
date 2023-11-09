@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
 from app.domain.services.movie_rating import MovieRatingService
+from app.domain.services.achievement import AchievementService
 from app.application.common.interfaces.identity_provider import IdentityProvider
 from app.application.commands.registration.register import Register
 from app.application.commands.user.change_username import ChangeUsername
@@ -25,11 +26,13 @@ class IoC(HandlerFactory):
         self,
         db_factory_manager: DatabaseFactoryManager,
         event_bus_factory: EventBusFactory,
-        movie_rating_service: MovieRatingService
+        movie_rating_service: MovieRatingService,
+        achievement_service: AchievementService
     ) -> None:
         self.db_factory_manager = db_factory_manager
         self.event_bus_factory = event_bus_factory
         self.movie_rating_service = movie_rating_service
+        self.achievement_service = achievement_service
 
     @asynccontextmanager
     async def register(self) -> AsyncIterator[Register]:
@@ -81,10 +84,13 @@ class IoC(HandlerFactory):
                 movie_rating_repo=repo_factory.build_movie_rating_repo(),
                 movie_repo=repo_factory.build_movie_repo(),
                 user_repo=repo_factory.build_user_repo(),
+                achievement_repo=repo_factory.build_achievement_repo(),
                 movies_rating_policy_repo=repo_factory.build_movies_rating_policy_repo(),
+                filmophile_achievements_policy_repo=repo_factory.build_filmophile_achievements_policy_repo(),
                 event_bus=event_bus,
                 identity_provider=identity_provider,
                 movie_rating_service=self.movie_rating_service,
+                achievement_service=self.achievement_service,
                 uow=UnitOfWorkImpl(await repo_factory.build_uow(), event_bus.build_uow())
             )
     
