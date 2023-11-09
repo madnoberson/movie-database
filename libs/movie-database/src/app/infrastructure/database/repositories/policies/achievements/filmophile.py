@@ -15,7 +15,7 @@ class FilmophileAchievementsPolicyRepositoryImpl(FilmophileAchievementsPolicyRep
 
         filmophile_achievements_policy_data = {}
         for filmophile_achievement_data, rank in zip(data, range(1, 5)):
-            rated_movie_count = dict(filmophile_achievement_data)["rated_movie_count"]
+            rated_movie_count = dict(filmophile_achievement_data)["required_rated_movie_count"]
             filmophile_achievement_rules = {"rated_movie_count": rated_movie_count}
             filmophile_achievements_policy_data[f"rank_{rank}"] = filmophile_achievement_rules
 

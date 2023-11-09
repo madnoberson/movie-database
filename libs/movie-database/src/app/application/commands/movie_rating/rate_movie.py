@@ -119,7 +119,7 @@ class RateMovie(CommandHandler):
         self, current_user: User
     ) -> None:
         # 1.Get rated movies achievements policy
-        rated_movies_achievements_policy = (
+        filmophile_achievements_policy = (
             await self.filmophile_achievements_policy_repo.
             get_filmophile_achievements_policy()
         )
@@ -128,7 +128,7 @@ class RateMovie(CommandHandler):
         # if user can obtain rated movies achievement and achievement doesn't exist
         achievement_type = self.achievement_service.get_filmophile_achievement_type(
             user=current_user,
-            rated_movies_achievements_policy=rated_movies_achievements_policy
+            filmophile_achievements_policy=filmophile_achievements_policy
         )
         if (
             achievement_type is not None and
