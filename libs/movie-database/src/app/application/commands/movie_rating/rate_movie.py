@@ -61,7 +61,7 @@ class RateMovie(CommandHandler):
             current_user=current_user, movie_id=data.movie_id,
             rating=data.rating
         )
-        await self._give_filmophile_achievement_if_possible(
+        await self._give_filmophile_achievement_if_conditions_are_met(
             current_user=current_user
         )
 
@@ -115,7 +115,7 @@ class RateMovie(CommandHandler):
         )
         await self.event_bus.publish(movie_rated_event)
     
-    async def _give_filmophile_achievement_if_possible(
+    async def _give_filmophile_achievement_if_conditions_are_met(
         self, current_user: User
     ) -> None:
         # 1.Get rated movies achievements policy
